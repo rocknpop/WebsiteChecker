@@ -1,0 +1,6 @@
+{
+  "name": "Website Status Checker",
+  "description": "Check if a website is down right now, perform DNS and SSL lookups, test IP ping times, and monitor uptime status.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
