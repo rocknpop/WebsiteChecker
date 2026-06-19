@@ -27,6 +27,7 @@ import {
   DomainAgePage
 } from "./pages/MoreDiagnosticTools";
 import Blog from "./pages/Blog";
+import MyIpPage from "./pages/MyIp";
 import { AboutUsPage, EditorialPolicyPage, MethodologyPage, DataSourcesPage, ContactUsPage } from "./pages/EeatPages";
 import {
   PrivacyPolicyPage,
@@ -159,6 +160,12 @@ function getSeoMetadata(path: string): { title: string; description: string } {
     return {
       title: "Performance, DNS, SSL & Networking Resource Blog – DownOrUp",
       description: "Learn why websites crash, how traceroute packets analyze hops, optimizing DNS resolution speeds, and security practices."
+    };
+  }
+  if (path === "/my-ip") {
+    return {
+      title: "What Is My IP Address? Check Public IP, Geolocation Coordinates & ISP – DownOrUp",
+      description: "Detect your public IPv4 or IPv6 address and geolocate your regional coordinates, internet service provider (ISP), and connection threat score instantly."
     };
   }
   if (path === "/about-us") {
@@ -341,6 +348,9 @@ export default function App() {
     // Blog
     if (currentPath === "/blog") {
       return <Blog />;
+    }
+    if (currentPath === "/my-ip") {
+      return <MyIpPage />;
     }
 
     // EEAT Pages
