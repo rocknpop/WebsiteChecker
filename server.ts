@@ -7,6 +7,7 @@ import https from "https";
 import http from "http";
 import { URL } from "url";
 import { createServer as createViteServer } from "vite";
+import { generateSitemapXml } from "./src/services/sitemap";
 
 // Initializing Express app
 const app = express();
@@ -753,6 +754,47 @@ app.get("/api/dashboard-info", (req, res) => {
     recentChecks,
     recentOutages
   });
+});
+
+// 10. DYNAMIC SITEMAP.XML GENERATION FOR CRAWLER INDEXING EFFICIENCY
+app.get("/sitemap.xml", (req, res) => {
+  const baseUrl = req.protocol + "://" + req.get("host");
+
+  // Programmatic SEO Domains: Popular & Checked domains
+  const popularDomains = [
+    "google.com",
+    "github.com",
+    "youtube.com",
+    "netflix.com",
+    "facebook.com",
+    "microsoft.com",
+    "apple.com",
+    "amazon.com",
+    "wikipedia.org",
+    "reddit.com",
+    "twitter.com",
+    "instagram.com",
+    "linkedin.com",
+    "openai.com",
+    "zoom.us"
+  ];
+
+  const dynamicDomains = new Set<string>();
+  popularDomains.forEach((d) => dynamicDomains.add(d));
+  recentChecks.forEach((c) => dynamicDomains.add(c.domain));
+  recentOutages.forEach((o) => dynamicDomains.add(o.domain));
+
+  // Diagnostic IPs for programmatic SEO
+  const diagnosticIps = ["8.8.8.8", "1.1.1.1", "1.0.0.1", "8.8.4.4"];
+
+  const xml = generateSitemapXml({
+    baseUrl,
+    domains: Array.from(dynamicDomains),
+    ips: diagnosticIps
+  });
+
+  res.header("Content-Type", "application/xml");
+  return res.send(xml);
 });
 
 // START DEV OR PRODUCTION MIDDWARE INTERACTION

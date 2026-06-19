@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { CheckCircle2, AlertTriangle, ShieldCheck, Database, Clock, ArrowLeft, RefreshCw, Radio, HardDrive, ListPlus, Send, HelpCircle, Flame, Activity } from "lucide-react";
 import SeoHead from "../components/SeoHead";
 import { CheckResult } from "../types";
 import { POPULAR_DOMAINS } from "./StatusDirectory";
+import UptimeHistoryChart from "../components/UptimeHistoryChart";
 
 interface StatusPageProps {
   domain: string;
@@ -72,7 +73,6 @@ export default function StatusPage({ domain, onNavigate, onCheckStatus }: Status
   const [error, setError] = useState<string | null>(null);
   const [reportedCount, setReportedCount] = useState(0);
   const [hasReported, setHasReported] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const fetchStatus = async () => {
     setLoading(true);
@@ -99,72 +99,6 @@ export default function StatusPage({ domain, onNavigate, onCheckStatus }: Status
   useEffect(() => {
     fetchStatus();
   }, [domain]);
-
-  // Render a beautiful, dynamic Historical Uptime Graph on a canvas (ensures high performance with zero sizing issues)
-  useEffect(() => {
-    if (!canvasRef.current || !data) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Clear and match exact pixel sizing
-    const dpr = window.devicePixelRatio || 1;
-    const width = canvas.parentElement?.clientWidth || 600;
-    const height = 120;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-    ctx.scale(dpr, dpr);
-
-    ctx.fillStyle = "#fafafa";
-    ctx.fillRect(0, 0, width, height);
-
-    // Grid lines
-    ctx.strokeStyle = "#f3f4f6";
-    ctx.lineWidth = 1;
-    for (let x = 0; x < width; x += width / 30) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-    }
-
-    // Graph Line - representing historical uptime latency fluctuation
-    ctx.strokeStyle = data.status === "up" ? "#10b981" : "#ef4444";
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-
-    const points = 30;
-    const step = width / (points - 1);
-    const waveOffset = domain.length * 4;
-
-    for (let i = 0; i < points; i++) {
-      const x = i * step;
-      // Fluctuating metric base: healthy sites stay low, down sites spike
-      const baseVal = data.status === "up" ? (data.responseTime || 80) : 1000;
-      const noise = Math.sin((i + waveOffset) * 0.7) * (data.status === "up" ? 15 : 60);
-      const val = Math.max(10, baseVal + noise);
-
-      // Map to height bounds
-      const maxRange = data.status === "up" ? 350 : 1200;
-      const y = height - 15 - (val / maxRange) * (height - 30);
-
-      if (i === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
-      }
-    }
-    ctx.stroke();
-
-    // Area fill below line
-    ctx.lineTo(width, height - 10);
-    ctx.lineTo(0, height - 10);
-    ctx.fillStyle = data.status === "up" ? "rgba(16, 185, 129, 0.06)" : "rgba(239, 68, 68, 0.05)";
-    ctx.fill();
-
-  }, [data, loading]);
 
   const handleReportOutage = () => {
     if (!hasReported) {
@@ -355,27 +289,15 @@ export default function StatusPage({ domain, onNavigate, onCheckStatus }: Status
             </div>
           </div>
 
-          {/* Historical Uptime Graph (Dynamic canvas) & User Outage Report tools */}
+          {/* Historical Uptime Graph (Recharts segments) & User Outage Report tools */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Historical Graph card */}
-            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-xs lg:col-span-2">
-              <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
-                <div className="flex items-center space-x-2">
-                  <HardDrive className="h-4 w-4 text-gray-400" />
-                  <span className="font-display font-bold text-sm text-gray-900 uppercase tracking-tight">30-Day Historical Latency Graph</span>
-                </div>
-                <div className="flex items-center space-x-2 text-[11px] text-gray-500">
-                  <span className="flex h-2 w-2 rounded-full bg-emerald-500 inline-block"></span>
-                  <span>Uptime Avg: {data.status === "up" ? "99.98%" : "84.22%"}</span>
-                </div>
-              </div>
-              {/* Canvas viewport */}
-              <div className="relative overflow-hidden rounded-xl border border-gray-50">
-                <canvas ref={canvasRef} />
-              </div>
-              <p className="text-[10px] text-gray-400 font-mono mt-3 uppercase tracking-wider text-center">
-                Fluctuation waves represent synthetic endpoint handshake latency fluctuations.
-              </p>
+            <div className="lg:col-span-2">
+              <UptimeHistoryChart 
+                domain={data.domain} 
+                isDown={data.status !== "up"} 
+                responseTime={data.responseTime} 
+              />
             </div>
 
             {/* Report Outage Box */}

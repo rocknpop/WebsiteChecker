@@ -41,8 +41,8 @@ export default function Footer({ onNavigate }: FooterProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span className="font-display font-bold text-lg tracking-tight bg-gradient-to-r from-brand-400 via-indigo-400 to-emerald-400 bg-clip-text text-transparent">
-                Is it Down or Up
+              <span className="font-display font-extrabold text-lg tracking-tight bg-gradient-to-r from-brand-400 via-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+                DownOrUp<span className="text-brand-500 font-bold">.net</span>
               </span>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed max-w-sm">
@@ -125,7 +125,7 @@ export default function Footer({ onNavigate }: FooterProps) {
           </div>
 
           <div className="text-xs text-gray-500 text-center md:text-right">
-            <p>© {currentYear} Is it Down or Up. Diagnostics fetched dynamically from localized cloud nodes. All rights reserved.</p>
+            <p>© {currentYear} DownOrUp.net. Diagnostics fetched dynamically from localized cloud nodes. All rights reserved.</p>
           </div>
         </div>
 

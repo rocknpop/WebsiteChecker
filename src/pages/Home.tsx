@@ -136,8 +136,8 @@ export default function Home({ onCheckStatus, onNavigate }: HomeProps) {
   return (
     <div className="animate-fade-in" id="home-view">
       <SeoHead
-        title="Check If Any Website Is Down Right Now | Site Status Checker"
-        description="Instantly check whether any website is down globally. Test website uptime, DNS, SSL validity, response headers, and real-time IP ping times."
+        title="Check If Any Website Is Down | Website Status Checker, IP Ping Test & DNS Lookup – DownOrUp"
+        description="Check website availability, run IP ping tests, DNS lookups, SSL checks, traceroutes, and network diagnostics with DownOrUp. Fast, free, and accurate."
         canonicalPath="/"
         schemas={homeSchemas}
       />
@@ -151,11 +151,11 @@ export default function Home({ onCheckStatus, onNavigate }: HomeProps) {
             <span>Global Connectivity Diagnostic Sentinel</span>
           </span>
 
-          <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-gray-900 tracking-tight leading-none mb-6">
-            Is any website <span className="text-brand-600">down right now</span>?
+          <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none mb-6">
+            Instantly Check If a Site Is Down
           </h1>
           <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-8">
-            Perform instant DNS, SSL, IP Ping, and HTTP server telemetry audits across our secure cloud nodes to check if a website is unreachable globally or just local issues.
+            Monitor website availability, run IP ping tests, verify DNS records, inspect SSL certificates and troubleshoot connectivity issues from one place.
           </p>
 
           {/* Core URL Checker Search */}

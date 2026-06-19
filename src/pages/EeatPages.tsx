@@ -160,7 +160,7 @@ export function ContactUsPage() {
               <div className="p-2 rounded-xl bg-brand-50 text-brand-700 mt-0.5"><Mail className="h-4.5 w-4.5" /></div>
               <div>
                 <span className="text-[10px] uppercase font-mono text-gray-400 block">General Inquiries</span>
-                <span className="text-sm font-semibold text-gray-850">support@isitdownrightnow.info</span>
+                <span className="text-sm font-semibold text-gray-850">support@downorup.net</span>
               </div>
             </div>
             <div className="flex items-start space-x-3.5">

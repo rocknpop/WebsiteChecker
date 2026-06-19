@@ -105,7 +105,7 @@ export function DmcaPage() {
     >
       <p>Last Modified: June 19, 2026</p>
       <p>
-        If you identify any technical content, blog article, or visual asset on our platform that infringes upon your copyright under DMCA guidelines, submit a formal takedown request to our compliance officer at <strong>dmca@isitdownrightnow.info</strong>. Ensure your inquiry includes physical signatures, references to copyrighted URLs, and validation parameters.
+        If you identify any technical content, blog article, or visual asset on our platform that infringes upon your copyright under DMCA guidelines, submit a formal takedown request to our compliance officer at <strong>dmca@downorup.net</strong>. Ensure your inquiry includes physical signatures, references to copyrighted URLs, and validation parameters.
       </p>
     </LegalLayout>
   );
