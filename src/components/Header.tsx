@@ -161,7 +161,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             </button>
 
             {/* Mobile menu button */}
-            <div className="md:hidden">
+            <div className="md:hidden mobile-nav-menu" id="mobile-menu-trigger-container">
               <button
                 onClick={() => setIsOpen(true)}
                 className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-2 rounded-lg focus:outline-hidden"
@@ -177,24 +177,26 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
       {/* Slide-out Navigation Drawer and Overlay */}
       <div 
         className={`fixed inset-0 z-50 md:hidden transition-all duration-300 ${
-          isOpen ? "visible opacity-100" : "invisible opacity-0"
-        }`}
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        } mobile-nav-menu`}
         id="mobile-drawer-root"
       >
         {/* Backdrop overlay */}
         <div 
-          className="absolute inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-350"
+          className={`absolute inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-300 ${
+            isOpen ? "opacity-100" : "opacity-0"
+          }`}
           onClick={() => setIsOpen(false)}
         />
 
         {/* Dynamic sliding panel */}
         <div 
-          className={`absolute inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-slate-900 shadow-2xl flex flex-col z-50 transition-transform duration-350 ease-out transform ${
+          className={`absolute inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-slate-900 border-l border-gray-100 dark:border-slate-800 shadow-2xl flex flex-col z-50 transition-all duration-300 ease-in-out transform ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           {/* Drawer Title & Close Hook */}
-          <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-slate-850">
+          <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-slate-800">
             <div className="flex items-center space-x-2">
               <div className="bg-brand-600 text-white p-1.5 rounded-lg animate-pulse">
                 <Activity className="h-5 w-5" />
@@ -203,7 +205,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             </div>
             <button 
               onClick={() => setIsOpen(false)}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-slate-805 transition-colors"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
               aria-label="Close navigation menu"
             >
               <X className="h-5 w-5" />
@@ -214,7 +216,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
             {/* Primary Navigation Options */}
             <div>
-              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">
+              <div className="text-xs font-semibold text-gray-400 dark:text-gray-550 uppercase tracking-wider mb-2 px-1">
                 Primary Features
               </div>
               <div className="space-y-1">
@@ -229,11 +231,11 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                       }}
                       className={`w-full text-left flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                         active
-                          ? "bg-brand-50 text-brand-700 dark:bg-slate-800 dark:text-brand-400 font-semibold"
-                          : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-805"
+                          ? "bg-brand-50 text-brand-700 dark:bg-slate-800 dark:text-amber-400 font-semibold"
+                          : "text-gray-600 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-800/50"
                       }`}
                     >
-                      <link.icon className={`h-5 w-5 ${active ? "text-brand-600 dark:text-brand-400" : "text-gray-400 dark:text-gray-500"}`} />
+                      <link.icon className={`h-5 w-5 ${active ? "text-brand-600 dark:text-amber-400" : "text-gray-400 dark:text-gray-500"}`} />
                       <span>{link.name}</span>
                     </button>
                   );
@@ -243,7 +245,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
             {/* Diagnostic utilities */}
             <div>
-              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">
+              <div className="text-xs font-semibold text-gray-400 dark:text-gray-550 uppercase tracking-wider mb-2 px-1">
                 Diagnostic Web Utilities
               </div>
               <div className="grid grid-cols-1 gap-1">
@@ -258,12 +260,12 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                       }}
                       className={`w-full text-left flex items-center px-3 py-2 rounded-lg text-sm transition-all ${
                         active 
-                          ? "text-brand-700 bg-brand-50 dark:bg-slate-800 dark:text-brand-400 font-semibold"
-                          : "text-gray-600 dark:text-gray-300 hover:text-brand-700 dark:hover:text-brand-400 hover:bg-gray-50/50 dark:hover:bg-slate-805/50"
+                          ? "text-brand-700 bg-brand-50 dark:bg-slate-800 dark:text-amber-400 font-semibold"
+                          : "text-gray-600 dark:text-gray-300 hover:text-brand-700 dark:hover:text-amber-400 hover:bg-gray-50/50 dark:hover:bg-slate-800/30"
                       }`}
                     >
                       <span className={`w-1.5 h-1.5 rounded-full mr-2.5 transition-colors ${
-                        active ? "bg-brand-600 dark:bg-brand-400" : "bg-gray-300 dark:bg-gray-600"
+                        active ? "bg-brand-600 dark:bg-amber-400" : "bg-gray-300 dark:bg-gray-650"
                       }`} />
                       <span>{tool.name}</span>
                     </button>
@@ -274,11 +276,11 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           </div>
 
           {/* Drawer footer layout */}
-          <div className="p-6 bg-gray-50 dark:bg-slate-950 border-t border-gray-100 dark:border-slate-850 flex items-center justify-between">
+          <div className="p-6 bg-gray-50 dark:bg-slate-950 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between">
             <span className="text-xs font-mono text-gray-400 dark:text-gray-500">STATUS MONITOR V1.1.0</span>
             <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-450">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-xs font-medium">All Nodes Online</span>
+              <span className="text-xs font-medium dark:text-emerald-400">All Nodes Online</span>
             </div>
           </div>
         </div>
