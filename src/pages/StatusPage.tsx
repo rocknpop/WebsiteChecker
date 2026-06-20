@@ -79,18 +79,26 @@ export default function StatusPage({ domain, onNavigate, onCheckStatus }: Status
     setError(null);
     try {
       const resp = await fetch(`/api/check-status?url=${domain}`);
-      if (resp.ok) {
-        const json = await resp.json();
+      const text = await resp.text();
+      
+      let json: any = null;
+      try {
+        json = JSON.parse(text);
+      } catch (parseErr) {
+        throw new Error(`Invalid response format from monitoring server. (Status ${resp.status})`);
+      }
+
+      if (resp.ok && json) {
         setData(json);
         // Reset local report state on new domains
         setHasReported(false);
         setReportedCount(Math.round((domain.length * 7) % 24) + (json.status === "down" ? 14 : 0));
       } else {
-        const errJson = await resp.json();
-        setError(errJson.error || "Failed to retrieve status data.");
+        setError(json?.error || "Failed to retrieve status data.");
       }
     } catch (err: any) {
-      setError("Failed to connect to monitoring agent backend. Try checking again.");
+      console.error("Diagnosis fetching exception:", err);
+      setError(err?.message || "Failed to connect to monitoring agent backend. Try checking again.");
     } finally {
       setLoading(false);
     }

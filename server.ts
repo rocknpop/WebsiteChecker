@@ -81,27 +81,33 @@ function cleanUrl(input: string): string {
 
 // 1. REAL-TIME WEBSITE CHECKER ENDPOINT
 app.get("/api/check-status", async (req, res) => {
-  const inputUrl = req.query.url as string;
-  if (!inputUrl) {
-    return res.status(400).json({ error: "URL or Domain parameter is required" });
-  }
-
-  const domain = cleanDomain(inputUrl);
-  const fullUrl = cleanUrl(inputUrl);
-
-  let ip = "Unknown";
-  let dnsStatus = "failed";
-  let status: "up" | "down" = "down";
-  let statusCode = 0;
-  let statusText = "Connection Failed";
-  let responseTime = 0;
-  let sslStatus: "valid" | "expired" | "none" = "none";
-  let sslDetails: any = null;
-  let headers: Record<string, string> = {};
-
-  const startTime = Date.now();
-
   try {
+    let inputUrlRaw = req.query.url;
+    if (Array.isArray(inputUrlRaw)) {
+      inputUrlRaw = inputUrlRaw[0];
+    }
+    const inputUrl = typeof inputUrlRaw === "string" ? inputUrlRaw : "";
+
+    if (!inputUrl) {
+      return res.status(400).json({ error: "URL or Domain parameter is required" });
+    }
+
+    const domain = cleanDomain(inputUrl);
+    const fullUrl = cleanUrl(inputUrl);
+
+    let ip = "Unknown";
+    let dnsStatus = "failed";
+    let status: "up" | "down" = "down";
+    let statusCode = 0;
+    let statusText = "Connection Failed";
+    let responseTime = 0;
+    let sslStatus: "valid" | "expired" | "none" = "none";
+    let sslDetails: any = null;
+    let headers: Record<string, string> = {};
+
+    const startTime = Date.now();
+
+    try {
     // 1. DNS Resolution
     const dnsPromise = new Promise<{ ip: string }>((resolve, reject) => {
       dns.resolve4(domain, (err, addresses) => {
@@ -373,20 +379,27 @@ app.get("/api/check-status", async (req, res) => {
     }
   }
 
-  return res.json({
-    domain,
-    fullUrl,
-    status,
-    statusCode,
-    statusText,
-    ip,
-    dnsStatus,
-    responseTime,
-    sslStatus,
-    sslDetails,
-    headers,
-    checkedAt: new Date().toISOString()
-  });
+    return res.json({
+      domain,
+      fullUrl,
+      status,
+      statusCode,
+      statusText,
+      ip,
+      dnsStatus,
+      responseTime,
+      sslStatus,
+      sslDetails,
+      headers,
+      checkedAt: new Date().toISOString()
+    });
+  } catch (error: any) {
+    console.error("Critical error in /api/check-status endpoint:", error);
+    return res.status(500).json({
+      error: "Diagnostics failed due to an unexpected monitoring agent error. Try checking again.",
+      details: error?.message || String(error)
+    });
+  }
 });
 
 // 2. DNS LOOKUP ENDPOINT
