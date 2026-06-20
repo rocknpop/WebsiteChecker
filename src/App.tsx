@@ -6,29 +6,7 @@ import { useSEO } from "./hooks/useSEO";
 // Page imports
 import Home from "./pages/Home";
 import StatusPage from "./pages/StatusPage";
-import StatusDirectory from "./pages/StatusDirectory";
-import PingTester from "./pages/PingTester";
-import {
-  DnsLookupPage,
-  IpLookupPage,
-  SslCheckerPage,
-  HttpHeaderCheckerPage,
-  DnsPropagationPage,
-  WhoisLookupPage,
-  PortCheckerPage
-} from "./pages/DiagnosticTools";
-import {
-  SpeedTestPage,
-  TraceroutePage,
-  RedirectCheckerPage,
-  ScreenshotToolPage,
-  EmailSecuritySuitePage,
-  BlacklistAndMalwarePage,
-  DomainAgePage
-} from "./pages/MoreDiagnosticTools";
-import Blog from "./pages/Blog";
 import MyIpPage from "./pages/MyIp";
-import { AboutUsPage, EditorialPolicyPage, MethodologyPage, DataSourcesPage, ContactUsPage } from "./pages/EeatPages";
 import {
   PrivacyPolicyPage,
   TermsPage,
@@ -50,6 +28,20 @@ function getSeoMetadata(path: string): { title: string; description: string } {
     return {
       title: "Public Status Directory – DownOrUp",
       description: "Explore response times, CDN detections, and SSL status logs for popular global websites and diagnostic nodes."
+    };
+  }
+  if (path.startsWith("/username/")) {
+    const user = path.substring("/username/".length);
+    return {
+      title: `Is @${user} Taken? Social Username Availability Checker – DownOrUp`,
+      description: `Instantly check if username "${user}" is available on Instagram, YouTube, TikTok, X (Twitter), Reddit, and GitHub with DownOrUp.`
+    };
+  }
+  if (path.startsWith("/is-") && path.endsWith("-down")) {
+    const raw = path.substring(4, path.length - 5);
+    return {
+      title: `Is ${raw} Down Right Now? Real-Time Outage Tracker – DownOrUp`,
+      description: `Check live outage reports, network latencies, HTTP error codes, and server response logs for ${raw} instantly.`
     };
   }
   if (path.startsWith("/status/")) {
@@ -283,10 +275,6 @@ export default function App() {
       return <Home onCheckStatus={handleCheckStatus} onNavigate={navigate} />;
     }
 
-    if (currentPath === "/status") {
-      return <StatusDirectory onCheckStatus={handleCheckStatus} onNavigate={navigate} />;
-    }
-
     if (currentPath.startsWith("/status/")) {
       const domain = currentPath.substring("/status/".length);
       return <StatusPage domain={domain} onNavigate={navigate} onCheckStatus={handleCheckStatus} />;
@@ -297,77 +285,27 @@ export default function App() {
       return <StatusPage domain={domain} onNavigate={navigate} onCheckStatus={handleCheckStatus} />;
     }
 
-    // Tools
-    if (currentPath === "/ip-ping-tester") {
-      return <PingTester />;
-    }
-    if (currentPath === "/dns-lookup") {
-      return <DnsLookupPage onNavigate={navigate} />;
-    }
-    if (currentPath === "/ip-lookup") {
-      return <IpLookupPage />;
-    }
-    if (currentPath === "/ssl-checker") {
-      return <SslCheckerPage />;
-    }
-    if (currentPath === "/http-header-checker") {
-      return <HttpHeaderCheckerPage />;
-    }
-    // Support both paths to be bulletproof
-    if (currentPath === "/dns-propagation" || currentPath === "/dns-propagation-checker") {
-      return <DnsPropagationPage />;
-    }
-    if (currentPath === "/whois-lookup") {
-      return <WhoisLookupPage />;
-    }
-    if (currentPath === "/port-checker") {
-      return <PortCheckerPage />;
-    }
-    if (currentPath === "/speed-test" || currentPath === "/website-speed-test") {
-      return <SpeedTestPage />;
-    }
-    if (currentPath === "/traceroute" || currentPath === "/traceroute-tool") {
-      return <TraceroutePage />;
-    }
-    if (currentPath === "/redirect-checker") {
-      return <RedirectCheckerPage />;
-    }
-    if (currentPath === "/screenshot-tool" || currentPath === "/website-screenshot-tool") {
-      return <ScreenshotToolPage />;
-    }
-    if (currentPath === "/email-security" || currentPath === "/spf-checker" || currentPath === "/dkim-checker" || currentPath === "/dmarc-checker") {
-      return <EmailSecuritySuitePage />;
-    }
-    if (currentPath === "/blacklist-scanner" || currentPath === "/blacklist-checker") {
-      return <BlacklistAndMalwarePage />;
-    }
-    if (currentPath === "/domain-age" || currentPath === "/domain-age-checker") {
-      return <DomainAgePage />;
+    if (currentPath.startsWith("/is-") && currentPath.endsWith("-down")) {
+      let raw = currentPath.substring(4, currentPath.length - 5).trim().toLowerCase();
+      const map: Record<string, string> = {
+        chatgpt: "chatgpt.com",
+        youtube: "youtube.com",
+        instagram: "instagram.com",
+        facebook: "facebook.com",
+        gmail: "gmail.com",
+        whatsapp: "whatsapp.com",
+        discord: "discord.com",
+        paypal: "paypal.com",
+        reddit: "reddit.com",
+        netflix: "netflix.com",
+        google: "google.com"
+      };
+      const domain = map[raw] || (raw.includes(".") ? raw : `${raw}.com`);
+      return <StatusPage domain={domain} onNavigate={navigate} onCheckStatus={handleCheckStatus} />;
     }
 
-    // Blog
-    if (currentPath === "/blog") {
-      return <Blog />;
-    }
     if (currentPath === "/my-ip") {
       return <MyIpPage />;
-    }
-
-    // EEAT Pages
-    if (currentPath === "/about-us") {
-      return <AboutUsPage />;
-    }
-    if (currentPath === "/editorial-policy") {
-      return <EditorialPolicyPage />;
-    }
-    if (currentPath === "/methodology") {
-      return <MethodologyPage />;
-    }
-    if (currentPath === "/data-sources") {
-      return <DataSourcesPage />;
-    }
-    if (currentPath === "/contact-us") {
-      return <ContactUsPage />;
     }
 
     // Legal Pages

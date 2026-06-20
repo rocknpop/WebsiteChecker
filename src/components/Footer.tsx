@@ -57,53 +57,11 @@ export default function Footer({ onNavigate }: FooterProps) {
           </div>
 
           {/* Diagnostics Utilities column */}
-          <div className="col-span-1 space-y-3">
-            <h4 className="font-display font-bold text-xs uppercase tracking-wider text-white">Core Diagnostics</h4>
+          <div className="col-span-2 space-y-3">
+            <h4 className="font-display font-bold text-xs uppercase tracking-wider text-white">Core Tools</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="/" onClick={(e) => handleLinkClick(e, "/")} className="hover:text-white transition-colors">Uptime Inspector</a></li>
-              <li><a href="/status" onClick={(e) => handleLinkClick(e, "/status")} className="hover:text-white font-semibold text-brand-400 transition-colors">Uptime Directory</a></li>
-              <li><a href="/ip-ping-tester" onClick={(e) => handleLinkClick(e, "/ip-ping-tester")} className="hover:text-white transition-colors">IP Ping Tester</a></li>
-              <li><a href="/dns-lookup" onClick={(e) => handleLinkClick(e, "/dns-lookup")} className="hover:text-white transition-colors">DNS Record Lookup</a></li>
-              <li><a href="/ssl-checker" onClick={(e) => handleLinkClick(e, "/ssl-checker")} className="hover:text-white transition-colors">SSL Audit Suite</a></li>
-              <li><a href="/dns-propagation" onClick={(e) => handleLinkClick(e, "/dns-propagation")} className="hover:text-white transition-colors">DNS Propagation Tracker</a></li>
-            </ul>
-          </div>
-
-          {/* Extra Tools column */}
-          <div className="col-span-1 space-y-3">
-            <h4 className="font-display font-bold text-xs uppercase tracking-wider text-white">Network Tools</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="/ip-lookup" onClick={(e) => handleLinkClick(e, "/ip-lookup")} className="hover:text-white transition-colors">IP & Geo Resolver</a></li>
-              <li><a href="/whois-lookup" onClick={(e) => handleLinkClick(e, "/whois-lookup")} className="hover:text-white transition-colors">Whois Registries</a></li>
-              <li><a href="/port-checker" onClick={(e) => handleLinkClick(e, "/port-checker")} className="hover:text-white transition-colors">Port Portability</a></li>
-              <li><a href="/http-header-checker" onClick={(e) => handleLinkClick(e, "/http-header-checker")} className="hover:text-white transition-colors">HTTP Header Audit</a></li>
-              <li><a href="/speed-test" onClick={(e) => handleLinkClick(e, "/speed-test")} className="hover:text-white font-semibold text-brand-400 transition-colors">Website Speed Test</a></li>
-              <li><a href="/traceroute" onClick={(e) => handleLinkClick(e, "/traceroute")} className="hover:text-white transition-colors">Traceroute Diagnostics</a></li>
-            </ul>
-          </div>
-
-          {/* Webmaster & Security column */}
-          <div className="col-span-1 space-y-3">
-            <h4 className="font-display font-bold text-xs uppercase tracking-wider text-white">SEO & Trust</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="/redirect-checker" onClick={(e) => handleLinkClick(e, "/redirect-checker")} className="hover:text-white transition-colors">Redirect Chain</a></li>
-              <li><a href="/screenshot-tool" onClick={(e) => handleLinkClick(e, "/screenshot-tool")} className="hover:text-white transition-colors">Screenshot Tool</a></li>
-              <li><a href="/email-security" onClick={(e) => handleLinkClick(e, "/email-security")} className="hover:text-white transition-colors">Email Trust Audit</a></li>
-              <li><a href="/blacklist-scanner" onClick={(e) => handleLinkClick(e, "/blacklist-scanner")} className="hover:text-white transition-colors">Blacklist Checker</a></li>
-              <li><a href="/domain-age" onClick={(e) => handleLinkClick(e, "/domain-age")} className="hover:text-white transition-colors">Domain Age Checker</a></li>
-              <li><a href="/blog" onClick={(e) => handleLinkClick(e, "/blog")} className="hover:text-white transition-colors">SEO Resource Blog</a></li>
-            </ul>
-          </div>
-
-          {/* Legal and Trust (EEAT) column */}
-          <div className="col-span-1 space-y-3">
-            <h4 className="font-display font-bold text-xs uppercase tracking-wider text-white">Trust & Policies</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="/about-us" onClick={(e) => handleLinkClick(e, "/about-us")} className="hover:text-white transition-colors">About Our Platform</a></li>
-              <li><a href="/editorial-policy" onClick={(e) => handleLinkClick(e, "/editorial-policy")} className="hover:text-white transition-colors">Editorial Policy</a></li>
-              <li><a href="/methodology" onClick={(e) => handleLinkClick(e, "/methodology")} className="hover:text-white transition-colors">Testing Methodology</a></li>
-              <li><a href="/data-sources" onClick={(e) => handleLinkClick(e, "/data-sources")} className="hover:text-white transition-colors">Data Integrity Sources</a></li>
-              <li><a href="/contact-us" onClick={(e) => handleLinkClick(e, "/contact-us")} className="hover:text-white transition-colors">Contact Support</a></li>
+              <li><a href="/" onClick={(e) => handleLinkClick(e, "/")} className="hover:text-white transition-colors">Website Status Checker</a></li>
+              <li><a href="/my-ip" onClick={(e) => handleLinkClick(e, "/my-ip")} className="hover:text-white transition-colors">My IP Info</a></li>
             </ul>
           </div>
         </div>

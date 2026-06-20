@@ -2,8 +2,25 @@ import React, { useState, useEffect } from "react";
 import { CheckCircle2, AlertTriangle, ShieldCheck, Database, Clock, ArrowLeft, RefreshCw, Radio, HardDrive, ListPlus, Send, HelpCircle, Flame, Activity } from "lucide-react";
 import SeoHead from "../components/SeoHead";
 import { CheckResult } from "../types";
-import { POPULAR_DOMAINS } from "./StatusDirectory";
 import UptimeHistoryChart from "../components/UptimeHistoryChart";
+
+interface PopularDomainItem {
+  domain: string;
+  name: string;
+  category: string;
+  description: string;
+}
+
+export const POPULAR_DOMAINS: PopularDomainItem[] = [
+  { domain: "chatgpt.com", name: "ChatGPT", category: "AI & Productivity", description: "OpenAI's artificial intelligence conversational chatbot model." },
+  { domain: "youtube.com", name: "YouTube", category: "Video & Streaming", description: "Google's global video sharing and streaming dashboard repository." },
+  { domain: "instagram.com", name: "Instagram", category: "Social Networking", description: "Meta's image, video, and social media media feed repository." },
+  { domain: "netflix.com", name: "Netflix", category: "Media & Entertainment", description: "Global subscription based on-demand streaming service provider." },
+  { domain: "gmail.com", name: "Gmail", category: "Email & Communication", description: "Google's public email solution and communication hub." },
+  { domain: "paypal.com", name: "PayPal", category: "Finance & Payments", description: "Global online payment routing and money transfer platform." },
+  { domain: "reddit.com", name: "Reddit", category: "Social Discussion", description: "The front page of the internet, structured community discussion boards." },
+  { domain: "google.com", name: "Google", category: "Search Engines", description: "Authoritative internet indices and public query processing." },
+];
 
 interface StatusPageProps {
   domain: string;

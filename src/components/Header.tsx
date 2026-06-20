@@ -42,26 +42,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const mainLinks = [
     { name: "Website Status", path: "/", icon: Activity },
     { name: "My IP", path: "/my-ip", icon: Laptop },
-    { name: "Uptime Directory", path: "/status", icon: Globe },
-    { name: "IP Ping Tester", path: "/ip-ping-tester", icon: Network },
-    { name: "DNS Lookup", path: "/dns-lookup", icon: ListPlus },
-    { name: "SSL Checker", path: "/ssl-checker", icon: ShieldCheck },
-    { name: "Blog", path: "/blog", icon: Rss },
-  ];
-
-  const additionalTools = [
-    { name: "IP Lookup", path: "/ip-lookup" },
-    { name: "HTTP Header Checker", path: "/http-header-checker" },
-    { name: "DNS Propagation", path: "/dns-propagation" },
-    { name: "Whois Lookup", path: "/whois-lookup" },
-    { name: "Port Checker", path: "/port-checker" },
-    { name: "Website Speed Test", path: "/speed-test" },
-    { name: "Traceroute Tool", path: "/traceroute" },
-    { name: "Redirect Checker", path: "/redirect-checker" },
-    { name: "Screenshot Tool", path: "/screenshot-tool" },
-    { name: "Email Security Audit", path: "/email-security" },
-    { name: "Blacklist Scanner", path: "/blacklist-scanner" },
-    { name: "Domain Age Checker", path: "/domain-age" },
   ];
 
   const isActive = (path: string) => {
@@ -113,36 +93,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
               );
             })}
 
-            {/* Additional Tools Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-all"
-              >
-                <span>Diagnostic Tools</span>
-                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`} />
-              </button>
-
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 rounded-xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-lg py-1 z-50 animate-fade-in">
-                  <div className="px-3 py-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-slate-800">
-                    Network Utilities
-                  </div>
-                  {additionalTools.map((tool) => (
-                    <button
-                      key={tool.name}
-                      onClick={() => {
-                        onNavigate(tool.path);
-                        setDropdownOpen(false);
-                      }}
-                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-slate-800 hover:text-brand-700 dark:hover:text-brand-400 transition-colors"
-                    >
-                      {tool.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
           </nav>
 
           {/* Action section for Toggle and Side Navigation Options */}
@@ -244,36 +194,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
               </div>
             </div>
 
-            {/* Diagnostic utilities */}
-            <div>
-              <div className="text-xs font-semibold text-gray-400 dark:text-gray-550 uppercase tracking-wider mb-2 px-1">
-                Diagnostic Web Utilities
-              </div>
-              <div className="grid grid-cols-1 gap-1">
-                {additionalTools.map((tool) => {
-                  const active = currentPath === tool.path;
-                  return (
-                    <button
-                      key={tool.name}
-                      onClick={() => {
-                        onNavigate(tool.path);
-                        setIsOpen(false);
-                      }}
-                      className={`w-full text-left flex items-center px-3 py-2 rounded-lg text-sm transition-all ${
-                        active 
-                          ? "text-brand-700 bg-brand-50 dark:bg-slate-800 dark:text-amber-400 font-semibold"
-                          : "text-gray-600 dark:text-gray-300 hover:text-brand-700 dark:hover:text-amber-400 hover:bg-gray-50/50 dark:hover:bg-slate-800/30"
-                      }`}
-                    >
-                      <span className={`w-1.5 h-1.5 rounded-full mr-2.5 transition-colors ${
-                        active ? "bg-brand-600 dark:bg-amber-400" : "bg-gray-300 dark:bg-gray-650"
-                      }`} />
-                      <span>{tool.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
 
           {/* Drawer footer layout */}
