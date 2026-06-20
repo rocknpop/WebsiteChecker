@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Activity, ShieldCheck, HelpCircle, Network, Menu, X, ChevronDown, ListPlus, Rss, Globe, Sun, Moon } from "lucide-react";
+import { Activity, ShieldCheck, HelpCircle, Network, Menu, X, ChevronDown, ListPlus, Rss, Globe, Sun, Moon, Laptop } from "lucide-react";
 
 interface HeaderProps {
   currentPath: string;
@@ -41,6 +41,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
   const mainLinks = [
     { name: "Website Status", path: "/", icon: Activity },
+    { name: "My IP", path: "/my-ip", icon: Laptop },
     { name: "Uptime Directory", path: "/status", icon: Globe },
     { name: "IP Ping Tester", path: "/ip-ping-tester", icon: Network },
     { name: "DNS Lookup", path: "/dns-lookup", icon: ListPlus },
