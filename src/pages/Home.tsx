@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Search, Activity, Sparkles, CheckCircle2, AlertCircle, RefreshCw, Layers, ShieldCheck, Globe, HelpCircle, Laptop, Radio, ArrowRight, UserCheck } from "lucide-react";
 import SeoHead from "../components/SeoHead";
 import { motion } from "motion/react";
+import { getApiUrl } from "../utils/api";
 
 interface HomeProps {
   onCheckStatus: (domain: string) => void;
@@ -38,7 +39,7 @@ export default function Home({ onCheckStatus, onNavigate }: HomeProps) {
   const fetchDashboardInfo = async () => {
     setLoadingHistory(true);
     try {
-      const resp = await fetch("/api/dashboard-info");
+      const resp = await fetch(getApiUrl("/api/dashboard-info"));
       if (resp.ok) {
         const data = await resp.json();
         setRecentChecks(data.recentChecks || []);
@@ -57,7 +58,7 @@ export default function Home({ onCheckStatus, onNavigate }: HomeProps) {
     await Promise.all(
       popularSites.map(async (site) => {
         try {
-          const response = await fetch(`/api/check-status?url=${site.domain}`);
+          const response = await fetch(getApiUrl(`/api/check-status?url=${site.domain}`));
           if (response.ok) {
             const data = await response.json();
             setPopularSites((prev) =>

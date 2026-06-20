@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Laptop, Globe, Building2, MapPin, ShieldAlert, ShieldCheck, Copy, CheckCircle2, ChevronRight, Compass, Terminal, Cpu } from "lucide-react";
 import SeoHead from "../components/SeoHead";
+import { getApiUrl } from "../utils/api";
 
 interface MyIpData {
   ip: string;
@@ -43,7 +44,7 @@ export default function MyIpPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/my-ip");
+      const res = await fetch(getApiUrl("/api/my-ip"));
       if (res.ok) {
         const json = await res.json();
         setData(json);

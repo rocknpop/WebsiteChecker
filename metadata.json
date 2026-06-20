@@ -1,6 +1,6 @@
 {
-  "name": "DownOrUp – Website Status Checker, IP Ping Test, DNS Lookup & SSL Checker",
-  "description": "Instantly check if a website is down, run IP ping tests, verify DNS records, inspect SSL certificates, and troubleshoot website issues with free online network tools.",
+  "name": "DownOrUp Website Checker & IP Info",
+  "description": "Instantly check if any website is down, analyze server connection status, and detect your public IP address with our secure, real-time diagnostic tools.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

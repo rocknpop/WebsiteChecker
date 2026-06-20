@@ -3,6 +3,7 @@ import { CheckCircle2, AlertTriangle, ShieldCheck, Database, Clock, ArrowLeft, R
 import SeoHead from "../components/SeoHead";
 import { CheckResult } from "../types";
 import UptimeHistoryChart from "../components/UptimeHistoryChart";
+import { getApiUrl } from "../utils/api";
 
 interface PopularDomainItem {
   domain: string;
@@ -95,7 +96,7 @@ export default function StatusPage({ domain, onNavigate, onCheckStatus }: Status
     setLoading(true);
     setError(null);
     try {
-      const resp = await fetch(`/api/check-status?url=${domain}`);
+      const resp = await fetch(getApiUrl(`/api/check-status?url=${domain}`));
       const text = await resp.text();
       
       let json: any = null;
