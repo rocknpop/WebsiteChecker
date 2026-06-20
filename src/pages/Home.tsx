@@ -51,29 +51,33 @@ export default function Home({ onCheckStatus, onNavigate }: HomeProps) {
   // Run initial lightweight probes for the popular websites grid using real status api
   const probePopular = async () => {
     setPopularSites((prev) => prev.map((s) => ({ ...s, status: "checking" })));
-    for (const site of popularSites) {
-      try {
-        const response = await fetch(`/api/check-status?url=${site.domain}`);
-        if (response.ok) {
-          const data = await response.json();
-          setPopularSites((prev) =>
-            prev.map((s) =>
-              s.domain === site.domain
-                ? { ...s, status: data.status, latency: data.responseTime }
-                : s
-            )
-          );
-        } else {
+    
+    // Check all popular sites concurrently to prevent queueing/timeouts
+    await Promise.all(
+      popularSites.map(async (site) => {
+        try {
+          const response = await fetch(`/api/check-status?url=${site.domain}`);
+          if (response.ok) {
+            const data = await response.json();
+            setPopularSites((prev) =>
+              prev.map((s) =>
+                s.domain === site.domain
+                  ? { ...s, status: data.status, latency: data.responseTime }
+                  : s
+              )
+            );
+          } else {
+            setPopularSites((prev) =>
+              prev.map((s) => (s.domain === site.domain ? { ...s, status: "down" } : s))
+            );
+          }
+        } catch (e) {
           setPopularSites((prev) =>
             prev.map((s) => (s.domain === site.domain ? { ...s, status: "down" } : s))
           );
         }
-      } catch (e) {
-        setPopularSites((prev) =>
-          prev.map((s) => (s.domain === site.domain ? { ...s, status: "down" } : s))
-        );
-      }
-    }
+      })
+    );
   };
 
   useEffect(() => {
