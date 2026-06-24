@@ -32,6 +32,20 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
   return (
     <>
+      {/* Force hide desktop elements on mobile via injected style */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @media screen and (max-width: 767px) {
+          #desktop-nav { display: none !important; visibility: hidden !important; width: 0 !important; overflow: hidden !important; }
+          #eval-btn { display: none !important; visibility: hidden !important; width: 0 !important; }
+          #hamburger-btn { display: flex !important; }
+        }
+        @media screen and (min-width: 768px) {
+          #desktop-nav { display: flex !important; }
+          #eval-btn { display: flex !important; }
+          #hamburger-btn { display: none !important; }
+        }
+      `}} />
+
       <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
         <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
@@ -47,7 +61,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
           {/* Desktop nav - only renders when not mobile */}
           {!isMobile && (
-            <nav style={{display: typeof window !== "undefined" && window.innerWidth >= 768 ? "flex" : "none", alignItems:"center", gap:"4px"}}>
+            <nav id="desktop-nav" style={{display: typeof window !== "undefined" && window.innerWidth >= 768 ? "flex" : "none", alignItems:"center", gap:"4px"}}>
               {navLinks.map((link) => (
                 <button
                   key={link.path}
@@ -65,6 +79,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             {!isMobile && (
               <button
                 onClick={() => handleLinkClick("/")}
+                id="eval-btn"
                 style={{display: typeof window !== "undefined" && window.innerWidth >= 768 ? "flex" : "none", alignItems:"center", gap:"6px", padding:"8px 20px", background:"linear-gradient(135deg,#2563eb,#4f46e5)", color:"white", border:"none", borderRadius:"999px", fontWeight:"700", fontSize:"14px", cursor:"pointer"}}
               >
                 <Sparkles style={{height:"14px",width:"14px"}} />
@@ -75,6 +90,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             {isMobile && (
               <button
                 onClick={() => setIsOpen((v) => !v)}
+                id="hamburger-btn"
                 style={{display: typeof window !== "undefined" && window.innerWidth < 768 ? "flex" : "none", alignItems:"center", justifyContent:"center", padding:"8px", border:"none", background:"transparent", cursor:"pointer", borderRadius:"8px"}}
                 aria-label="Toggle menu"
               >
