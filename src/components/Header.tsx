@@ -38,7 +38,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           </div>
 
           {/* Desktop nav */}
-          <nav className="desktop-nav-link desktop-nav-links" style={{alignItems:"center",gap:"4px"}}>
+          <nav className="desktop-nav-link desktop-nav-links" style={{display:"flex",alignItems:"center",gap:"4px"}}>
             {navLinks.map((link) => (
               <button
                 key={link.path}
@@ -65,7 +65,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             <button
               onClick={() => handleLinkClick("/")}
               className="desktop-eval-btn"
-              style={{alignItems:"center",gap:"6px",padding:"8px 20px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"999px",fontWeight:"700",fontSize:"14px",cursor:"pointer",boxShadow:"0 2px 8px rgba(37,99,235,0.4)"}}
+              style={{display:"flex",alignItems:"center",gap:"6px",padding:"8px 20px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"999px",fontWeight:"700",fontSize:"14px",cursor:"pointer",boxShadow:"0 2px 8px rgba(37,99,235,0.4)"}}
             >
               <Sparkles style={{height:"14px",width:"14px"}} />
               Evaluate Now
@@ -75,7 +75,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             <button
               onClick={() => setIsOpen((v) => !v)}
               className="mobile-menu-btn"
-              style={{alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px",transition:"background 0.15s"}}
+              style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px",transition:"background 0.15s"}}
               onTouchStart={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#f3f4f6"; }}
               onTouchEnd={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
               aria-label="Toggle menu"
@@ -175,17 +175,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           .mobile-menu-btn  { display: none !important; }
         }
       `}</style>
-
-      <style>{`
-  @media (max-width: 767px) {
-    .mobile-menu-btn { display: flex !important; }
-    .desktop-nav-links { display: none !important; }
-    .desktop-eval-btn { display: none !important; }
-  }
-  @media (min-width: 768px) {
-    .mobile-menu-btn { display: none !important; }
-  }
-`}</style>
 
       {/* Spacer for fixed header */}
       <div style={{height:"64px"}} />
