@@ -131,27 +131,35 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
   // Fetch recent queries from server
   const fetchRecentDecisions = async () => {
+    const url = getApiUrl("/api/recent-decisions");
     try {
-      const resp = await fetch(getApiUrl("/api/recent-decisions"));
-      if (resp.ok) {
-        const data = await resp.json();
-        setRecentDecisions(data);
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        const errorText = await resp.text().catch(() => "");
+        console.error(`[API Error] GET ${url} failed. Status: ${resp.status}, Body:`, errorText);
+        return;
       }
+      const data = await resp.json();
+      setRecentDecisions(data);
     } catch (e) {
-      console.warn("Failed to retrieve recent decisions log:", e);
+      console.warn(`[API Network Error] GET ${url} failed:`, e);
     }
   };
 
   // Fetch blog posts from server
   const fetchBlogPosts = async () => {
+    const url = getApiUrl("/api/blog-posts");
     try {
-      const resp = await fetch(getApiUrl("/api/blog-posts"));
-      if (resp.ok) {
-        const data = await resp.json();
-        setBlogPosts(data);
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        const errorText = await resp.text().catch(() => "");
+        console.error(`[API Error] GET ${url} failed. Status: ${resp.status}, Body:`, errorText);
+        return;
       }
+      const data = await resp.json();
+      setBlogPosts(data);
     } catch (e) {
-      console.warn("Failed to retrieve blog posts:", e);
+      console.warn(`[API Network Error] GET ${url} failed:`, e);
     }
   };
 
@@ -220,15 +228,19 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
   }, [loading]);
 
   const fetchSingleBlogPost = async (slug: string) => {
+    const url = getApiUrl(`/api/blog-posts/${slug}`);
     try {
-      const resp = await fetch(getApiUrl(`/api/blog-posts/${slug}`));
+      const resp = await fetch(url);
       if (resp.ok) {
         const post = await resp.json();
         setSelectedPost(post);
         updateSeoForBlogPost(post);
+      } else {
+        const errorText = await resp.text().catch(() => "");
+        console.error(`[API Error] GET ${url} failed. Status: ${resp.status}, Body:`, errorText);
       }
     } catch (e) {
-      console.error("Failed to load blog post details:", e);
+      console.error(`[API Network Error] GET ${url} failed:`, e);
     }
   };
 
@@ -255,16 +267,27 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     setError(null);
     setReport(null);
 
+    const url = getApiUrl("/api/analyze-decision");
     try {
-      const resp = await fetch(getApiUrl("/api/analyze-decision"), {
+      const resp = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: queryText })
       });
 
       if (!resp.ok) {
-        const errJson = await resp.json().catch(() => ({}));
-        throw new Error(errJson.error || `Server responded with status ${resp.status}`);
+        const errorText = await resp.text().catch(() => "");
+        console.error(`[API Error] POST ${url} failed. Status: ${resp.status}, Body:`, errorText);
+        
+        let errMsg = `Server responded with status ${resp.status}`;
+        try {
+          const errJson = JSON.parse(errorText);
+          if (errJson && errJson.error) {
+            errMsg = errJson.error;
+          }
+        } catch (_) {}
+        
+        throw new Error(errMsg);
       }
 
       const reportData: DecisionReport = await resp.json();
@@ -417,53 +440,53 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               <span>Back to blog library</span>
             </button>
 
-            <article className="bg-white dark:bg-slate-850 border border-slate-200/50 dark:border-slate-800/80 rounded-3xl p-6 sm:p-10 shadow-xl space-y-6">
+            <article className="bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl space-y-6">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="bg-blue-100 dark:bg-blue-900/45 text-blue-700 dark:text-blue-400 text-xs px-2.5 py-1 rounded-md font-semibold">
+                <span className="bg-blue-950 text-blue-400 text-xs px-2.5 py-1 rounded-md font-semibold border border-blue-900/50">
                   {selectedPost.category}
                 </span>
-                <span className="text-xs text-slate-400 flex items-center gap-1.5 font-mono">
+                <span className="text-xs text-slate-300 flex items-center gap-1.5 font-mono">
                   <Clock className="w-3.5 h-3.5" />
                   {selectedPost.readTime}
                 </span>
-                <span className="text-xs text-slate-400 font-mono">• {selectedPost.publishedAt}</span>
+                <span className="text-xs text-slate-455 font-mono">• {selectedPost.publishedAt}</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
                 {selectedPost.title}
               </h1>
 
-              <div className="h-px bg-slate-100 dark:bg-slate-900" />
+              <div className="h-px bg-slate-900" />
 
               {/* Rich Markdown styled output */}
-              <div className="text-slate-700 dark:text-slate-200 leading-relaxed text-base space-y-5">
+              <div className="text-slate-100 leading-relaxed text-base space-y-5">
                 {selectedPost.content.split("\n\n").map((para, i) => {
                   if (para.trim().startsWith("###")) {
                     return (
-                      <h3 key={i} className="text-xl font-bold text-slate-900 dark:text-white pt-4">
+                      <h3 key={i} className="text-xl font-bold text-white pt-4 bg-linear-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
                         {para.replace("###", "").trim()}
                       </h3>
                     );
                   }
                   if (para.trim().startsWith("1.")) {
                     return (
-                      <div key={i} className="pl-4 border-l-2 border-indigo-500 space-y-2 py-1">
+                      <div key={i} className="pl-4 border-l-2 border-indigo-550 space-y-2 py-1 bg-slate-900/40 p-3 rounded-r-xl">
                         {para.split("\n").map((line, li) => (
-                          <p key={li} className="font-medium text-slate-800 dark:text-slate-200">{line.trim()}</p>
+                          <p key={li} className="font-semibold text-slate-100">{line.trim()}</p>
                         ))}
                       </div>
                     );
                   }
-                  return <p key={i} className="whitespace-pre-line">{para.trim()}</p>;
+                  return <p key={i} className="whitespace-pre-line text-slate-200">{para.trim()}</p>;
                 })}
               </div>
 
-              <div className="h-px bg-slate-100 dark:bg-slate-900 pt-6" />
+              <div className="h-px bg-slate-900 pt-6" />
 
-              <div className="bg-slate-50 dark:bg-slate-800/90 rounded-2xl p-6 border border-slate-100 dark:border-slate-700/80 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="bg-slate-900/90 rounded-2xl p-6 border border-slate-850 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div>
-                  <h4 className="font-bold text-sm text-slate-900 dark:text-white">Evaluate a related decision?</h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Test any idea instantly with our state-of-the-art decision engine.</p>
+                  <h4 className="font-bold text-sm text-white">Evaluate a related decision?</h4>
+                  <p className="text-xs text-slate-300 mt-0.5">Test any idea instantly with our state-of-the-art decision engine.</p>
                 </div>
                 <button 
                   onClick={() => {
@@ -512,21 +535,21 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               {filteredBlogPosts.map(post => (
                 <article 
                   key={post.id} 
-                  className="bg-white dark:bg-slate-850 rounded-2xl border border-slate-200/50 dark:border-slate-800/80 p-6 flex flex-col justify-between shadow-xs hover:shadow-md hover:-translate-y-0.5 duration-200 transition-all group"
+                  className="bg-slate-950 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between shadow-xs hover:shadow-md hover:-translate-y-0.5 duration-200 transition-all group"
                 >
                   <div className="space-y-3.5">
-                    <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
-                      <span className="bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded font-semibold">
+                    <div className="flex items-center justify-between text-[11px] text-slate-300 font-mono">
+                      <span className="bg-blue-950 text-blue-400 px-2 py-0.5 rounded font-semibold border border-blue-900/50">
                         {post.category}
                       </span>
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 className="font-extrabold text-lg text-slate-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
+                    <h3 className="font-extrabold text-lg text-white group-hover:text-blue-400 transition-colors leading-snug">
                       {post.title}
                     </h3>
 
-                    <p className="text-xs text-slate-500 dark:text-slate-300 leading-relaxed">
+                    <p className="text-xs text-slate-200 leading-relaxed">
                       {post.excerpt}
                     </p>
                   </div>
@@ -536,7 +559,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                       window.history.pushState({}, "", `/blog/${post.slug}`);
                       onNavigate(`/blog/${post.slug}`);
                     }}
-                    className="flex items-center text-xs font-bold text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 mt-5 cursor-pointer"
+                    className="flex items-center text-xs font-bold text-blue-400 hover:text-blue-300 mt-5 cursor-pointer"
                   >
                     <span>Read full report</span>
                     <ArrowRight className="w-3.5 h-3.5 ml-1 group-hover:translate-x-1 duration-150 transition-transform" />
@@ -601,7 +624,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <button
               key={chip}
               onClick={() => handleChipClick(chip)}
-              className="px-3 py-1 bg-white hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-900 border border-slate-200/60 dark:border-slate-850/80 rounded-full text-xs text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all duration-150 cursor-pointer shadow-xs active:scale-95"
+              className="px-3 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-full text-xs text-slate-350 hover:text-blue-400 font-medium transition-all duration-150 cursor-pointer shadow-xs active:scale-95"
             >
               {chip}
             </button>
@@ -611,14 +634,14 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* DYNAMIC ANALYSIS REPORT LOADER */}
       {loading && (
-        <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-white dark:bg-slate-950 rounded-3xl border border-slate-100 dark:border-slate-900 shadow-xl animate-pulse">
+        <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-slate-950 rounded-3xl border border-slate-800 shadow-xl animate-pulse">
           <div className="relative w-16 h-16 mx-auto">
-            <div className="absolute inset-0 rounded-full border-4 border-slate-200 dark:border-slate-800" />
+            <div className="absolute inset-0 rounded-full border-4 border-slate-800" />
             <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
           </div>
           <div className="space-y-1.5">
-            <h3 className="font-bold text-lg text-slate-900 dark:text-white">Analyzing Decision Trajectory</h3>
-            <p className="text-xs text-blue-500 dark:text-blue-400 font-semibold font-mono animate-bounce">
+            <h3 className="font-bold text-lg text-white">Analyzing Decision Trajectory</h3>
+            <p className="text-xs text-blue-400 font-semibold font-mono animate-bounce">
               {loadingSteps[loadingStep]}
             </p>
           </div>
@@ -679,60 +702,60 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="grid md:grid-cols-3 gap-6">
             
             {/* CONCISE OVERVIEW SUMMARY */}
-            <div className="col-span-2 bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/85 shadow-xs flex flex-col justify-between space-y-4">
+            <div className="col-span-2 bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs flex flex-col justify-between space-y-4">
               <div className="space-y-2">
-                <span className="text-[10px] font-mono tracking-wider font-bold text-indigo-500 dark:text-blue-450 uppercase">EXECUTIVE SUMMARY</span>
-                <p className="text-sm sm:text-base text-slate-800 dark:text-slate-100 font-medium leading-relaxed">
+                <span className="text-[10px] font-mono tracking-wider font-bold bg-linear-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent uppercase">EXECUTIVE SUMMARY</span>
+                <p className="text-sm sm:text-base text-slate-100 font-medium leading-relaxed">
                   {report.summary}
                 </p>
               </div>
-              <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-400 bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg border border-slate-100 dark:border-slate-700/85 w-fit">
+              <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-350 bg-slate-900 p-2.5 rounded-lg border border-slate-800 w-fit">
                 <Clock className="w-3.5 h-3.5" />
                 <span>Analyzed on {report.timestamp ? new Date(report.timestamp).toLocaleDateString() : "June 2026"}</span>
               </div>
             </div>
 
             {/* QUICK SCORES SIDEBAR */}
-            <div className="col-span-1 bg-white dark:bg-slate-850 p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-4">
-              <span className="text-[10px] font-mono tracking-wider font-bold text-cyan-500 dark:text-cyan-400 block uppercase mb-1">SCORE METRICS</span>
+            <div className="col-span-1 bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+              <span className="text-[10px] font-mono tracking-wider font-bold bg-linear-to-r from-cyan-400 to-blue-450 bg-clip-text text-transparent block uppercase mb-1">SCORE METRICS</span>
               
               {/* DIFFICULTY */}
               <div className="space-y-1">
-                <div className="flex justify-between items-center text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <div className="flex justify-between items-center text-xs font-semibold text-slate-200">
                   <span>Difficulty Index</span>
-                  <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{report.difficulty}/10</span>
+                  <span className="font-mono font-bold text-slate-100 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">{report.difficulty}/10</span>
                 </div>
-                <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-900/60 rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
                   <div className="bg-amber-500 h-full rounded-full" style={{ width: `${report.difficulty * 10}%` }} />
                 </div>
               </div>
 
               {/* COST */}
               <div className="space-y-1 pt-1">
-                <div className="flex justify-between items-center text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <div className="flex justify-between items-center text-xs font-semibold text-slate-200">
                   <span>Capital/Cost Required</span>
-                  <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{report.cost}/10</span>
+                  <span className="font-mono font-bold text-slate-100 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">{report.cost}/10</span>
                 </div>
-                <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-900/60 rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
                   <div className="bg-blue-500 h-full rounded-full" style={{ width: `${report.cost * 10}%` }} />
                 </div>
               </div>
 
-              <div className="h-px bg-slate-100 dark:bg-slate-800 pt-1" />
+              <div className="h-px bg-slate-900 pt-1" />
 
               {/* THREE DYNAMIC LABELS */}
               <div className="space-y-2 pt-1">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500 dark:text-slate-300">Risk Profile:</span>
-                  <span className="font-bold text-slate-800 dark:text-slate-100 font-mono">{report.riskLevel}</span>
+                  <span className="text-slate-350">Risk Profile:</span>
+                  <span className="font-bold text-white font-mono">{report.riskLevel}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500 dark:text-slate-300">Potential Return:</span>
-                  <span className="font-bold text-slate-800 dark:text-slate-100 font-mono">{report.potentialReward}</span>
+                  <span className="text-slate-350">Potential Return:</span>
+                  <span className="font-bold text-white font-mono">{report.potentialReward}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500 dark:text-slate-300">Time Horizon:</span>
-                  <span className="font-bold text-slate-800 dark:text-slate-100 font-mono">{report.timeToResults}</span>
+                  <span className="text-slate-350">Time Horizon:</span>
+                  <span className="font-bold text-white font-mono">{report.timeToResults}</span>
                 </div>
               </div>
             </div>
@@ -743,15 +766,15 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="grid md:grid-cols-2 gap-6">
             
             {/* PROS CARD */}
-            <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-4">
-              <span className="inline-flex items-center space-x-1.5 bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 text-xs px-2.5 py-1 rounded-md border border-emerald-500/20 font-bold uppercase tracking-wider font-mono">
+            <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+              <span className="inline-flex items-center space-x-1.5 bg-emerald-955/20 text-emerald-400 text-xs px-2.5 py-1 rounded-md border border-emerald-800 font-bold uppercase tracking-wider font-mono">
                 <ThumbsUp className="w-3.5 h-3.5" />
                 <span>Primary Advantages</span>
               </span>
               <ul className="space-y-3">
                 {report.pros.map((pro, idx) => (
-                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-700 dark:text-slate-100 leading-relaxed">
-                    <Check className="w-4 h-4 text-emerald-500 mt-1 shrink-0 bg-emerald-500/10 rounded p-0.5" />
+                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-100 leading-relaxed">
+                    <Check className="w-4 h-4 text-emerald-400 mt-1 shrink-0 bg-emerald-500/10 rounded p-0.5" />
                     <span>{pro}</span>
                   </li>
                 ))}
@@ -759,15 +782,15 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             {/* CONS CARD */}
-            <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-4">
-              <span className="inline-flex items-center space-x-1.5 bg-red-500/10 text-red-500 dark:text-red-400 text-xs px-2.5 py-1 rounded-md border border-red-500/20 font-bold uppercase tracking-wider font-mono">
+            <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+              <span className="inline-flex items-center space-x-1.5 bg-red-955/20 text-red-400 text-xs px-2.5 py-1 rounded-md border border-red-800 font-bold uppercase tracking-wider font-mono">
                 <AlertOctagon className="w-3.5 h-3.5" />
                 <span>Primary Disadvantages</span>
               </span>
               <ul className="space-y-3">
                 {report.cons.map((con, idx) => (
-                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-700 dark:text-slate-100 leading-relaxed">
-                    <XCircle className="w-4 h-4 text-red-500 mt-1 shrink-0 bg-red-500/10 rounded p-0.5" />
+                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-100 leading-relaxed">
+                    <XCircle className="w-4 h-4 text-red-400 mt-1 shrink-0 bg-red-500/10 rounded p-0.5" />
                     <span>{con}</span>
                   </li>
                 ))}
@@ -777,49 +800,49 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* AUDIENCE PROFILES */}
-          <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs grid sm:grid-cols-2 gap-6">
+          <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs grid sm:grid-cols-2 gap-6">
             <div className="space-y-1.5">
-              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-300 uppercase tracking-widest font-mono">Recommended For</h4>
-              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed">{report.recommendedFor}</p>
+              <h4 className="text-xs font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Recommended For</h4>
+              <p className="text-xs sm:text-sm text-slate-100 leading-relaxed">{report.recommendedFor}</p>
             </div>
             <div className="space-y-1.5">
-              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-300 uppercase tracking-widest font-mono">Not Recommended For</h4>
-              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed">{report.notRecommendedFor}</p>
+              <h4 className="text-xs font-bold bg-linear-to-r from-red-450 to-rose-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Not Recommended For</h4>
+              <p className="text-xs sm:text-sm text-slate-100 leading-relaxed">{report.notRecommendedFor}</p>
             </div>
           </div>
 
           {/* DETAILED STRATEGIC OUTLOOK REASONING */}
-          <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-4">
-            <h3 className="font-sans font-extrabold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-              <Award className="w-5 h-5 text-indigo-500" />
-              <span className="bg-linear-to-r from-blue-600 to-amber-500 dark:from-blue-400 dark:to-yellow-300 bg-clip-text text-transparent">Detailed Strategic Outlook</span>
+          <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+            <h3 className="font-sans font-extrabold text-lg text-white flex items-center gap-2">
+              <Award className="w-5 h-5 text-indigo-400" />
+              <span className="bg-linear-to-r from-blue-400 to-amber-300 bg-clip-text text-transparent">Detailed Strategic Outlook</span>
             </h3>
-            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-100 leading-relaxed whitespace-pre-line">
+            <p className="text-xs sm:text-sm text-slate-100 leading-relaxed whitespace-pre-line">
               {report.reasoning}
             </p>
           </div>
 
           {/* DYNAMIC FAQ ACCORDION GENERATOR */}
-          <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-5">
-            <h3 className="font-sans font-extrabold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-              <HelpIcon className="w-5 h-5 text-cyan-500" />
-              <span className="bg-linear-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-200 bg-clip-text text-transparent">Frequently Asked Questions (FAQ)</span>
+          <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-5">
+            <h3 className="font-sans font-extrabold text-lg text-white flex items-center gap-2">
+              <HelpIcon className="w-5 h-5 text-cyan-400" />
+              <span className="bg-linear-to-r from-blue-400 to-cyan-200 bg-clip-text text-transparent">Frequently Asked Questions (FAQ)</span>
             </h3>
             <div className="space-y-2">
               {report.faqs.map((faq, idx) => {
                 const open = activeFaqIdx === idx;
                 return (
-                  <div key={idx} className="border border-slate-100 dark:border-slate-800 rounded-xl overflow-hidden transition-all">
+                  <div key={idx} className="border border-slate-800 rounded-xl overflow-hidden transition-all">
                     <button
                       type="button"
                       onClick={() => setActiveFaqIdx(open ? null : idx)}
-                      className="w-full text-left px-4 py-3 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-100/30 dark:hover:bg-slate-800/80 flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 cursor-pointer"
+                      className="w-full text-left px-4 py-3 bg-slate-900/60 hover:bg-slate-900 flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-100 cursor-pointer"
                     >
                       <span>{faq.question}</span>
                       <span className="text-slate-400 font-mono text-xs">{open ? "−" : "+"}</span>
                     </button>
                     {open && (
-                      <div className="px-4 py-3 text-xs sm:text-sm text-slate-600 dark:text-slate-200 border-t border-slate-100 dark:border-slate-800 leading-relaxed bg-white dark:bg-slate-850/40">
+                      <div className="px-4 py-3 text-xs sm:text-sm text-slate-200 border-t border-slate-800 leading-relaxed bg-slate-950/40">
                         {faq.answer}
                       </div>
                     )}

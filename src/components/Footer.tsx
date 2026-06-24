@@ -137,8 +137,6 @@ export default function Footer({ onNavigate }: FooterProps) {
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-slate-400">
             <a href="/about" onClick={(e) => handleLinkClick(e, "/about")} className="hover:text-white transition-colors">About</a>
             <span>•</span>
-            <a href="/contact" onClick={(e) => handleLinkClick(e, "/contact")} className="hover:text-white transition-colors">Contact</a>
-            <span>•</span>
             <a href="/privacy-policy" onClick={(e) => handleLinkClick(e, "/privacy-policy")} className="hover:text-slate-200 transition-colors">Privacy Policy</a>
             <span>•</span>
             <a href="/terms-and-conditions" onClick={(e) => handleLinkClick(e, "/terms-and-conditions")} className="hover:text-slate-200 transition-colors">Terms of Service</a>

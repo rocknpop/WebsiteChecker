@@ -9,11 +9,11 @@ interface LegalLayoutProps {
 function LegalLayout({ title, children }: LegalLayoutProps) {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 animate-fade-in">
-      <div className="bg-white dark:bg-slate-850 border border-slate-200/50 dark:border-slate-800/80 rounded-3xl p-6 sm:p-10 shadow-xl">
-        <h1 className="text-3xl font-sans font-black text-slate-900 dark:text-white pb-4 border-b border-slate-100 dark:border-slate-800 mb-8 tracking-tight">
+      <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl">
+        <h1 className="text-3xl font-sans font-black text-white pb-4 border-b border-slate-800 mb-8 tracking-tight">
           {title}
         </h1>
-        <article className="prose dark:prose-invert max-w-none text-sm text-slate-600 dark:text-slate-200 leading-relaxed space-y-6">
+        <article className="prose dark:prose-invert max-w-none text-sm text-slate-100 leading-relaxed space-y-6">
           {children}
         </article>
       </div>
@@ -117,13 +117,13 @@ export function DisclaimerPage() {
 export function AboutUsPage() {
   return (
     <LegalLayout title="About DownOrUp.net">
-      <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-slate-50 dark:bg-slate-800/60 rounded-3xl mb-6">
+      <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-slate-900/60 rounded-3xl border border-slate-800 mb-6">
         <div className="p-4.5 bg-blue-600 rounded-2xl text-white flex items-center justify-center font-bold text-2xl w-14 h-14 shrink-0 shadow-lg shadow-indigo-500/10">
           ↑
         </div>
         <div>
-          <h4 className="font-bold text-slate-900 dark:text-white text-base">"Should You Do It?"</h4>
-          <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">
+          <h4 className="font-bold text-white text-base">"Should You Do It?"</h4>
+          <p className="text-xs text-slate-250 mt-0.5">
             We built DownOrUp.net to remove decision paralysis. By aggregating modern market indicators with state-of-the-art AI parsing, we help founders analyze trade-offs in seconds.
           </p>
         </div>
@@ -160,14 +160,14 @@ export function ContactUsPage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-12 animate-fade-in" id="contact-viewport">
-      <div className="bg-white dark:bg-slate-850 border border-slate-200/50 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl">
+      <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
         <div className="flex items-center space-x-3 mb-4">
           <div className="p-2.5 bg-blue-600 text-white rounded-xl">
             <Send className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-2xl font-sans font-black text-slate-900 dark:text-white">Contact Administration</h2>
-            <p className="text-xs text-slate-400 mt-0.5">We reply to support inquiries within 24 hours.</p>
+            <h2 className="text-2xl font-sans font-black text-white">Contact Administration</h2>
+            <p className="text-xs text-slate-300 mt-0.5">We reply to support inquiries within 24 hours.</p>
           </div>
         </div>
 
@@ -188,47 +188,47 @@ export function ContactUsPage() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 mt-6 text-sm">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5 font-mono">Full Name</label>
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 font-mono">Full Name</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="Rishi N"
-                className="w-full px-4 py-2.5 bg-slate-50/50 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/80 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-hidden dark:text-white"
+                className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all outline-hidden text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5 font-mono">Email Coordinates</label>
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 font-mono">Email Coordinates</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@domain.com"
-                className="w-full px-4 py-2.5 bg-slate-50/50 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/80 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-hidden dark:text-white"
+                className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all outline-hidden text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5 font-mono">Topic / Subject</label>
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 font-mono">Topic / Subject</label>
               <input
                 type="text"
                 required
                 value={subject}
                 onChange={e => setSubject(e.target.value)}
                 placeholder="Partnerships / Suggestion / Error report"
-                className="w-full px-4 py-2.5 bg-slate-50/50 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/80 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-hidden dark:text-white"
+                className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all outline-hidden text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5 font-mono">Inquiry Details</label>
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 font-mono">Inquiry Details</label>
               <textarea
                 required
                 rows={4}
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 placeholder="Provide detailed description of your query or platform feedback..."
-                className="w-full px-4 py-2.5 bg-slate-50/50 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/80 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-hidden dark:text-white"
+                className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all outline-hidden text-white"
               />
             </div>
             <button

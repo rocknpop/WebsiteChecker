@@ -36,7 +36,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
     { name: "Decision Engine", path: "/" },
     { name: "Blog / Insights", path: "/blog" },
     { name: "About", path: "/about" },
-    { name: "Contact", path: "/contact" },
   ];
 
   const handleLinkClick = (path: string) => {
