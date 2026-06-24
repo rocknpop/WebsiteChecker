@@ -1063,7 +1063,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     switch (verdict) {
       case "UP":
         return {
-          icon: <CheckCircle2 className="w-12 h-12 text-emerald-500 animate-pulse" />,
+          icon: <CheckCircle2 className={`w-12 h-12 text-emerald-500${isMobile ? "" : " animate-pulse"}`} />,
           color: "text-emerald-500",
           bg: "bg-emerald-500/10 border-emerald-500/30",
           title: "UP ✅",
@@ -1492,7 +1492,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
           <div className="inline-flex items-center space-x-2 px-3 py-1 bg-linear-to-r from-blue-500/10 to-indigo-500/10 border border-indigo-500/20 text-blue-600 rounded-full text-xs font-semibold tracking-wide font-mono">
-            <Activity className="w-3.5 h-3.5 animate-pulse" />
+            <Activity className={`w-3.5 h-3.5${isMobile ? "" : " animate-pulse"}`} />
             <span>Real-time Network Diagnostics Suite</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900 leading-none">
@@ -1523,7 +1523,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   window.history.pushState({}, "", `/${route}`);
                   onNavigate(`/${route}`);
                 }}
-                className={`flex items-center justify-center space-x-2 p-3.5 rounded-2xl border text-xs font-bold transition-all duration-200 cursor-pointer ${
+                className={`flex items-center justify-center space-x-2 p-3.5 rounded-2xl border text-xs font-bold transition-colors duration-150 cursor-pointer ${
                   active
                     ? "bg-blue-600 border-transparent text-white shadow-md scale-[1.02]"
                     : "bg-white border border-gray-200 shadow-sm text-gray-700 hover:border-blue-300 hover:text-blue-600 hover:-translate-y-0.5"
@@ -1537,7 +1537,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </div>
 
         <div className="max-w-2xl mx-auto mb-10">
-          <form onSubmit={handleToolSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-300 shadow-md flex items-center transition-all duration-200 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
+          <form onSubmit={handleToolSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-300 shadow-md flex items-center transition-colors duration-150 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
             <div className="flex-1 flex items-center pl-3">
               <Search className="w-5 h-5 text-gray-500 group-focus-within:text-indigo-500 transition-colors" />
               <input
@@ -1838,7 +1838,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <button
               key={chip}
               onClick={() => handleChipClick(chip)}
-              className="px-3 py-1.5 bg-white border border-gray-200 shadow-sm hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded-full text-xs text-gray-700 font-medium transition-all duration-200 cursor-pointer active:scale-95"
+              className="px-3 py-1.5 bg-white border border-gray-200 shadow-sm hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded-full text-xs text-gray-700 font-medium transition-colors duration-150 cursor-pointer active:scale-95"
             >
               {chip}
             </button>
@@ -1901,7 +1901,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                     {isUp ? "UP ✅" : "DOWN ❌"}
                   </div>
                   <div className="h-1.5 w-32 bg-slate-800 rounded-full overflow-hidden mt-2">
-                    <div className={`h-full rounded-full ${isUp ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500 animate-pulse'}`} style={{ width: '100%' }} />
+                    <div className={`h-full rounded-full ${isUp ? `bg-emerald-500${isMobile ? "" : " animate-pulse"}` : `bg-rose-500${isMobile ? "" : " animate-pulse"}`}`} style={{ width: '100%' }} />
                   </div>
                 </div>
 
@@ -2208,7 +2208,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
           
           {/* CATEGORY BLOCK: CARERS */}
-          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 hover:border-gray-200">
+          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-colors duration-150 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-blue-500 uppercase">Careers</span>
             <ul className="space-y-2 text-xs">
               <li><button onClick={() => handleChipClick("Become Software Engineer")} className="hover:text-blue-600 text-gray-400 text-left cursor-pointer">Become Software Engineer</button></li>
@@ -2219,7 +2219,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* CATEGORY BLOCK: SIDE HUSTLES */}
-          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 hover:border-gray-200">
+          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-colors duration-150 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-emerald-500 uppercase">Side Hustles</span>
             <ul className="space-y-2 text-xs">
               <li><button onClick={() => handleChipClick("Start Amazon KDP")} className="hover:text-emerald-600 text-gray-400 text-left cursor-pointer">Start Amazon KDP</button></li>
@@ -2230,7 +2230,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* CATEGORY BLOCK: BUSINESS */}
-          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 hover:border-gray-200">
+          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-colors duration-150 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-indigo-500 uppercase">Business Ideas</span>
             <ul className="space-y-2 text-xs">
               <li><button onClick={() => handleChipClick("Start AI Agency")} className="hover:text-indigo-600 text-gray-400 text-left cursor-pointer">Start AI Agency</button></li>
@@ -2241,7 +2241,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* CATEGORY BLOCK: EDUCATION & PURCHASES */}
-          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 hover:border-gray-200">
+          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-colors duration-150 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-cyan-500 uppercase">Education & Tech</span>
             <ul className="space-y-2 text-xs">
               <li><button onClick={() => handleChipClick("Get an MBA")} className="hover:text-cyan-600 text-gray-400 text-left cursor-pointer">Get an MBA</button></li>
