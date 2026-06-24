@@ -8,14 +8,17 @@ interface HeaderProps {
 
 export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(true);
+  const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+    setWidth(window.innerWidth);
+    const handler = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
   }, []);
+
+  const isMobile = width < 768;
+  const isReady = width > 0;
 
   const navLinks = [
     { name: "Decision Engine", path: "/" },
@@ -32,20 +35,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
   return (
     <>
-      {/* Force hide desktop elements on mobile via injected style */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @media screen and (max-width: 767px) {
-          #desktop-nav { display: none !important; visibility: hidden !important; width: 0 !important; overflow: hidden !important; }
-          #eval-btn { display: none !important; visibility: hidden !important; width: 0 !important; }
-          #hamburger-btn { display: flex !important; }
-        }
-        @media screen and (min-width: 768px) {
-          #desktop-nav { display: flex !important; }
-          #eval-btn { display: flex !important; }
-          #hamburger-btn { display: none !important; }
-        }
-      `}} />
-
       <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
         <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
@@ -59,9 +48,9 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             </span>
           </div>
 
-          {/* Desktop nav - only renders when not mobile */}
-          {!isMobile && (
-            <nav id="desktop-nav" style={{display: typeof window !== "undefined" && window.innerWidth >= 768 ? "flex" : "none", alignItems:"center", gap:"4px"}}>
+          {/* Middle - desktop nav only */}
+          {isReady && !isMobile && (
+            <nav style={{display:"flex",alignItems:"center",gap:"4px"}}>
               {navLinks.map((link) => (
                 <button
                   key={link.path}
@@ -76,27 +65,22 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
           {/* Right side */}
           <div style={{display:"flex",alignItems:"center",gap:"8px",flexShrink:0}}>
-            {!isMobile && (
+            {isReady && !isMobile && (
               <button
                 onClick={() => handleLinkClick("/")}
-                id="eval-btn"
-                style={{display: typeof window !== "undefined" && window.innerWidth >= 768 ? "flex" : "none", alignItems:"center", gap:"6px", padding:"8px 20px", background:"linear-gradient(135deg,#2563eb,#4f46e5)", color:"white", border:"none", borderRadius:"999px", fontWeight:"700", fontSize:"14px", cursor:"pointer"}}
+                style={{display:"flex",alignItems:"center",gap:"6px",padding:"8px 20px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"999px",fontWeight:"700",fontSize:"14px",cursor:"pointer"}}
               >
                 <Sparkles style={{height:"14px",width:"14px"}} />
                 Evaluate Now
               </button>
             )}
 
-            {isMobile && (
+            {isReady && isMobile && (
               <button
                 onClick={() => setIsOpen((v) => !v)}
-                id="hamburger-btn"
-                style={{display: typeof window !== "undefined" && window.innerWidth < 768 ? "flex" : "none", alignItems:"center", justifyContent:"center", padding:"8px", border:"none", background:"transparent", cursor:"pointer", borderRadius:"8px"}}
-                aria-label="Toggle menu"
+                style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px"}}
               >
-                {isOpen
-                  ? <X style={{height:"24px",width:"24px",color:"#374151"}} />
-                  : <Menu style={{height:"24px",width:"24px",color:"#374151"}} />}
+                {isOpen ? <X style={{height:"24px",width:"24px",color:"#374151"}} /> : <Menu style={{height:"24px",width:"24px",color:"#374151"}} />}
               </button>
             )}
           </div>
@@ -116,13 +100,12 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                 DownOrUp<span style={{color:"#2563eb"}}>.net</span>
               </span>
             </div>
-
             <div style={{flex:1,overflowY:"auto",padding:"16px",display:"flex",flexDirection:"column",gap:"4px"}}>
               {navLinks.map((link) => (
                 <button
                   key={link.path}
                   onClick={() => handleLinkClick(link.path)}
-                  style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",borderRadius:"12px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#374151",fontWeight:currentPath===link.path?"600":"500",fontSize:"14px",cursor:"pointer",textAlign:"left"}}
+                  style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",borderRadius:"12px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#374151",fontWeight:"500",fontSize:"14px",cursor:"pointer",textAlign:"left"}}
                 >
                   <span>{link.name}</span>
                   <ChevronRight style={{height:"16px",width:"16px",color:"#d1d5db"}} />
@@ -136,7 +119,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                 Evaluate Now
               </button>
             </div>
-
             <div style={{padding:"16px 20px",borderTop:"1px solid #f3f4f6",textAlign:"center"}}>
               <p style={{fontSize:"11px",fontFamily:"monospace",color:"#9ca3af"}}>© 2026 DownOrUp.net</p>
             </div>
