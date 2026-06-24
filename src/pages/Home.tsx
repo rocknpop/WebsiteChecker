@@ -471,7 +471,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               if (res.ok) {
                 const resJson = await res.json();
                 const code = resJson.status?.http_code;
-                if (typeof code === "number") {
+                if (typeof code === "number" && code > 0) {
                   const m1End = Date.now();
                   checkSuccess = true;
                   let finalStatus: "up" | "down" | "unknown" = "unknown";
@@ -547,9 +547,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               const pingRes = await runImagePing(targetUrl, 6000);
               const m3End = Date.now();
               checkSuccess = true;
+              const pingStatus: "up" | "down" | "unknown" =
+                pingRes.status === "up" ? "up" : resolvedIp ? "up" : "unknown";
               finalResult = {
                 host: hostName,
-                status: pingRes.status,
+                status: pingStatus,
                 methodName: "Checked via image ping fallback",
                 responseTimeMs: m3End - m3Start,
                 resolvedIp,
@@ -558,6 +560,18 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             } catch (err) {
               console.warn("Method 3 (image ping fallback) failed:", err);
             }
+          }
+
+          // --- FINAL FALLBACK: DNS resolution confirms site exists ---
+          if (!checkSuccess && resolvedIp) {
+            checkSuccess = true;
+            finalResult = {
+              host: hostName,
+              status: "up",
+              methodName: "Confirmed via DNS resolution",
+              resolvedIp,
+              message: "Domain resolves to a valid IP — site is likely UP but blocking all proxy checks."
+            };
           }
 
           if (checkSuccess && finalResult) {
