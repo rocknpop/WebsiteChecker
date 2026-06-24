@@ -36,9 +36,9 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   return (
     <>
       <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
-        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",gap:"16px"}}>
+        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
-          {/* Logo */}
+          {/* Logo - left */}
           <div style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",flexShrink:0}} onClick={() => handleLinkClick("/")}>
             <div style={{height:"32px",width:"32px",flexShrink:0,background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"10px",display:"flex",alignItems:"center",justifyContent:"center"}}>
               <TrendingUp style={{height:"18px",width:"18px",color:"white"}} />
@@ -48,23 +48,25 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             </span>
           </div>
 
-          {/* Middle - desktop nav only */}
-          {isReady && !isMobile && (
-            <nav style={{display:"flex",alignItems:"center",gap:"4px"}}>
-              {navLinks.map((link) => (
-                <button
-                  key={link.path}
-                  onClick={() => handleLinkClick(link.path)}
-                  style={{padding:"8px 16px",borderRadius:"999px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#4b5563",fontWeight:currentPath===link.path?"600":"500",fontSize:"14px",cursor:"pointer"}}
-                >
-                  {link.name}
-                </button>
-              ))}
-            </nav>
-          )}
+          {/* Center - desktop nav OR empty spacer on mobile */}
+          <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>
+            {isReady && !isMobile && (
+              <nav style={{display:"flex",alignItems:"center",gap:"4px"}}>
+                {navLinks.map((link) => (
+                  <button
+                    key={link.path}
+                    onClick={() => handleLinkClick(link.path)}
+                    style={{padding:"8px 16px",borderRadius:"999px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#4b5563",fontWeight:currentPath===link.path?"600":"500",fontSize:"14px",cursor:"pointer"}}
+                  >
+                    {link.name}
+                  </button>
+                ))}
+              </nav>
+            )}
+          </div>
 
           {/* Right side */}
-          <div style={{display:"flex",alignItems:"center",gap:"8px",flexShrink:0,marginLeft:"auto"}}>
+          <div style={{display:"flex",alignItems:"center",gap:"8px",flexShrink:0}}>
             {isReady && !isMobile && (
               <button
                 onClick={() => handleLinkClick("/")}
