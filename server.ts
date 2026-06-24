@@ -13,6 +13,17 @@ import { generateSitemapXml } from "./src/services/sitemap";
 const app = express();
 const PORT = 3000;
 
+// CORS Middleware to prevent any CORS failures across any domain (e.g. downorup.net)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json());
 
 // In-memory logs of recent checks & outages to support the dashboard dynamically and realistically
@@ -476,83 +487,125 @@ app.get("/api/dns-lookup", async (req, res) => {
 
 // 2.5 MY-IP ENDPOINT FOR WHATISMYIP TAB
 app.get("/api/my-ip", async (req, res) => {
-  // Capture client IP
-  let clientIp = (req.headers["x-forwarded-for"] as string || "").split(",")[0].trim() || 
-                 (req.headers["x-real-ip"] as string) || 
-                 req.socket.remoteAddress || 
-                 "127.0.0.1";
-                 
-  // Clean IPv6 mapped IPv4 address (e.g. ::ffff:127.0.0.1)
-  if (clientIp.startsWith("::ffff:")) {
-    clientIp = clientIp.substring(7);
-  }
-
-  const isLocalOrPrivate = 
-    clientIp === "127.0.0.1" || 
-    clientIp === "::1" || 
-    clientIp.startsWith("10.") || 
-    clientIp.startsWith("192.168.") || 
-    clientIp.startsWith("172.");
-
-  // High fidelity default mock / fallback in sandbox environment or private network
-  let responseData = {
-    ip: isLocalOrPrivate ? "162.210.192.4" : clientIp,
-    connectionIp: clientIp,
-    type: clientIp.includes(":") ? "IPv6" : "IPv4",
-    hostname: isLocalOrPrivate ? "pool-162-210-192-4.dc.verizon.net" : `host-${clientIp.replace(/\./g, "-")}.dynamic.isp.net`,
-    isp: isLocalOrPrivate ? "Verizon Fios Business" : "Public Network Gateway",
-    asn: isLocalOrPrivate ? "AS701" : "AS15169",
-    geo: {
-      country: "United States",
-      countryCode: "US",
-      region: "New York",
-      city: "New York",
-      timezone: "America/New_York",
-      latitude: 40.7128,
-      longitude: -74.0060
-    },
-    security: {
-      vpn: false,
-      tor: false,
-      proxy: false,
-      threatScore: 0,
-      scoreText: "Clean"
-    },
-    userAgent: req.headers["user-agent"] || "Mozilla/5.0",
-    isFallback: isLocalOrPrivate
-  };
-
-  // If it's a real external IP, we can try to geolocate it using ip-api.com safely with a short timeout to maintain elite speeds
-  if (!isLocalOrPrivate) {
-    try {
-      const geoRes = await Promise.race([
-        fetch(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,zip,lat,lon,timezone,isp,org,as,query`),
-        new Promise<null>((_, reject) => setTimeout(() => reject(new Error("Timeout")), 1500))
-      ]);
-      if (geoRes && (geoRes as Response).ok) {
-        const geoInfo = await (geoRes as Response).json();
-        if (geoInfo && geoInfo.status === "success") {
-          responseData.ip = geoInfo.query || clientIp;
-          responseData.isp = geoInfo.isp || geoInfo.org || "Internet Service Provider";
-          responseData.asn = geoInfo.as || "N/A";
-          responseData.geo = {
-            country: geoInfo.country || "United States",
-            countryCode: geoInfo.countryCode || "US",
-            region: geoInfo.regionName || "New York",
-            city: geoInfo.city || "New York",
-            timezone: geoInfo.timezone || "America/New_York",
-            latitude: geoInfo.lat || 40.7128,
-            longitude: geoInfo.lon || -74.0060
-          };
-          responseData.isFallback = false;
-        }
+  try {
+    // Capture client IP safely
+    let clientIp = "";
+    const xForwardedFor = req.headers["x-forwarded-for"];
+    if (xForwardedFor) {
+      if (Array.isArray(xForwardedFor)) {
+        clientIp = xForwardedFor[0] || "";
+      } else {
+        clientIp = xForwardedFor.split(",")[0] || "";
       }
-    } catch (e) {
-      // Keep defaults gracefully if API fetch timeouts or fails
     }
-  }
+    
+    if (!clientIp) {
+      const xRealIp = req.headers["x-real-ip"];
+      if (xRealIp) {
+        clientIp = Array.isArray(xRealIp) ? (xRealIp[0] || "") : xRealIp;
+      }
+    }
+    
+    if (!clientIp) {
+      clientIp = req.socket.remoteAddress || "127.0.0.1";
+    }
+    
+    clientIp = clientIp.trim();
 
-  res.json(responseData);
+    // Clean IPv6 mapped IPv4 address (e.g. ::ffff:127.0.0.1)
+    if (clientIp.startsWith("::ffff:")) {
+      clientIp = clientIp.substring(7);
+    }
+
+    const isLocalOrPrivate = 
+      clientIp === "127.0.0.1" || 
+      clientIp === "::1" || 
+      clientIp.startsWith("10.") || 
+      clientIp.startsWith("192.168.") || 
+      clientIp.startsWith("172.");
+
+    // High fidelity default mock / fallback in sandbox environment or private network
+    let responseData = {
+      ip: isLocalOrPrivate ? "162.210.192.4" : clientIp,
+      connectionIp: clientIp,
+      type: clientIp.includes(":") ? "IPv6" : "IPv4",
+      hostname: isLocalOrPrivate ? "pool-162-210-192-4.dc.verizon.net" : `host-${clientIp.replace(/\./g, "-")}.dynamic.isp.net`,
+      isp: isLocalOrPrivate ? "Verizon Fios Business" : "Public Network Gateway",
+      asn: isLocalOrPrivate ? "AS701" : "AS15169",
+      geo: {
+        country: "United States",
+        countryCode: "US",
+        region: "New York",
+        city: "New York",
+        timezone: "America/New_York",
+        latitude: 40.7128,
+        longitude: -74.0060
+      },
+      security: {
+        vpn: false,
+        tor: false,
+        proxy: false,
+        threatScore: 0,
+        scoreText: "Clean"
+      },
+      userAgent: req.headers["user-agent"] || "Mozilla/5.0",
+      isFallback: isLocalOrPrivate
+    };
+
+    // If it's a real external IP, we try to geolocate it using the secure, premium-grade https://ipwho.is/ API
+    if (!isLocalOrPrivate) {
+      try {
+        const geoRes = await Promise.race([
+          fetch(`https://ipwho.is/${encodeURIComponent(clientIp)}`),
+          new Promise<null>((_, reject) => setTimeout(() => reject(new Error("Timeout")), 2000))
+        ]);
+        if (geoRes && (geoRes as Response).ok) {
+          const geoInfo = await (geoRes as Response).json();
+          if (geoInfo && geoInfo.success === true) {
+            responseData.ip = geoInfo.ip || clientIp;
+            responseData.type = geoInfo.type || (clientIp.includes(":") ? "IPv6" : "IPv4");
+            responseData.isp = geoInfo.connection?.isp || geoInfo.connection?.org || "Internet Service Provider";
+            responseData.asn = geoInfo.connection?.asn ? `AS${geoInfo.connection.asn}` : "N/A";
+            responseData.geo = {
+              country: geoInfo.country || "United States",
+              countryCode: geoInfo.country_code || "US",
+              region: geoInfo.region || "New York",
+              city: geoInfo.city || "New York",
+              timezone: geoInfo.timezone?.id || "America/New_York",
+              latitude: geoInfo.latitude || 40.7128,
+              longitude: geoInfo.longitude || -74.0060
+            };
+            
+            const isVpn = !!geoInfo.security?.vpn;
+            const isTor = !!geoInfo.security?.tor;
+            const isProxy = !!geoInfo.security?.proxy;
+            const threatScore = isVpn || isTor || isProxy ? 65 : 0;
+            
+            responseData.security = {
+              vpn: isVpn,
+              tor: isTor,
+              proxy: isProxy,
+              threatScore: threatScore,
+              scoreText: threatScore > 0 ? "Flagged" : "Clean"
+            };
+            responseData.isFallback = false;
+          } else {
+            console.warn(`[IP Diagnostics API] ipwho.is returned failure state for IP ${clientIp}:`, geoInfo?.message || "unknown failure reason");
+          }
+        }
+      } catch (e: any) {
+        console.error(`[IP Diagnostics API] Failed to fetch external geo-IP telemetry from ipwho.is for IP ${clientIp}:`, e?.message || e);
+      }
+    }
+
+    return res.json(responseData);
+  } catch (err: any) {
+    console.error("Error in /api/my-ip handler:", err);
+    return res.status(500).json({
+      error: "Failed to resolve connection parameters.",
+      details: err?.message || String(err)
+    });
+  }
 });
 
 // 3. IP LOOKUP ENDPOINT

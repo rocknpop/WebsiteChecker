@@ -95,15 +95,19 @@ export default function StatusPage({ domain, onNavigate, onCheckStatus }: Status
   const fetchStatus = async () => {
     setLoading(true);
     setError(null);
+    const targetUrl = getApiUrl(`/api/check-status?url=${domain}`);
+    console.log(`[Status Diagnostics] Initiating fetch request to URL: ${targetUrl}`);
+    
     try {
-      const resp = await fetch(getApiUrl(`/api/check-status?url=${domain}`));
+      const resp = await fetch(targetUrl);
       const text = await resp.text();
       
       let json: any = null;
       try {
         json = JSON.parse(text);
       } catch (parseErr) {
-        throw new Error(`Invalid response format from monitoring server. (Status ${resp.status})`);
+        console.error(`[Status Diagnostics] Failed to parse response text as JSON. URL: ${targetUrl}, Status: ${resp.status}, Content:`, text);
+        throw new Error(`Invalid response format from monitoring server. (Status ${resp.status}). Raw output: ${text.substring(0, 100)}`);
       }
 
       if (resp.ok && json) {
@@ -112,10 +116,12 @@ export default function StatusPage({ domain, onNavigate, onCheckStatus }: Status
         setHasReported(false);
         setReportedCount(Math.round((domain.length * 7) % 24) + (json.status === "down" ? 14 : 0));
       } else {
-        setError(json?.error || "Failed to retrieve status data.");
+        const errorMsg = json?.error || `Failed to retrieve status data. (Status ${resp.status})`;
+        console.error(`[Status Diagnostics] Server returned error state. URL: ${targetUrl}, Status: ${resp.status}, Error:`, errorMsg);
+        setError(errorMsg);
       }
     } catch (err: any) {
-      console.error("Diagnosis fetching exception:", err);
+      console.error(`[Status Diagnostics] Exception caught during fetch request. URL: ${targetUrl}, Error:`, err);
       setError(err?.message || "Failed to connect to monitoring agent backend. Try checking again.");
     } finally {
       setLoading(false);

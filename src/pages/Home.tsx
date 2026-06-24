@@ -158,17 +158,46 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     setSearching(true);
     setSearchResult(null);
 
+    const targetUrl = getApiUrl(`/api/check-username?username=${encodeURIComponent(query)}`);
+    console.log(`[Username Check] Initiating fetch request to URL: ${targetUrl}`);
+
     try {
-      const resp = await fetch(getApiUrl(`/api/check-username?username=${encodeURIComponent(query)}`));
+      const resp = await fetch(targetUrl);
+      const contentType = resp.headers.get("content-type") || "";
+      
       if (resp.ok) {
-        const data = await resp.json();
-        setSearchResult(data);
+        if (contentType.includes("application/json")) {
+          const data = await resp.json();
+          setSearchResult(data);
+        } else {
+          const text = await resp.text();
+          console.error(`[Username Check] Expected JSON response but received content-type "${contentType}". Response text:`, text);
+          throw new Error(`Invalid content type from server (Expected JSON, got: ${contentType.split(";")[0]}). Raw output snippet: ${text.substring(0, 100)}`);
+        }
       } else {
-        const errJson = await resp.json();
-        setError(errJson.error || "Failed to establish concurrent lookup handshake.");
+        let errorMessage = `Server responded with status ${resp.status}`;
+        let detailedError = "";
+        
+        try {
+          if (contentType.includes("application/json")) {
+            const errJson = await resp.json();
+            errorMessage = errJson.error || errorMessage;
+            detailedError = JSON.stringify(errJson);
+          } else {
+            const text = await resp.text();
+            errorMessage = `${errorMessage}: ${text.substring(0, 100)}`;
+            detailedError = text;
+          }
+        } catch (parseErr: any) {
+          console.error("[Username Check] Failed to parse error response body:", parseErr);
+        }
+        
+        console.error(`[Username Check] Request failed. URL: ${targetUrl}, Status: ${resp.status}, Error: ${errorMessage}, Detailed response:`, detailedError);
+        setError(errorMessage);
       }
-    } catch (e) {
-      setError("Network timeout. Check internet coordinates and retry.");
+    } catch (e: any) {
+      console.error(`[Username Check] Exception caught during fetch request. URL: ${targetUrl}, Error:`, e);
+      setError(`Connection failure: ${e?.message || String(e)}. Please check your network or API endpoint configuration and retry.`);
     } finally {
       setSearching(false);
     }

@@ -43,15 +43,45 @@ export default function MyIpPage() {
   const fetchIpData = async () => {
     setLoading(true);
     setError(null);
+    const targetUrl = getApiUrl("/api/my-ip");
+    console.log(`[IP Diagnostics] Initiating fetch request to URL: ${targetUrl}`);
+    
     try {
-      const res = await fetch(getApiUrl("/api/my-ip"));
+      const res = await fetch(targetUrl);
+      const contentType = res.headers.get("content-type") || "";
+      
       if (res.ok) {
-        const json = await res.json();
-        setData(json);
+        if (contentType.includes("application/json")) {
+          const json = await res.json();
+          setData(json);
+        } else {
+          const text = await res.text();
+          console.error(`[IP Diagnostics] Expected JSON response but received content-type "${contentType}". Response text:`, text);
+          throw new Error(`Invalid response format from server (Expected JSON, got: ${contentType.split(";")[0]}). Raw output snippet: ${text.substring(0, 100)}`);
+        }
       } else {
-        throw new Error("Failed to retrieve connection parameters.");
+        let errorMessage = `Server responded with status ${res.status}`;
+        let detailedError = "";
+        
+        try {
+          if (contentType.includes("application/json")) {
+            const errJson = await res.json();
+            errorMessage = errJson.error || errJson.details || errorMessage;
+            detailedError = JSON.stringify(errJson);
+          } else {
+            const text = await res.text();
+            errorMessage = `${errorMessage}: ${text.substring(0, 100)}`;
+            detailedError = text;
+          }
+        } catch (parseErr: any) {
+          console.error("[IP Diagnostics] Failed to parse error response body:", parseErr);
+        }
+        
+        console.error(`[IP Diagnostics] Request failed. URL: ${targetUrl}, Status: ${res.status}, Error: ${errorMessage}, Detailed response:`, detailedError);
+        throw new Error(errorMessage);
       }
     } catch (err: any) {
+      console.error(`[IP Diagnostics] Exception caught during fetch request. URL: ${targetUrl}, Error:`, err);
       setError(err.message || "An unresolved network error occurred while querying host metrics.");
     } finally {
       setLoading(false);
