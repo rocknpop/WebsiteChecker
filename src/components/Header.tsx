@@ -36,7 +36,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             </span>
           </div>
 
-          <nav style={{display:"flex",alignItems:"center",gap:"4px"}} className="hidden md:flex">
+          <nav style={{alignItems:"center",gap:"4px"}} className="hidden md:flex">
             {navLinks.map((link) => (
               <button
                 key={link.path}
