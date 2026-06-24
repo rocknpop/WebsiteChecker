@@ -1,6 +1,6 @@
 {
-  "name": "DownOrUp Website Checker & IP Info",
-  "description": "Instantly check if any website is down, analyze server connection status, and detect your public IP address with our secure, real-time diagnostic tools.",
+  "name": "DownOrUp.net - AI Decision Platform",
+  "description": "Get instant AI-powered analysis and verdicts before making important life, career, business, side hustle, or purchase decisions. Should you do it?",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

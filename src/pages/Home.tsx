@@ -1,867 +1,993 @@
 import React, { useState, useEffect } from "react";
-import { Search, Sparkles, CheckCircle2, AlertCircle, RefreshCw, Bookmark, Copy, Check, ChevronRight, Award, Zap, ShieldCheck, Heart, ThumbsUp, Gamepad2, Briefcase, UserCheck, Star, HelpCircle, ArrowRight, Compass } from "lucide-react";
-import SeoHead from "../components/SeoHead";
+import { 
+  Search, Sparkles, CheckCircle2, AlertCircle, XCircle, ChevronRight, 
+  Award, Zap, ShieldCheck, Heart, ThumbsUp, Star, HelpCircle, 
+  ArrowRight, BookOpen, Clock, AlertTriangle, TrendingUp, DollarSign,
+  User, Check, AlertOctagon, HelpCircle as HelpIcon, ArrowLeft
+} from "lucide-react";
 import { getApiUrl } from "../utils/api";
+import { useSEO } from "../hooks/useSEO";
 
 interface HomeProps {
   currentPath: string;
   onNavigate: (path: string) => void;
 }
 
-interface PlatformResult {
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+interface DecisionReport {
+  query: string;
+  verdict: "UP" | "NEUTRAL" | "DOWN";
+  confidenceScore: number;
+  summary: string;
+  pros: string[];
+  cons: string[];
+  difficulty: number;
+  cost: number;
+  timeToResults: string;
+  riskLevel: "Low" | "Medium" | "High";
+  potentialReward: "Low" | "Medium" | "High" | "Very High";
+  recommendedFor: string;
+  notRecommendedFor: string;
+  reasoning: string;
+  faqs: FAQ[];
+  timestamp?: string;
+}
+
+interface LoggedDecision {
+  query: string;
+  verdict: "UP" | "NEUTRAL" | "DOWN";
+  timestamp: string;
+}
+
+interface BlogPost {
   id: string;
-  name: string;
-  status: "available" | "taken";
-  url: string;
+  title: string;
+  slug: string;
+  category: string;
+  publishedAt: string;
+  readTime: string;
+  excerpt: string;
+  content: string;
 }
 
-interface BrandabilityMetrics {
-  length: number;
-  pronunciation: number;
-  memorability: number;
-  uniqueness: number;
-  professional: number;
-  overall: number;
-}
+const POPULAR_CHIPS = [
+  "Start Amazon KDP",
+  "Start Dropshipping",
+  "Learn Python",
+  "Move Abroad",
+  "Start Freelancing",
+  "Buy ChatGPT Plus",
+  "Start a YouTube Channel",
+  "Become a Data Analyst",
+  "Create a SaaS Product",
+  "Start an AI Agency"
+];
 
-interface AlternativeHandle {
-  username: string;
-  status: "available" | "taken";
-  score: number;
-}
-
-interface SearchResponse {
-  username: string;
-  score: number;
-  isConsistent: boolean;
-  consistencyScore: number;
-  brandability: BrandabilityMetrics;
-  alternatives: AlternativeHandle[];
-  results: PlatformResult[];
-  checkedAt: string;
-}
+const PRE_DEFINED_SEO_QUERIES: Record<string, string> = {
+  "should-i-become-software-engineer": "Should I become a software engineer?",
+  "should-i-become-data-analyst": "Should I become a data analyst?",
+  "should-i-learn-cybersecurity": "Should I learn cybersecurity?",
+  "should-i-become-ux-designer": "Should I become a UX designer?",
+  "should-i-start-amazon-kdp": "Should I start Amazon KDP?",
+  "should-i-start-print-on-demand": "Should I start print-on-demand?",
+  "should-i-start-dropshipping": "Should I start dropshipping?",
+  "should-i-become-freelancer": "Should I become a freelancer?",
+  "should-i-start-ai-agency": "Should I start an AI agency?",
+  "should-i-build-saas-product": "Should I build a SaaS product?",
+  "should-i-start-blogging": "Should I start blogging?",
+  "should-i-create-newsletter": "Should I create a newsletter?",
+  "should-i-get-mba": "Should I get an MBA?",
+  "should-i-learn-coding": "Should I learn coding?",
+  "should-i-learn-python": "Should I learn Python?",
+  "should-i-study-abroad": "Should I study abroad?",
+  "should-i-buy-macbook": "Should I buy a MacBook Pro?",
+  "should-i-buy-chatgpt-plus": "Should I buy ChatGPT Plus?",
+  "should-i-buy-gaming-pc": "Should I buy a gaming PC?"
+};
 
 export default function Home({ currentPath, onNavigate }: HomeProps) {
   const [inputValue, setInputValue] = useState("");
-  const [searching, setSearching] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [searchResult, setSearchResult] = useState<SearchResponse | null>(null);
-  const [savedNames, setSavedNames] = useState<string[]>([]);
-  const [copiedText, setCopiedText] = useState<string | null>(null);
-  const [activeIdeaCategory, setActiveIdeaCategory] = useState<"gamer" | "business" | "creator" | "startup" | "personal">("personal");
+  
+  const [report, setReport] = useState<DecisionReport | null>(null);
+  const [recentDecisions, setRecentDecisions] = useState<LoggedDecision[]>([]);
+  
+  // Blog-related state
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>("All");
 
-  // Read URL parameters on load (handles /username/alex or landing routing pre-population)
-  useEffect(() => {
-    const rawSaved = localStorage.getItem("hh-saved-usernames");
-    if (rawSaved) {
-      try {
-        setSavedNames(JSON.parse(rawSaved));
-      } catch (e) {}
-    }
+  // Accordion active FAQ index
+  const [activeFaqIdx, setActiveFaqIdx] = useState<number | null>(0);
 
-    // Capture search parameter if provided in query string e.g. /?username=gamer
-    const params = new URLSearchParams(window.location.search);
-    const userQuery = params.get("username") || params.get("q");
-    if (userQuery) {
-      setInputValue(userQuery);
-      performSearch(userQuery);
-    } else if (currentPath.startsWith("/username/")) {
-      const parts = currentPath.split("/");
-      const extracted = parts[parts.length - 1];
-      if (extracted) {
-        setInputValue(extracted);
-        performSearch(extracted);
+  // Dynamic SEO hooks values
+  const [seoTitle, setSeoTitle] = useState("DownOrUp.net - AI Decision Platform");
+  const [seoDesc, setSeoDesc] = useState("Get instant AI-powered evaluation reports and verdicts before making career, side hustle, business, purchase, or educational decisions. Should you do it?");
+
+  // Render schema configurations
+  const [schemaData, setSchemaData] = useState<object[]>([]);
+
+  useSEO({
+    title: seoTitle,
+    description: seoDesc,
+    schemas: schemaData
+  });
+
+  // Dynamic loading messages for engaging feel
+  const loadingSteps = [
+    "Spinning up decision engine nodes...",
+    "Scanning market datasets for 2026 conditions...",
+    "Evaluating competitive saturation indexes...",
+    "Calculating cost-to-difficulty multipliers...",
+    "Synthesizing dynamic strategic outlook...",
+    "Drafting detailed pros, cons, and FAQs..."
+  ];
+
+  // Fetch recent queries from server
+  const fetchRecentDecisions = async () => {
+    try {
+      const resp = await fetch(getApiUrl("/api/recent-decisions"));
+      if (resp.ok) {
+        const data = await resp.json();
+        setRecentDecisions(data);
       }
+    } catch (e) {
+      console.warn("Failed to retrieve recent decisions log:", e);
     }
-  }, [currentPath]);
-
-  // Dynamic programmatic SEO page elements mapper
-  const getSEOConfig = () => {
-    const path = currentPath;
-    if (path === "/instagram-username-checker") {
-      return {
-        h1: "Instagram Username Checker",
-        boldHero: "Check Instagram Handle Availability Instantly",
-        subtitle: "Instantly query Instagram account registries, locate active profile handlers, analyze trademark viability, and generate premium alternative nicknames.",
-        placeholder: "Enter desired Instagram handle...",
-        nicheTip: "Instagram handles must be 30 characters or less and can contain letters, numbers, periods, and underscores."
-      };
-    }
-    if (path === "/tiktok-username-checker") {
-      return {
-        h1: "TikTok Username Checker",
-        boldHero: "Check TikTok Username Availability Instantly",
-        subtitle: "Inspect TikTok alias databases concurrently. Secure unique influencer handles, verify consistency and create an optimized digital presence.",
-        placeholder: "Enter TikTok profile username...",
-        nicheTip: "TikTok nicknames must contain only letters, numbers, underscores, and periods. Changing handles is restricted to once every 30 days."
-      };
-    }
-    if (path === "/youtube-username-checker") {
-      return {
-        h1: "YouTube Handle Checker",
-        boldHero: "Scan YouTube Handle availability",
-        subtitle: "Validate custom YouTube Handles (with @ markers) instantly. Avoid trademark duplication risks and find brandable creator options.",
-        placeholder: "Enter YouTube custom handle name...",
-        nicheTip: "YouTube custom @handles must be between 3 and 30 characters and can only contain alphanumeric characters, underscores, periods, and hyphens."
-      };
-    }
-    if (path === "/x-username-checker") {
-      return {
-        h1: "X / Twitter Handle Checker",
-        boldHero: "Verify X Username Availability",
-        subtitle: "Audit active Twitter profile slots in subseconds. Secure microblogging namespaces and guarantee multi-channel compatibility.",
-        placeholder: "Enter X / Twitter username...",
-        nicheTip: "X / Twitter handles are strictly restricted to 15 characters, alphanumeric letters, and underscores only. Dot characters are prohibited."
-      };
-    }
-    if (path === "/github-username-checker") {
-      return {
-        h1: "GitHub Repository & Handle Checker",
-        boldHero: "Audit GitHub Username Availability",
-        subtitle: "Analyze developer namespace availability on GitHub. Discover ideal personal brand aliases, startup portfolio matches, and organization keys.",
-        placeholder: "Enter developer GitHub handle...",
-        nicheTip: "GitHub usernames must be 39 characters or less, start with an alphanumeric letter, and contain only alphanumeric characters and non-consecutive hyphens."
-      };
-    }
-    if (path === "/reddit-username-checker") {
-      return {
-        h1: "Reddit Username Checker",
-        boldHero: "Scan Reddit Account Availability",
-        subtitle: "Check Reddit user databases. Verify pseudonym availability and maintain a cohesive online avatar across networks.",
-        placeholder: "Enter Reddit pseudonym...",
-        nicheTip: "Reddit user names require between 3 and 20 characters and cannot begin with spaces or contain special characters other than hyphens and underscores."
-      };
-    }
-
-    // Default general-purpose SEO configs
-    return {
-      h1: "Check Username Availability Across Social Media",
-      boldHero: "Check Username Availability Instantly",
-      subtitle: "Find available usernames for Instagram, TikTok, YouTube, X, Reddit, GitHub, Snapchat, Threads, and Pinterest concurrently. Secure a consistent online identity.",
-      placeholder: "Enter desired username...",
-      nicheTip: "Ready to launch your brand? Enter any string of letters and numbers below to query 10 major social networking platforms in subseconds."
-    };
   };
 
-  const seoData = getSEOConfig();
-
-  const performSearch = async (usernameToSearch: string) => {
-    const query = usernameToSearch.trim().toLowerCase();
-    if (!query) return;
-
-    if (!/^[a-zA-Z0-9_\.-]{1,30}$/.test(query)) {
-      setError("Username contains unsupported symbols. Alphanumerics, dots, or underscores only.");
-      return;
+  // Fetch blog posts from server
+  const fetchBlogPosts = async () => {
+    try {
+      const resp = await fetch(getApiUrl("/api/blog-posts"));
+      if (resp.ok) {
+        const data = await resp.json();
+        setBlogPosts(data);
+      }
+    } catch (e) {
+      console.warn("Failed to retrieve blog posts:", e);
     }
+  };
 
+  // Sync state on load & path change
+  useEffect(() => {
+    fetchRecentDecisions();
+    fetchBlogPosts();
+
+    // Check if currentPath indicates a blog post slug
+    if (currentPath.startsWith("/blog/")) {
+      const slug = currentPath.substring("/blog/".length);
+      const post = blogPosts.find(p => p.slug === slug);
+      if (post) {
+        setSelectedPost(post);
+        updateSeoForBlogPost(post);
+      } else {
+        // Retrieve single post directly from API
+        fetchSingleBlogPost(slug);
+      }
+      setReport(null);
+    } else if (currentPath === "/blog") {
+      setSelectedPost(null);
+      setReport(null);
+      setSeoTitle("Expert Strategic Advice & Business Insights Blog - DownOrUp.net");
+      setSeoDesc("Read authoritative, data-driven analyses on the best side hustles, software tools, Python applications, and AI agencies thriving in 2026.");
+    } else {
+      setSelectedPost(null);
+      
+      // Determine if path is a programmatic SEO route (e.g. /should-i-start-youtube-channel)
+      const pathSlug = currentPath.replace("/", "").toLowerCase();
+      if (PRE_DEFINED_SEO_QUERIES[pathSlug]) {
+        const queryText = PRE_DEFINED_SEO_QUERIES[pathSlug];
+        setInputValue(queryText);
+        performAnalysis(queryText);
+      } else if (pathSlug.startsWith("should-")) {
+        // Parse raw slug to readable text e.g. should-i-move-abroad -> "Should I move abroad?"
+        let queryText = pathSlug
+          .replace(/-/g, " ")
+          .replace(/^should\s/i, "Should ")
+          .replace(/\bi\b/g, "I");
+        
+        // capitalize letters and append ?
+        queryText = queryText.charAt(0).toUpperCase() + queryText.slice(1) + "?";
+        setInputValue(queryText);
+        performAnalysis(queryText);
+      } else {
+        // Standard home page load
+        setReport(null);
+        setSeoTitle("DownOrUp.net – Should You Do It? AI Decision Platform");
+        setSeoDesc("Get instant AI-powered analysis before making important decisions. The website evaluates business ideas, careers, purchases, side hustles, and investments.");
+      }
+    }
+  }, [currentPath, blogPosts.length]);
+
+  // Handle step-wise loading animations
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (loading) {
+      interval = setInterval(() => {
+        setLoadingStep((prev) => (prev < loadingSteps.length - 1 ? prev + 1 : prev));
+      }, 1500);
+    } else {
+      setLoadingStep(0);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
+
+  const fetchSingleBlogPost = async (slug: string) => {
+    try {
+      const resp = await fetch(getApiUrl(`/api/blog-posts/${slug}`));
+      if (resp.ok) {
+        const post = await resp.json();
+        setSelectedPost(post);
+        updateSeoForBlogPost(post);
+      }
+    } catch (e) {
+      console.error("Failed to load blog post details:", e);
+    }
+  };
+
+  const updateSeoForBlogPost = (post: BlogPost) => {
+    setSeoTitle(`${post.title} - DownOrUp.net Blog`);
+    setSeoDesc(post.excerpt);
+    setSchemaData([
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": post.title,
+        "description": post.excerpt,
+        "datePublished": "2026-06-24",
+        "author": {
+          "@type": "Organization",
+          "name": "DownOrUp.net"
+        }
+      }
+    ]);
+  };
+
+  const performAnalysis = async (queryText: string) => {
+    setLoading(true);
     setError(null);
-    setSearching(true);
-    setSearchResult(null);
-
-    const targetUrl = getApiUrl(`/api/check-username?username=${encodeURIComponent(query)}`);
-    console.log(`[Username Check] Initiating fetch request to URL: ${targetUrl}`);
+    setReport(null);
 
     try {
-      const resp = await fetch(targetUrl);
-      const contentType = resp.headers.get("content-type") || "";
-      
-      if (resp.ok) {
-        if (contentType.includes("application/json")) {
-          const data = await resp.json();
-          setSearchResult(data);
-        } else {
-          const text = await resp.text();
-          console.error(`[Username Check] Expected JSON response but received content-type "${contentType}". Response text:`, text);
-          throw new Error(`Invalid content type from server (Expected JSON, got: ${contentType.split(";")[0]}). Raw output snippet: ${text.substring(0, 100)}`);
-        }
-      } else {
-        let errorMessage = `Server responded with status ${resp.status}`;
-        let detailedError = "";
-        
-        try {
-          if (contentType.includes("application/json")) {
-            const errJson = await resp.json();
-            errorMessage = errJson.error || errorMessage;
-            detailedError = JSON.stringify(errJson);
-          } else {
-            const text = await resp.text();
-            errorMessage = `${errorMessage}: ${text.substring(0, 100)}`;
-            detailedError = text;
-          }
-        } catch (parseErr: any) {
-          console.error("[Username Check] Failed to parse error response body:", parseErr);
-        }
-        
-        console.error(`[Username Check] Request failed. URL: ${targetUrl}, Status: ${resp.status}, Error: ${errorMessage}, Detailed response:`, detailedError);
-        setError(errorMessage);
+      const resp = await fetch(getApiUrl("/api/analyze-decision"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: queryText })
+      });
+
+      if (!resp.ok) {
+        const errJson = await resp.json().catch(() => ({}));
+        throw new Error(errJson.error || `Server responded with status ${resp.status}`);
       }
+
+      const reportData: DecisionReport = await resp.json();
+      setReport(reportData);
+
+      // Dynamically update SEO tags based on AI report contents
+      const titleSuffix = reportData.verdict === "UP" ? "✅ Go For It!" : reportData.verdict === "DOWN" ? "❌ Proceed with Caution" : "⚠️ Evaluate Carefully";
+      setSeoTitle(`Is ${reportData.query} Worth It in 2026? [Verdict: ${reportData.verdict}] – DownOrUp.net`);
+      setSeoDesc(reportData.summary);
+
+      // Inject structured schemas: FAQPage Schema + WebApplication Schema
+      const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": reportData.faqs.map((faq) => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.answer
+          }
+        }))
+      };
+
+      const appSchema = {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": `AI Decision Evaluator: ${reportData.query}`,
+        "description": reportData.summary,
+        "applicationCategory": "EducationalApplication",
+        "browserRequirements": "Requires JavaScript. Requires HTML5."
+      };
+
+      const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": window.location.origin },
+          { "@type": "ListItem", "position": 2, "name": "Decision Analysis", "item": window.location.href }
+        ]
+      };
+
+      setSchemaData([faqSchema, appSchema, breadcrumbSchema]);
+      fetchRecentDecisions(); // update the list
     } catch (e: any) {
-      console.error(`[Username Check] Exception caught during fetch request. URL: ${targetUrl}, Error:`, e);
-      setError(`Connection failure: ${e?.message || String(e)}. Please check your network or API endpoint configuration and retry.`);
+      console.error("Analysis retrieval failed:", e);
+      setError(e?.message || "Failed to parse strategic report. Check internet connectivity and try again.");
     } finally {
-      setSearching(false);
+      setLoading(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    performSearch(inputValue);
-  };
+    if (!inputValue.trim()) return;
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedText(text);
-    setTimeout(() => setCopiedText(null), 1500);
-  };
-
-  const handleToggleSave = (name: string) => {
-    let updated = [...savedNames];
-    if (savedNames.includes(name)) {
-      updated = updated.filter(n => n !== name);
-    } else {
-      updated.push(name);
+    // Convert query into a beautiful programmatic URL to support programatic routing
+    let slug = inputValue.toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-");
+    
+    if (!slug.startsWith("should-")) {
+      slug = `should-${slug}`;
     }
-    localStorage.setItem("hh-saved-usernames", JSON.stringify(updated));
-    setSavedNames(updated);
+
+    // Set URL and path nicely
+    window.history.pushState({}, "", `/${slug}`);
+    onNavigate(`/${slug}`);
+    performAnalysis(inputValue.trim());
   };
 
-  // Pre-packaged nickname databases supporting category checks
-  const curatedNicknames = {
-    gamer: [
-      "ApexViper", "ZephyrStrike", "NexusGamer", "CyberPhreak", "AlphaRaptor", 
-      "VividSpecter", "NovaWarden", "TitanQuantum", "GlitchPaladin", "SilentRogue"
-    ],
-    business: [
-      "BrandCrest", "AlphaSentry", "CoreSynthetics", "ZenithConsult", "ApexStrive", 
-      "ModusLabor", "StellarForge", "VeritasBiz", "PrimeCapital", "ElevateConsult"
-    ],
-    creator: [
-      "PixelVlog", "VividFrames", "StudioCrafted", "TheCreativeHQ", "ScribbleVibe", 
-      "AuraShaper", "ChronicleHQ", "SonicWeaver", "CanvasWaves", "EchoScribe"
-    ],
-    startup: [
-      "SynergyGrid", "LaunchSlick", "InnoPulse", "BetaMetric", "SproutVenture", 
-      "ScaleMetric", "VectraLabs", "FluxInnovate", "HatchSmart", "SprintOrbit"
-    ],
-    personal: [
-      "TheRealJohn", "AlexHQ", "SarahOfficial", "TechRishi", "GamerAlex", 
-      "CodeSarah", "DesignRishi", "CuriousJohn", "MindfulAlex", "VibeSarah"
-    ]
+  const handleChipClick = (chipText: string) => {
+    let fullQuery = chipText;
+    if (!fullQuery.toLowerCase().startsWith("should")) {
+      fullQuery = `Should I ${chipText.charAt(0).toLowerCase() + chipText.slice(1)}?`;
+    }
+    setInputValue(fullQuery);
+    
+    let slug = chipText.toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-");
+
+    if (!slug.startsWith("should-i-") && !slug.startsWith("should-you-") && !slug.startsWith("should-")) {
+      slug = `should-i-${slug}`;
+    }
+
+    window.history.pushState({}, "", `/${slug}`);
+    onNavigate(`/${slug}`);
+    performAnalysis(fullQuery);
   };
 
-  return (
-    <div className="bg-slate-50/40 dark:bg-slate-950 transition-all duration-300 min-h-screen relative overflow-hidden" id="homepage-root">
-      
-      {/* Absolute Backdrop ambient accent circles to fit Stripe/Linear design style */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/5 dark:bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/4 right-1/4 w-[32rem] h-[32rem] bg-purple-600/5 dark:bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/3 w-[24rem] h-[24rem] bg-teal-600/5 dark:bg-teal-500/5 rounded-full blur-3xl pointer-events-none" />
+  // Helper to determine text colors and icons based on verdict
+  const getVerdictMetadata = (verdict: "UP" | "NEUTRAL" | "DOWN") => {
+    switch (verdict) {
+      case "UP":
+        return {
+          icon: <CheckCircle2 className="w-12 h-12 text-emerald-500 animate-pulse" />,
+          color: "text-emerald-500 dark:text-emerald-400",
+          bg: "bg-emerald-500/10 border-emerald-500/30 dark:border-emerald-500/20",
+          title: "UP ✅",
+          subtitle: "Highly Viable / Strong Opportunity",
+          badgeBg: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+        };
+      case "NEUTRAL":
+        return {
+          icon: <AlertTriangle className="w-12 h-12 text-amber-500 animate-bounce" />,
+          color: "text-amber-500 dark:text-amber-400",
+          bg: "bg-amber-500/10 border-amber-500/30 dark:border-amber-500/20",
+          title: "NEUTRAL ⚠️",
+          subtitle: "Proceed with Caution / High Friction",
+          badgeBg: "bg-amber-500/20 text-amber-400 border-amber-500/30"
+        };
+      case "DOWN":
+        return {
+          icon: <XCircle className="w-12 h-12 text-red-500 animate-wiggle" />,
+          color: "text-red-500 dark:text-red-400",
+          bg: "bg-red-500/10 border-red-500/30 dark:border-red-500/20",
+          title: "DOWN ❌",
+          subtitle: "High Risk / Poor Outlook / Saturated",
+          badgeBg: "bg-red-500/20 text-red-400 border-red-500/30"
+        };
+    }
+  };
 
-      {/* Main Container Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-        
-        {/* HERO SECTION */}
-        <div className="text-center max-w-4xl mx-auto mb-12">
-          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-linear-to-r from-blue-500/10 to-purple-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/15 mb-4 animate-scale-in">
-            <Sparkles className="h-3.5 w-3.5 animate-spin-slow" />
-            <span>Next-Generation AI Handle Allocation</span>
-          </span>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold text-gray-900 dark:text-white tracking-tight leading-tight">
-            {seoData.boldHero}
-          </h1>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mt-4 leading-relaxed max-w-2xl mx-auto font-sans">
-            {seoData.subtitle}
-          </p>
-        </div>
+  // Filtered Blog List rendering
+  const filteredBlogPosts = activeCategory === "All" 
+    ? blogPosts 
+    : blogPosts.filter(post => post.category === activeCategory);
 
-        {/* COMPREHENSIVE SEARCH SHELF CONTROL */}
-        <div className="max-w-2xl mx-auto mb-16">
-          <div className="bg-white dark:bg-slate-900 border border-gray-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-xl shadow-indigo-500/5 hover:border-slate-350 dark:hover:border-slate-700 transition-all duration-300">
-            <form onSubmit={handleSubmit} className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                <Search className="h-5 w-5" />
+  const categories = ["All", "Careers", "Side Hustles", "Business"];
+
+  // RENDER BLOG VIEW
+  if (currentPath.startsWith("/blog") || selectedPost) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-12" id="blog-viewport">
+        {selectedPost ? (
+          /* BLOG POST DETAIL VIEW */
+          <div className="space-y-8 animate-fade-in">
+            <button 
+              onClick={() => {
+                setSelectedPost(null);
+                window.history.pushState({}, "", "/blog");
+                onNavigate("/blog");
+              }} 
+              className="flex items-center space-x-2 text-sm font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to blog library</span>
+            </button>
+
+            <article className="bg-white dark:bg-slate-850 border border-slate-200/50 dark:border-slate-800/80 rounded-3xl p-6 sm:p-10 shadow-xl space-y-6">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="bg-blue-100 dark:bg-blue-900/45 text-blue-700 dark:text-blue-400 text-xs px-2.5 py-1 rounded-md font-semibold">
+                  {selectedPost.category}
+                </span>
+                <span className="text-xs text-slate-400 flex items-center gap-1.5 font-mono">
+                  <Clock className="w-3.5 h-3.5" />
+                  {selectedPost.readTime}
+                </span>
+                <span className="text-xs text-slate-400 font-mono">• {selectedPost.publishedAt}</span>
               </div>
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder={seoData.placeholder}
-                maxLength={30}
-                required
-                className="w-full text-base font-semibold py-3.5 pl-12 pr-32 bg-gray-55 dark:bg-slate-950 border border-gray-200/50 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-purple-500/25 focus:border-purple-500 outline-hidden dark:text-white transition-all font-mono"
-              />
-              <button
-                type="submit"
-                disabled={searching}
-                className="absolute right-2 top-2 bottom-2 bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-5 rounded-xl font-semibold text-xs transition-all flex items-center space-x-1.5 disabled:opacity-50 active:scale-95 shadow-md shadow-indigo-600/10"
-              >
-                {searching ? (
-                  <>
-                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                    <span>Searching...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-3.5 w-3.5" />
-                    <span>Search Handle</span>
-                  </>
-                )}
-              </button>
-            </form>
 
-            {/* Verification Niche Help Line */}
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-3 font-mono leading-relaxed px-1">
-              {seoData.nicheTip}
-            </p>
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                {selectedPost.title}
+              </h1>
 
-            {/* Clickable Quick Example Tags */}
-            <div className="flex flex-wrap gap-2 items-center mt-4">
-              <span className="text-xs font-mono font-bold text-gray-400 dark:text-gray-500 uppercase">Examples:</span>
-              {["johnsmith", "coolgamer", "techstartup"].map(tag => (
-                <button
-                  key={tag}
-                  type="button"
+              <div className="h-px bg-slate-100 dark:bg-slate-900" />
+
+              {/* Rich Markdown styled output */}
+              <div className="text-slate-700 dark:text-slate-200 leading-relaxed text-base space-y-5">
+                {selectedPost.content.split("\n\n").map((para, i) => {
+                  if (para.trim().startsWith("###")) {
+                    return (
+                      <h3 key={i} className="text-xl font-bold text-slate-900 dark:text-white pt-4">
+                        {para.replace("###", "").trim()}
+                      </h3>
+                    );
+                  }
+                  if (para.trim().startsWith("1.")) {
+                    return (
+                      <div key={i} className="pl-4 border-l-2 border-indigo-500 space-y-2 py-1">
+                        {para.split("\n").map((line, li) => (
+                          <p key={li} className="font-medium text-slate-800 dark:text-slate-200">{line.trim()}</p>
+                        ))}
+                      </div>
+                    );
+                  }
+                  return <p key={i} className="whitespace-pre-line">{para.trim()}</p>;
+                })}
+              </div>
+
+              <div className="h-px bg-slate-100 dark:bg-slate-900 pt-6" />
+
+              <div className="bg-slate-50 dark:bg-slate-800/90 rounded-2xl p-6 border border-slate-100 dark:border-slate-700/80 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                  <h4 className="font-bold text-sm text-slate-900 dark:text-white">Evaluate a related decision?</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Test any idea instantly with our state-of-the-art decision engine.</p>
+                </div>
+                <button 
                   onClick={() => {
-                    setInputValue(tag);
-                    performSearch(tag);
-                  }}
-                  className="text-xs font-mono px-2.5 py-1 rounded-md bg-gray-50 dark:bg-slate-950 border border-gray-200/40 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/20 transition-all"
+                    setSelectedPost(null);
+                    window.history.pushState({}, "", "/");
+                    onNavigate("/");
+                  }} 
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer"
                 >
-                  {tag}
+                  Central Engine
+                </button>
+              </div>
+            </article>
+          </div>
+        ) : (
+          /* BLOG DIRECTORY VIEW */
+          <div className="space-y-10 animate-fade-in">
+            <div className="text-center space-y-3">
+              <h1 className="text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight">
+                DownOrUp.net <span className="bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 dark:from-blue-400 dark:via-cyan-450 dark:to-yellow-300 bg-clip-text text-transparent font-black">Decision Insights</span>
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
+                Authoritative, objective guides analyzing the actual costs, risk metrics, and structural potential of the most searched side projects and careers in 2026.
+              </p>
+            </div>
+
+            {/* Category tabs */}
+            <div className="flex flex-wrap justify-center gap-1.5 border-b border-slate-100 dark:border-slate-900 pb-4">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all ${
+                    activeCategory === cat
+                      ? "bg-blue-600 text-white shadow-md shadow-blue-500/10"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200/70 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800"
+                  }`}
+                >
+                  {cat}
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Form Error Message Segment */}
-          {error && (
-            <div className="mt-4 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs flex items-center space-x-2 animate-scale-in font-mono">
-              <AlertCircle className="h-4 w-4 flex-shrink-0" />
-              <span>{error}</span>
-            </div>
-          )}
-        </div>
-
-        {/* LOADING ANIMATION SKELETON */}
-        {searching && (
-          <div className="max-w-5xl mx-auto space-y-6 py-6 animate-pulse" id="loading-skeleton">
-            <div className="bg-white dark:bg-slate-900 border border-gray-150 dark:border-slate-800 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center gap-8">
-              <div className="h-28 w-28 rounded-full bg-gray-100 dark:bg-slate-800 animate-spin" />
-              <div className="flex-1 space-y-3">
-                <div className="h-5 w-48 bg-gray-200 dark:bg-slate-800 rounded-md" />
-                <div className="h-4 w-full bg-gray-150 dark:bg-slate-850 rounded-md" />
-                <div className="h-4 w-3/4 bg-gray-155 dark:bg-slate-850 rounded-md" />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              {[...Array(10)].map((_, idx) => (
-                <div key={idx} className="h-20 bg-white dark:bg-slate-900 border border-gray-150 dark:border-slate-800 rounded-2xl" />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* DETAILED RESULTS DASHBOARD REPORT (Core Application Layout) */}
-        {searchResult && (
-          <div className="max-w-5xl mx-auto space-y-8 animate-fade-in" id="report-view">
-            
-            {/* 1. MATCH SCORE & CONSISTENCY OVERVIEW CARD */}
-            <div className="bg-white dark:bg-slate-900 border border-gray-200/50 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl">
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-                
-                {/* Score gauge circle section */}
-                <div className="flex items-center space-x-6 shrink-0">
-                  <div className="relative h-28 w-28 flex items-center justify-center bg-gray-50 dark:bg-slate-950 rounded-full border border-gray-100 dark:border-slate-800 shadow-inner">
-                    <svg className="absolute inset-0 transform -rotate-95 w-full h-full p-1.5" viewBox="0 0 36 36">
-                      <path
-                        className="text-gray-150 dark:text-slate-800"
-                        strokeWidth="2"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                      <path
-                        className="text-indigo-600 dark:text-purple-400 transition-all duration-1000 ease-out"
-                        strokeWidth="2.5"
-                        strokeDasharray={`${searchResult.score}, 100`}
-                        strokeLinecap="round"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                    </svg>
-                    <div className="text-center z-10 leading-none">
-                      <span className="text-3xl font-display font-black text-gray-900 dark:text-white block">
-                        {searchResult.score}
-                      </span>
-                      <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-gray-400 mt-1 block">
-                        Score
-                      </span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white">
-                        Availability Assessment
-                      </h3>
-                      <button 
-                        onClick={() => handleToggleSave(searchResult.username)}
-                        className={`p-1.5 rounded-lg border transition-colors ${
-                          savedNames.includes(searchResult.username)
-                            ? "bg-purple-600 text-white border-purple-600"
-                            : "bg-gray-50 hover:bg-gray-100 dark:bg-transparent dark:hover:bg-slate-800 text-gray-500 border-gray-100 dark:border-slate-800"
-                        }`}
-                        title="Bookmark handle"
-                      >
-                        <Bookmark className="h-4 w-4" />
-                      </button>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-1 max-w-md">
-                      Is <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">@{searchResult.username}</span> available? 
-                      {searchResult.score >= 80 
-                        ? " Pristine online compatibility! Claim this username immediately across social nodes." 
-                        : searchResult.score >= 40 
-                          ? " Partially taken. Perfect name, but require some modifications to get consistent handles." 
-                          : " Heavily occupied handle registration. Use our AI recommended alternatives below to optimize."
-                      }
-                    </p>
-                  </div>
-                </div>
-
-                {/* Crossplatform consistency checker */}
-                <div className="w-full lg:w-72 p-4 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200/50 dark:border-slate-800 text-xs text-sans space-y-2.5">
-                  <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-2">
-                    <span className="font-mono text-[10px] tracking-widest text-gray-400 uppercase font-semibold">Consistency Check</span>
-                    <span className={`font-semibold px-2 py-0.5 rounded-md ${
-                      searchResult.isConsistent ? "bg-emerald-500/10 text-emerald-500" : "bg-amber-500/10 text-amber-500"
-                    }`}>
-                      {searchResult.isConsistent ? "IDEAL MATCH" : "ADAPT REQUIRED"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-500">Cross-Platform Consistent?</span>
-                    <span className="font-bold text-gray-900 dark:text-white">{searchResult.isConsistent ? "YES" : "NO"}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-500">Global Alignment Index:</span>
-                    <span className="font-bold text-gray-900 dark:text-white">{searchResult.consistencyScore}%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 2. PLATFORM CHECKS GRID RESULTS */}
-            <div>
-              <span className="text-xs font-mono font-bold text-gray-400 dark:text-gray-500 uppercase block mb-3.5 tracking-widest px-1">
-                Concurrently Checked Registries
-              </span>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                {searchResult.results.map((r) => {
-                  const available = r.status === "available";
-                  return (
-                    <div
-                      key={r.id}
-                      className="bg-white dark:bg-slate-900 border border-gray-200/50 dark:border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between hover:scale-[1.02] duration-200 transition-all shadow-xs relative overflow-hidden"
-                    >
-                      {/* Ambient corner status highlight color */}
-                      <div className={`absolute top-0 right-0 h-1.5 w-1.5 rounded-bl-lg ${available ? "bg-emerald-500" : "bg-slate-400"}`} />
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-gray-800 dark:text-gray-150 font-display">
-                          {r.name}
-                        </span>
-                        <a
-                          href={r.url}
-                          target="_blank"
-                          rel="noreferrer referrerPolicy"
-                          className="text-[10px] font-semibold text-blue-500 dark:text-indigo-400 hover:underline inline-flex items-center space-x-0.5"
-                        >
-                          <span>Direct Profile</span>
-                          <ArrowRight className="h-3 w-3" />
-                        </a>
-                      </div>
-
-                      <div className="mt-4 flex items-center justify-between">
-                        <span className={`text-[11px] font-mono font-black uppercase rounded-lg px-2 py-1 leading-none ${
-                          available 
-                            ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" 
-                            : "bg-gray-100 text-gray-400 dark:bg-slate-950 dark:text-gray-500 border border-transparent"
-                        }`}>
-                          {available ? "Available" : "Taken"}
-                        </span>
-                        <button
-                          onClick={() => handleCopy(r.url)}
-                          className="p-1 text-gray-400 hover:text-gray-650 dark:hover:text-white rounded-md hover:bg-gray-50 dark:hover:bg-slate-955 transition-colors"
-                          title="Copy direct link"
-                        >
-                          {copiedText === r.url ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* AD BANNER CONTAINER - FIRST AD AFTER RESULTS (CLS optimized) */}
-            <div className="my-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-linear-to-r from-violet-500/5 to-purple-500/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-center sm:text-left">
-                <span className="inline-block bg-indigo-500/10 text-indigo-500 text-[10px] font-mono px-2 py-0.5 rounded-md font-bold mb-1">
-                  AFFILIATE STRATEGIC PARTNER
-                </span>
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">Need legal trademark security for @{searchResult.username}?</p>
-                <p className="text-[11px] text-slate-400">File official state trademarks, domain locks, and entity registration with LegalZoom to prevent corporate hijackers.</p>
-              </div>
-              <a 
-                href="https://www.legalzoom.com/"
-                target="_blank"
-                rel="noreferrer"
-                className="whitespace-nowrap inline-flex items-center justify-center p-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-4 cursor-pointer"
-              >
-                File Trademark Now
-              </a>
-            </div>
-
-            {/* 3. AI BRANDABILITY AUDIT REPORT SHELF */}
-            <div className="bg-white dark:bg-slate-900 border border-gray-200/50 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl">
-              <div className="flex items-center space-x-2.5 border-b border-gray-100 dark:border-slate-800 pb-4 mb-6">
-                <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-500 text-white rounded-xl">
-                  <Award className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-lg text-gray-900 dark:text-white">AI Brandability Audit Reports</h4>
-                  <p className="text-xs text-gray-400">Continuous phonetic matching and evaluation models for @{searchResult.username}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Visual Bar Columns */}
-                <div className="space-y-4">
-                  {[
-                    { label: "Pronunciation Index", value: searchResult.brandability.pronunciation, desc: "Fluid vocal transitions and low syllable collision frequency." },
-                    { label: "Memorability Score", value: searchResult.brandability.memorability, desc: "Cognitive persistence. Ease of recall without spelling lookups." },
-                    { label: "Length Suitability", value: searchResult.brandability.length, desc: "Character density. Compact identifiers yield cleaner UI templates." },
-                    { label: "Uniqueness Factor", value: searchResult.brandability.uniqueness, desc: "Market isolation. Stands out from generic or corporate names." },
-                    { label: "Professional Persona", value: searchResult.brandability.professional, desc: "Authority factor. High corporate compatibility for pitch meetings." }
-                  ].map((bar) => (
-                    <div key={bar.label} className="space-y-1.5 text-xs text-sans">
-                      <div className="flex justify-between font-semibold">
-                        <span className="text-gray-700 dark:text-gray-300">{bar.label}</span>
-                        <span className="font-mono text-purple-600 dark:text-purple-400">{bar.value}/100</span>
-                      </div>
-                      <div className="w-full bg-gray-100 dark:bg-slate-950 pr-0.5 rounded-full h-2 overflow-hidden flex">
-                        <div
-                          className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 h-full rounded-full transition-all duration-1000"
-                          style={{ width: `${bar.value}%` }}
-                        />
-                      </div>
-                      <p className="text-[10px] text-gray-400">{bar.desc}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Overall Verdict block */}
-                <div className="p-5 sm:p-6 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-100 dark:border-slate-800 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-mono tracking-widest text-gray-400 uppercase block font-semibold">Analytical Verdict</span>
-                    <div className="flex items-baseline space-x-1">
-                      <span className="text-4xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-                        {searchResult.brandability.overall}%
-                      </span>
-                      <span className="text-xs font-mono font-bold text-gray-400">OVERALL</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-2 leading-relaxed">
-                      Phonetic parser scans suggest this name holds {searchResult.brandability.overall >= 80 ? "elite branding capacity. Pristine resonance, instantly professional, extremely easy to pronounce and retain." : searchResult.brandability.overall >= 60 ? "solid performance. Good potential, though special characters or slightly elongated letters reduce maximum cognitive recall parameters." : "suboptimal branding capabilities. High complexity makes it difficult for mainstream audiences to remember or catalog."}
-                    </p>
-                  </div>
-
-                  <div className="border-t border-gray-150 dark:border-slate-850/60 pt-4 mt-6">
-                    <span className="text-[10px] font-mono text-gray-400 uppercase font-semibold block mb-2">Platform Registration Tips</span>
-                    <ul className="text-xs text-gray-500 space-y-1 pl-4 list-disc">
-                      <li>Secure .com domains matching this nickname if possible.</li>
-                      <li>Avoid consecutive underscores or punctuation markers.</li>
-                      <li>Maintain matching avatars across all checked networks.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 4. AI USERNAME RECOMMENDATIONS / ALTERNATIVES GENERATOR */}
-            <div className="bg-white dark:bg-slate-900 border border-gray-200/50 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl">
-              <div className="flex items-center space-x-2.5 border-b border-gray-100 dark:border-slate-800 pb-4 mb-6">
-                <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-lg text-gray-900 dark:text-white">AI Brand Alternative Recommendations</h4>
-                  <p className="text-xs text-gray-400">If your name is taken, secure these highly viable, optimized combinations</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {searchResult.alternatives.map((alt) => (
-                  <div
-                    key={alt.username}
-                    className="flex items-center justify-between p-3.5 rounded-2xl bg-gray-55 dark:bg-slate-950 border border-gray-200/40 dark:border-slate-850 hover:border-purple-500/40 dark:hover:border-purple-400/30 transition-all duration-200"
-                  >
-                    <div className="flex flex-col">
-                      <span className="font-mono text-sm font-bold text-gray-900 dark:text-white">
-                        @{alt.username}
-                      </span>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-[9px] font-mono text-gray-400">Brand: {alt.score}/100</span>
-                        <span className={`h-1.5 w-1.5 rounded-full ${alt.status === "available" ? "bg-emerald-500" : "bg-slate-300"}`} />
-                        <span className="text-[9px] font-semibold uppercase text-gray-400">{alt.status}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-1">
-                      <button
-                        onClick={() => {
-                          setInputValue(alt.username);
-                          performSearch(alt.username);
-                        }}
-                        className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-slate-900 px-2.5 py-1.5 rounded-lg border border-transparent hover:border-gray-150 dark:hover:border-slate-850 duration-150 transition-colors"
-                        title="Search handle"
-                      >
-                        Search
-                      </button>
-                      <button
-                        onClick={() => handleToggleSave(alt.username)}
-                        className={`p-1.5 rounded-lg border transition-colors ${
-                          savedNames.includes(alt.username)
-                            ? "bg-purple-600 text-white border-purple-600"
-                            : "bg-gray-50 hover:bg-gray-100 dark:bg-slate-900 text-gray-500 border-gray-150 dark:border-slate-850"
-                        }`}
-                        title="Bookmark handle"
-                      >
-                        <Bookmark className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        onClick={() => handleCopy(alt.username)}
-                        className="p-1.5 rounded-lg border border-gray-150 dark:border-slate-850 hover:bg-gray-100 dark:hover:bg-slate-900 text-gray-400 hover:text-gray-700 dark:hover:text-white"
-                        title="Copy text"
-                      >
-                        {copiedText === alt.username ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* 5. INTERACTIVE NICKNAMES IDEAS GENERATOR (Bento-Grid layout) */}
-        {!searchResult && !searching && (
-          <div className="max-w-5xl mx-auto space-y-8 animate-fade-in mb-16" id="nickname-generator-shelf">
-            <div className="text-center max-w-xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-gray-900 dark:text-white tracking-tight">
-                AI Nickname & Username Category Ideas
-              </h2>
-              <p className="text-sm text-gray-500 mt-1 max-w-sm mx-auto">
-                Explore available brandable handles pre-clustered across specialized creators domains. Click to query or copy.
-              </p>
-            </div>
-
-            {/* Selector Categories buttons */}
-            <div className="flex flex-wrap justify-center gap-1.5 border-b border-gray-200/50 dark:border-slate-800 pb-3">
-              {[
-                { id: "personal", label: "Personal Branding", icon: UserCheck },
-                { id: "gamer", label: "Gaming Alignments", icon: Gamepad2 },
-                { id: "creator", label: "Creative Media", icon: CupIcon },
-                { id: "business", label: "Corporate Business", icon: Briefcase },
-                { id: "startup", label: "High Growth Startups", icon: Zap }
-              ].map((cat) => {
-                const active = activeIdeaCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setActiveIdeaCategory(cat.id as any)}
-                    className={`flex items-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold border transition-all duration-150 select-none ${
-                      active
-                        ? "bg-purple-600 text-white border-purple-600 shadow-md shadow-purple-600/10"
-                        : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-850"
-                    }`}
-                  >
-                    <span>{cat.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Curated handles grid list */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-              {curatedNicknames[activeIdeaCategory].map((nick) => (
-                <div
-                  key={nick}
-                  className="bg-white dark:bg-slate-900 border border-gray-200/50 dark:border-slate-850/80 rounded-2xl p-4 flex flex-col justify-between hover:border-purple-500/40 dark:hover:border-purple-400/20 duration-150 text-center shadow-xs"
+            {/* Post Lists Grid */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {filteredBlogPosts.map(post => (
+                <article 
+                  key={post.id} 
+                  className="bg-white dark:bg-slate-850 rounded-2xl border border-slate-200/50 dark:border-slate-800/80 p-6 flex flex-col justify-between shadow-xs hover:shadow-md hover:-translate-y-0.5 duration-200 transition-all group"
                 >
-                  <span className="font-mono text-sm font-semibold text-gray-900 dark:text-white">
-                    @{nick}
-                  </span>
-                  <div className="flex items-center justify-center space-x-1 mt-4">
-                    <button
-                      onClick={() => {
-                        setInputValue(nick);
-                        performSearch(nick);
-                      }}
-                      className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-slate-950 px-2.5 py-1.5 rounded-lg border border-transparent hover:border-indigo-100"
-                    >
-                      Check now
-                    </button>
-                    <button
-                      onClick={() => handleCopy(nick)}
-                      className="p-1 px-1.5 rounded-lg border border-gray-150 dark:border-slate-850 hover:bg-gray-50 text-gray-400 hover:text-gray-700"
-                    >
-                      {copiedText === nick ? <Check className="h-3 w-3 text-emerald-505" /> : <Copy className="h-3 w-3" />}
-                    </button>
-                    <button
-                      onClick={() => handleToggleSave(nick)}
-                      className={`p-1 px-1.5 rounded-lg border transition-colors ${
-                        savedNames.includes(nick)
-                          ? "bg-purple-600 text-white border-purple-600"
-                          : "bg-gray-50 dark:bg-slate-950 border-gray-150 dark:border-slate-850 text-gray-400"
-                      }`}
-                    >
-                      <Bookmark className="h-3 w-3" />
-                    </button>
+                  <div className="space-y-3.5">
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                      <span className="bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded font-semibold">
+                        {post.category}
+                      </span>
+                      <span>{post.readTime}</span>
+                    </div>
+
+                    <h3 className="font-extrabold text-lg text-slate-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
+                      {post.title}
+                    </h3>
+
+                    <p className="text-xs text-slate-500 dark:text-slate-300 leading-relaxed">
+                      {post.excerpt}
+                    </p>
                   </div>
-                </div>
+
+                  <button 
+                    onClick={() => {
+                      window.history.pushState({}, "", `/blog/${post.slug}`);
+                      onNavigate(`/blog/${post.slug}`);
+                    }}
+                    className="flex items-center text-xs font-bold text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 mt-5 cursor-pointer"
+                  >
+                    <span>Read full report</span>
+                    <ArrowRight className="w-3.5 h-3.5 ml-1 group-hover:translate-x-1 duration-150 transition-transform" />
+                  </button>
+                </article>
               ))}
             </div>
           </div>
         )}
+      </div>
+    );
+  }
 
-        {/* 6. CONTENT STRATEGY - ARTICLE KNOWLEDGE BASE */}
-        <div className="max-w-5xl mx-auto border-t border-gray-200/40 dark:border-slate-800 pt-16">
-          <div className="text-center max-w-xl mx-auto mb-10">
-            <h2 className="text-2xs font-mono font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none mb-2">
-              Branding Guides & Masterclass Tutorials
-            </h2>
-            <h3 className="text-2xl sm:text-3xl font-display font-extrabold text-gray-900 dark:text-white leading-tight">
-              Perfecting Digital Identity Management
+  // RENDER PRIMARY DECISION ENGINE
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="main-viewport">
+      
+      {/* GLOW DECORATIONS */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
+      {/* HERO HERO TITLE BLOCK */}
+      <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
+        <div className="inline-flex items-center space-x-2 px-3 py-1 bg-linear-to-r from-blue-500/10 to-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono animate-fade-in">
+          <Sparkles className="w-3.5 h-3.5 animate-spin-slow" />
+          <span>DownOrUp.net AI Decision Engine</span>
+        </div>
+        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-950 dark:text-white leading-none">
+          Should You <span className="bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 dark:from-blue-400 dark:via-cyan-450 dark:to-yellow-300 bg-clip-text text-transparent">Do It?</span>
+        </h1>
+        <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-medium">
+          Get instant, hyper-realistic, objective AI evaluations before launching side projects, buying gear, or making crucial career and lifestyle choices in 2026.
+        </p>
+      </div>
+
+      {/* CENTRAL PROMPT FORM BLOCK */}
+      <div className="max-w-2xl mx-auto mb-10">
+        <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 shadow-xl flex items-center transition-all focus-within:ring-2 focus-within:ring-blue-500/30">
+          <div className="flex-1 flex items-center pl-3">
+            <Search className="w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+            <input 
+              type="text" 
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="e.g., Should I start a faceless YouTube channel in 2026?"
+              className="w-full bg-transparent border-0 focus:ring-0 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm py-2 pl-2 outline-hidden"
+              disabled={loading}
+              aria-label="Input decision query"
+            />
+          </div>
+          <button 
+            type="submit" 
+            disabled={loading || !inputValue.trim()}
+            className="bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
+          >
+            <span>Analyze Decision</span>
+          </button>
+        </form>
+
+        {/* POPULAR suggestions chips row */}
+        <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+          {POPULAR_CHIPS.map(chip => (
+            <button
+              key={chip}
+              onClick={() => handleChipClick(chip)}
+              className="px-3 py-1 bg-white hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-900 border border-slate-200/60 dark:border-slate-850/80 rounded-full text-xs text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all duration-150 cursor-pointer shadow-xs active:scale-95"
+            >
+              {chip}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* DYNAMIC ANALYSIS REPORT LOADER */}
+      {loading && (
+        <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-white dark:bg-slate-950 rounded-3xl border border-slate-100 dark:border-slate-900 shadow-xl animate-pulse">
+          <div className="relative w-16 h-16 mx-auto">
+            <div className="absolute inset-0 rounded-full border-4 border-slate-200 dark:border-slate-800" />
+            <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
+          </div>
+          <div className="space-y-1.5">
+            <h3 className="font-bold text-lg text-slate-900 dark:text-white">Analyzing Decision Trajectory</h3>
+            <p className="text-xs text-blue-500 dark:text-blue-400 font-semibold font-mono animate-bounce">
+              {loadingSteps[loadingStep]}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* STRATEGIC ERROR VIEW */}
+      {error && (
+        <div className="max-w-xl mx-auto p-5 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-start space-x-3.5 mb-10">
+          <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-bold text-sm text-red-600 dark:text-red-400">Analysis Error</h4>
+            <p className="text-xs text-red-500 mt-0.5 leading-relaxed">{error}</p>
+          </div>
+        </div>
+      )}
+
+      {/* STRATEGIC REPORT DISPLAY VIEW */}
+      {report && !loading && (
+        <div className="max-w-4xl mx-auto space-y-8 animate-fade-in mb-16" id="report-view">
+          
+          {/* VERDICT TOP BANNER */}
+          {(() => {
+            const meta = getVerdictMetadata(report.verdict);
+            return (
+              <div className={`p-6 sm:p-8 rounded-3xl border ${meta.bg} flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs`}>
+                <div className="flex items-center space-x-5 text-center sm:text-left flex-col sm:flex-row">
+                  {meta.icon}
+                  <div>
+                    <span className="text-xs font-mono font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">AI STRATEGIC VERDICT</span>
+                    <h2 className={`text-4xl sm:text-5xl font-black tracking-tight ${meta.color} mt-0.5`}>
+                      {meta.title}
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold font-mono tracking-wide mt-1">
+                      {meta.subtitle}
+                    </p>
+                  </div>
+                </div>
+
+                {/* CONFIDENCE BAR METER */}
+                <div className="w-full sm:w-48 bg-slate-200 dark:bg-slate-800 p-4.5 rounded-2xl border border-slate-300/30 dark:border-slate-700/85 flex flex-col justify-center">
+                  <div className="flex justify-between items-center mb-1 text-[11px] font-mono font-bold text-slate-500">
+                    <span>CONFIDENCE</span>
+                    <span>{report.confidenceScore}%</span>
+                  </div>
+                  <div className="w-full bg-slate-300 dark:bg-slate-850 h-2.5 rounded-full overflow-hidden">
+                    <div 
+                      className="bg-blue-600 dark:bg-blue-500 h-full rounded-full transition-all duration-1000"
+                      style={{ width: `${report.confidenceScore}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* TWO COLUMN SUMMARY & METRICS GRID */}
+          <div className="grid md:grid-cols-3 gap-6">
+            
+            {/* CONCISE OVERVIEW SUMMARY */}
+            <div className="col-span-2 bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/85 shadow-xs flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <span className="text-[10px] font-mono tracking-wider font-bold text-indigo-500 dark:text-blue-450 uppercase">EXECUTIVE SUMMARY</span>
+                <p className="text-sm sm:text-base text-slate-800 dark:text-slate-100 font-medium leading-relaxed">
+                  {report.summary}
+                </p>
+              </div>
+              <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-400 bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg border border-slate-100 dark:border-slate-700/85 w-fit">
+                <Clock className="w-3.5 h-3.5" />
+                <span>Analyzed on {report.timestamp ? new Date(report.timestamp).toLocaleDateString() : "June 2026"}</span>
+              </div>
+            </div>
+
+            {/* QUICK SCORES SIDEBAR */}
+            <div className="col-span-1 bg-white dark:bg-slate-850 p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-4">
+              <span className="text-[10px] font-mono tracking-wider font-bold text-cyan-500 dark:text-cyan-400 block uppercase mb-1">SCORE METRICS</span>
+              
+              {/* DIFFICULTY */}
+              <div className="space-y-1">
+                <div className="flex justify-between items-center text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  <span>Difficulty Index</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{report.difficulty}/10</span>
+                </div>
+                <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-900/60 rounded-full overflow-hidden">
+                  <div className="bg-amber-500 h-full rounded-full" style={{ width: `${report.difficulty * 10}%` }} />
+                </div>
+              </div>
+
+              {/* COST */}
+              <div className="space-y-1 pt-1">
+                <div className="flex justify-between items-center text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  <span>Capital/Cost Required</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{report.cost}/10</span>
+                </div>
+                <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-900/60 rounded-full overflow-hidden">
+                  <div className="bg-blue-500 h-full rounded-full" style={{ width: `${report.cost * 10}%` }} />
+                </div>
+              </div>
+
+              <div className="h-px bg-slate-100 dark:bg-slate-800 pt-1" />
+
+              {/* THREE DYNAMIC LABELS */}
+              <div className="space-y-2 pt-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-500 dark:text-slate-300">Risk Profile:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-100 font-mono">{report.riskLevel}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-500 dark:text-slate-300">Potential Return:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-100 font-mono">{report.potentialReward}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-500 dark:text-slate-300">Time Horizon:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-100 font-mono">{report.timeToResults}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* PROS & CONS SPLIT CARDS GRID */}
+          <div className="grid md:grid-cols-2 gap-6">
+            
+            {/* PROS CARD */}
+            <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-4">
+              <span className="inline-flex items-center space-x-1.5 bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 text-xs px-2.5 py-1 rounded-md border border-emerald-500/20 font-bold uppercase tracking-wider font-mono">
+                <ThumbsUp className="w-3.5 h-3.5" />
+                <span>Primary Advantages</span>
+              </span>
+              <ul className="space-y-3">
+                {report.pros.map((pro, idx) => (
+                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-700 dark:text-slate-100 leading-relaxed">
+                    <Check className="w-4 h-4 text-emerald-500 mt-1 shrink-0 bg-emerald-500/10 rounded p-0.5" />
+                    <span>{pro}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* CONS CARD */}
+            <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-4">
+              <span className="inline-flex items-center space-x-1.5 bg-red-500/10 text-red-500 dark:text-red-400 text-xs px-2.5 py-1 rounded-md border border-red-500/20 font-bold uppercase tracking-wider font-mono">
+                <AlertOctagon className="w-3.5 h-3.5" />
+                <span>Primary Disadvantages</span>
+              </span>
+              <ul className="space-y-3">
+                {report.cons.map((con, idx) => (
+                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-700 dark:text-slate-100 leading-relaxed">
+                    <XCircle className="w-4 h-4 text-red-500 mt-1 shrink-0 bg-red-500/10 rounded p-0.5" />
+                    <span>{con}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+          </div>
+
+          {/* AUDIENCE PROFILES */}
+          <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs grid sm:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-300 uppercase tracking-widest font-mono">Recommended For</h4>
+              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed">{report.recommendedFor}</p>
+            </div>
+            <div className="space-y-1.5">
+              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-300 uppercase tracking-widest font-mono">Not Recommended For</h4>
+              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed">{report.notRecommendedFor}</p>
+            </div>
+          </div>
+
+          {/* DETAILED STRATEGIC OUTLOOK REASONING */}
+          <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-4">
+            <h3 className="font-sans font-extrabold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+              <Award className="w-5 h-5 text-indigo-500" />
+              <span className="bg-linear-to-r from-blue-600 to-amber-500 dark:from-blue-400 dark:to-yellow-300 bg-clip-text text-transparent">Detailed Strategic Outlook</span>
             </h3>
-            <p className="text-xs sm:text-xs text-gray-500 mt-2">
-              Learn how global creators synchronize handles, audit trademarks, and defend namespaces against squatters.
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-100 leading-relaxed whitespace-pre-line">
+              {report.reasoning}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {/* Guide 1 */}
-            <div className="bg-white dark:bg-slate-900 border border-gray-200/50 dark:border-slate-850 p-6 rounded-2xl space-y-3">
-              <span className="font-mono text-[10px] text-indigo-500 bg-indigo-50 dark:bg-slate-950 px-2 py-0.5 rounded-md font-bold uppercase">
-                Creator Tips
-              </span>
-              <h4 className="font-display font-bold text-sm text-gray-900 dark:text-white leading-snug">
-                How To Choose The Perfect Username for Social Media
-              </h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                Branding begins with visual clarity. Discover the three fundamental principles of modern alias naming: syllable brevity, absence of continuous punctuations, and phonetics. Keep character lengths small to fit compact smartphone templates.
-              </p>
-              <button 
-                onClick={() => onNavigate("/methodology")} 
-                className="text-xs text-blue-600 font-semibold inline-flex items-center hover:underline pt-2"
-              >
-                <span>Read entire strategy</span>
-                <ChevronRight className="h-3.5 w-3.5 ml-1" />
-              </button>
-            </div>
-
-            {/* Guide 2 */}
-            <div className="bg-white dark:bg-slate-900 border border-gray-250/50 dark:border-slate-850 p-6 rounded-2xl space-y-3">
-              <span className="font-mono text-[10px] text-purple-500 bg-purple-50 dark:bg-slate-950 px-2 py-0.5 rounded-md font-bold uppercase">
-                Factual FAQ
-              </span>
-              <h4 className="font-display font-bold text-sm text-gray-900 dark:text-white leading-snug">
-                How To Secure The Exact Same Handle Everywhere
-              </h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                Finding a consistent prefix across YouTube, Instagram, and TikTok can be daunting. Try combining optimized suffixes (like <strong>"hq"</strong>, <strong>"studio"</strong>, or <strong>"co"</strong>) or prefixes (such as <strong>"real"</strong>) to achieve maximum alignment.
-              </p>
-              <button 
-                onClick={() => onNavigate("/how-checked")}
-                className="text-xs text-blue-600 font-semibold inline-flex items-center hover:underline pt-2"
-              >
-                <span>Read complete tutorial</span>
-                <ChevronRight className="h-3.5 w-3.5 ml-1" />
-              </button>
-            </div>
-
-            {/* Guide 3 */}
-            <div className="bg-white dark:bg-slate-900 border border-gray-250/50 dark:border-slate-850 p-6 rounded-2xl space-y-3 col-span-1 md:col-span-2 lg:col-span-1">
-              <span className="font-mono text-[10px] text-teal-500 bg-teal-50 dark:bg-slate-950 px-2 py-0.5 rounded-md font-bold uppercase">
-                Law & Trademarks
-              </span>
-              <h4 className="font-display font-bold text-sm text-gray-900 dark:text-white leading-snug">
-                Handling Social Media Username Squatters Safely
-              </h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                Did a squatter claim your official corporate trademark nick? Understand the registration dispute procedures for Instagram and Facebook. Learn when to submit trademark requests or negotiate for transfers.
-              </p>
-              <button 
-                onClick={() => onNavigate("/editorial-policy")}
-                className="text-xs text-blue-600 font-semibold inline-flex items-center hover:underline pt-2"
-              >
-                <span>Read regulatory guide</span>
-                <ChevronRight className="h-3.5 w-3.5 ml-1" />
-              </button>
-            </div>
-
-          </div>
-
-          {/* FAQS DETAILED SCHEMA SYSTEM ACROSS PAGES */}
-          <div className="mt-12 bg-white dark:bg-slate-900 border border-gray-200/50 dark:border-slate-850 p-6 sm:p-8 rounded-3xl space-y-6">
-            <h4 className="font-display font-bold text-base text-gray-900 dark:text-white border-b border-gray-100 dark:border-slate-800 pb-3">
-              Frequently Asked Legal & Branding Questions
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm">
-              <div className="space-y-1.5">
-                <span className="font-bold text-gray-800 dark:text-gray-200 block">Q: Can I claim a username that is registered but inactive?</span>
-                <p className="text-gray-500">A: Most networks do not allow manual claims for inactive names unless you hold a direct, matching trademark certificate showing active copyright infringement. Simply waiting for platform name flushes is recommended.</p>
-              </div>
-              <div className="space-y-1.5">
-                <span className="font-bold text-gray-800 dark:text-gray-200 block">Q: Does checking a handle register it instantly?</span>
-                <p className="text-gray-500">A: No. Unlike shady registrar brokers that front-run names, HandleHunt operates under a zero-telemetry caching guarantee. Your searches are kept anonymous and not logged for buyout queries.</p>
-              </div>
-              <div className="space-y-1.5">
-                <span className="font-bold text-gray-800 dark:text-gray-200 block">Q: Why are short usernames always taken?</span>
-                <p className="text-gray-500">A: Short user IDs containing 3 to 4 characters hold hyper scarcity. Millions of early accounts have locked these names permanently since early 2012.</p>
-              </div>
-              <div className="space-y-1.5">
-                <span className="font-bold text-gray-800 dark:text-gray-200 block">Q: Is it illegal to sell a social handle?</span>
-                <p className="text-gray-500">A: Most platforms forbid the direct commercial resale and sale of accounts in their terms of service, which can result in lifetime account bans. Trade carefully.</p>
-              </div>
+          {/* DYNAMIC FAQ ACCORDION GENERATOR */}
+          <div className="bg-white dark:bg-slate-850 p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-xs space-y-5">
+            <h3 className="font-sans font-extrabold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+              <HelpIcon className="w-5 h-5 text-cyan-500" />
+              <span className="bg-linear-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-200 bg-clip-text text-transparent">Frequently Asked Questions (FAQ)</span>
+            </h3>
+            <div className="space-y-2">
+              {report.faqs.map((faq, idx) => {
+                const open = activeFaqIdx === idx;
+                return (
+                  <div key={idx} className="border border-slate-100 dark:border-slate-800 rounded-xl overflow-hidden transition-all">
+                    <button
+                      type="button"
+                      onClick={() => setActiveFaqIdx(open ? null : idx)}
+                      className="w-full text-left px-4 py-3 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-100/30 dark:hover:bg-slate-800/80 flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 cursor-pointer"
+                    >
+                      <span>{faq.question}</span>
+                      <span className="text-slate-400 font-mono text-xs">{open ? "−" : "+"}</span>
+                    </button>
+                    {open && (
+                      <div className="px-4 py-3 text-xs sm:text-sm text-slate-600 dark:text-slate-200 border-t border-slate-100 dark:border-slate-800 leading-relaxed bg-white dark:bg-slate-850/40">
+                        {faq.answer}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
+
+          {/* RE-EVALUATE BUTTON OUTRO */}
+          <div className="text-center">
+            <button
+              onClick={() => {
+                setReport(null);
+                setInputValue("");
+                window.history.pushState({}, "", "/");
+                onNavigate("/");
+              }}
+              className="px-6 py-3 border border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
+            >
+              Evaluate Another Decision
+            </button>
+          </div>
+
+        </div>
+      )}
+
+      {/* CORE SEO CONTENT CATEGORIES - SEEDING INTERNAL LINKS FOR ORGANIC TRUST */}
+      <div className="border-t border-slate-200/40 dark:border-slate-900 pt-10 mt-10 space-y-10">
+        
+        <div className="text-center space-y-2">
+          <h3 className="font-extrabold text-xl text-slate-950 dark:text-white">Evaluate Key Growth Sectors</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">Explore predefined structured analytical reports for highly-searched careers and modern side hustles.</p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+          
+          {/* CATEGORY BLOCK: CARERS */}
+          <div className="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-900 space-y-3.5 shadow-2xs">
+            <span className="text-[10px] font-mono tracking-widest font-bold text-blue-500 uppercase">Careers</span>
+            <ul className="space-y-2 text-xs">
+              <li><button onClick={() => handleChipClick("Become Software Engineer")} className="hover:text-blue-600 dark:hover:text-blue-400 text-slate-500 text-left cursor-pointer">Become Software Engineer</button></li>
+              <li><button onClick={() => handleChipClick("Become Data Analyst")} className="hover:text-blue-600 dark:hover:text-blue-400 text-slate-500 text-left cursor-pointer">Become Data Analyst</button></li>
+              <li><button onClick={() => handleChipClick("Learn Cybersecurity")} className="hover:text-blue-600 dark:hover:text-blue-400 text-slate-500 text-left cursor-pointer">Learn Cybersecurity</button></li>
+              <li><button onClick={() => handleChipClick("Become UX Designer")} className="hover:text-blue-600 dark:hover:text-blue-400 text-slate-500 text-left cursor-pointer">Become UX Designer</button></li>
+            </ul>
+          </div>
+
+          {/* CATEGORY BLOCK: SIDE HUSTLES */}
+          <div className="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-900 space-y-3.5 shadow-2xs">
+            <span className="text-[10px] font-mono tracking-widest font-bold text-emerald-500 uppercase">Side Hustles</span>
+            <ul className="space-y-2 text-xs">
+              <li><button onClick={() => handleChipClick("Start Amazon KDP")} className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-500 text-left cursor-pointer">Start Amazon KDP</button></li>
+              <li><button onClick={() => handleChipClick("Start Print-on-Demand")} className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-500 text-left cursor-pointer">Start Print-on-Demand</button></li>
+              <li><button onClick={() => handleChipClick("Start Dropshipping")} className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-500 text-left cursor-pointer">Start Dropshipping</button></li>
+              <li><button onClick={() => handleChipClick("Become Freelancer")} className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-500 text-left cursor-pointer">Become Freelancer</button></li>
+            </ul>
+          </div>
+
+          {/* CATEGORY BLOCK: BUSINESS */}
+          <div className="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-900 space-y-3.5 shadow-2xs">
+            <span className="text-[10px] font-mono tracking-widest font-bold text-indigo-500 uppercase">Business Ideas</span>
+            <ul className="space-y-2 text-xs">
+              <li><button onClick={() => handleChipClick("Start AI Agency")} className="hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-500 text-left cursor-pointer">Start AI Agency</button></li>
+              <li><button onClick={() => handleChipClick("Build SaaS Product")} className="hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-500 text-left cursor-pointer">Build SaaS Product</button></li>
+              <li><button onClick={() => handleChipClick("Start Blogging")} className="hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-500 text-left cursor-pointer">Start Blogging</button></li>
+              <li><button onClick={() => handleChipClick("Create Newsletter")} className="hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-500 text-left cursor-pointer">Create Newsletter</button></li>
+            </ul>
+          </div>
+
+          {/* CATEGORY BLOCK: EDUCATION & PURCHASES */}
+          <div className="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-900 space-y-3.5 shadow-2xs">
+            <span className="text-[10px] font-mono tracking-widest font-bold text-cyan-500 uppercase">Education & Tech</span>
+            <ul className="space-y-2 text-xs">
+              <li><button onClick={() => handleChipClick("Get an MBA")} className="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-500 text-left cursor-pointer">Get an MBA</button></li>
+              <li><button onClick={() => handleChipClick("Learn Coding")} className="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-500 text-left cursor-pointer">Learn Coding</button></li>
+              <li><button onClick={() => handleChipClick("Buy ChatGPT Plus")} className="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-500 text-left cursor-pointer">Buy ChatGPT Plus</button></li>
+              <li><button onClick={() => handleChipClick("Buy MacBook Pro")} className="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-500 text-left cursor-pointer">Buy MacBook Pro</button></li>
+            </ul>
+          </div>
+
         </div>
 
       </div>
-    </div>
-  );
-}
 
-// Convenient dummy cup icon fallback to guard lucide loading
-function CupIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      viewBox="0 0 24 24"
-      className="h-3.5 w-3.5"
-    >
-      <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
-      <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
-      <line x1="6" x2="14" y1="2" y2="2" />
-    </svg>
+      {/* USER ENGAGEMENT: RECENT DECISION STREAM */}
+      {recentDecisions.length > 0 && (
+        <div className="mt-12 pt-8 border-t border-slate-200/40 dark:border-slate-900 space-y-4">
+          <div className="flex items-center space-x-2">
+            <TrendingUp className="w-5 h-5 text-indigo-500" />
+            <h4 className="font-extrabold text-lg text-slate-950 dark:text-white">Recent Decisions Evaluated</h4>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {recentDecisions.map((dec, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleChipClick(dec.query)}
+                className="p-3 bg-white hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-900 border border-slate-200/60 dark:border-slate-850/80 rounded-2xl flex flex-col justify-between items-start text-left cursor-pointer duration-150 transition-all hover:scale-102 hover:shadow-xs group"
+              >
+                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2 mb-2">
+                  {dec.query}
+                </p>
+                <div className="flex items-center justify-between w-full">
+                  <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                    dec.verdict === "UP" ? "bg-emerald-500/10 text-emerald-500" :
+                    dec.verdict === "DOWN" ? "bg-red-500/10 text-red-500" : "bg-amber-500/10 text-amber-500"
+                  }`}>
+                    {dec.verdict}
+                  </span>
+                  <span className="text-[9px] text-slate-400 font-mono">2026</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* RECENT HIGHLIGHTED BLOG INSIGHTS IN HOMEPAGE */}
+      {blogPosts.length > 0 && (
+        <div className="mt-12 pt-8 border-t border-slate-200/40 dark:border-slate-900 space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <BookOpen className="w-5 h-5 text-blue-500" />
+              <h4 className="font-extrabold text-lg text-slate-950 dark:text-white">Expert Guides & Insights</h4>
+            </div>
+            <button 
+              onClick={() => {
+                window.history.pushState({}, "", "/blog");
+                onNavigate("/blog");
+              }}
+              className="text-xs font-bold text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 flex items-center cursor-pointer"
+            >
+              <span>Explore all articles</span>
+              <ArrowRight className="w-4.5 h-4.5 ml-0.5" />
+            </button>
+          </div>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {blogPosts.slice(0, 4).map(post => (
+              <article 
+                key={post.id} 
+                className="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200/50 dark:border-slate-900 p-5 flex flex-col justify-between shadow-xs hover:shadow-md duration-200 transition-all group cursor-pointer"
+                onClick={() => {
+                  window.history.pushState({}, "", `/blog/${post.slug}`);
+                  onNavigate(`/blog/${post.slug}`);
+                }}
+              >
+                <div className="space-y-3">
+                  <span className="text-[9px] font-mono font-bold bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded">
+                    {post.category}
+                  </span>
+                  <h5 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
+                    {post.title}
+                  </h5>
+                  <p className="text-[11px] text-slate-400 line-clamp-3 leading-relaxed">
+                    {post.excerpt}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between text-[10px] text-slate-400 pt-4 font-mono">
+                  <span>{post.publishedAt}</span>
+                  <span>{post.readTime}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
+
+    </div>
   );
 }
