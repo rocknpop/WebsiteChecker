@@ -2248,9 +2248,9 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               <h4 className="text-xs font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Recommended For</h4>
               <p className="text-xs sm:text-sm text-gray-800 leading-relaxed font-sans">{report.recommendedFor}</p>
             </div>
-            <div className="space-y-1.5">
-              <h4 className="text-xs font-bold bg-linear-to-r from-red-450 to-rose-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Not Recommended For</h4>
-              <p className="text-xs sm:text-sm text-gray-800 leading-relaxed font-sans">{report.notRecommendedFor}</p>
+            <div className="space-y-1.5" style={{background:"#fff5f5",border:"1px solid #fecaca",borderRadius:"12px",padding:"16px"}}>
+              <h4 style={{background:"linear-gradient(135deg,#dc2626,#e11d48)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",fontWeight:"800",fontSize:"12px",letterSpacing:"0.1em",textTransform:"uppercase"}}>Not Recommended For</h4>
+              <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-sans">{report.notRecommendedFor}</p>
             </div>
           </div>
 
