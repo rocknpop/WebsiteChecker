@@ -1203,6 +1203,9 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     window.history.pushState({}, "", `/${slug}`);
     onNavigate(`/${slug}`);
     performAnalysis(fullQuery);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
   };
 
   // Helper to determine text colors and icons based on verdict
