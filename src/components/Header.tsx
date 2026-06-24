@@ -84,7 +84,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
       {isOpen && (
         <div style={{position:"fixed",inset:0,zIndex:9998}}>
           <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.4)"}} onClick={() => setIsOpen(false)} />
-          <div style={{position:"absolute",top:0,right:0,bottom:0,width:"280px",background:"white",boxShadow:"-4px 0 20px rgba(0,0,0,0.15)",display:"flex",flexDirection:"column"}}>
+          <div style={{position:"fixed",top:0,right:0,bottom:0,width:"280px",background:"white",zIndex:10000,boxShadow:"-4px 0 20px rgba(0,0,0,0.15)",display:"flex",flexDirection:"column"}}>
             <div style={{padding:"20px 20px 16px",borderBottom:"1px solid #f3f4f6",display:"flex",alignItems:"center",gap:"8px"}}>
               <div style={{height:"28px",width:"28px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"8px",display:"flex",alignItems:"center",justifyContent:"center"}}>
                 <TrendingUp style={{height:"16px",width:"16px",color:"white"}} />
@@ -94,7 +94,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
               </span>
             </div>
 
-            <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
+            <div style={{flex:1,overflowY:"auto",padding:"20px 16px",display:"flex",flexDirection:"column",gap:"4px"}}>
               <p style={{fontSize:"10px",fontFamily:"monospace",letterSpacing:"0.1em",textTransform:"uppercase",color:"#9ca3af",fontWeight:"600",padding:"0 8px",marginBottom:"8px"}}>
                 Navigation
               </p>
@@ -115,7 +115,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                     fontWeight: currentPath === link.path ? "600" : "500",
                     fontSize:"14px",
                     cursor:"pointer",
-                    marginBottom:"4px",
                     textAlign:"left",
                   }}
                 >
