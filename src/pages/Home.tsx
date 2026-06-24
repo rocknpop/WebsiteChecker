@@ -1731,17 +1731,23 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               {filteredBlogPosts.map(post => (
                 <article 
                   key={post.id} 
-                  className="bg-white backdrop-blur-sm rounded-2xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm hover:shadow-2xl hover:shadow-indigo-500/12 hover:-translate-y-1 duration-300 transition-all group hover:border-indigo-500/30"
+                  style={{background:"white",border:"1px solid #f3f4f6",boxShadow:"0 1px 3px rgba(0,0,0,0.06)",borderRadius:"16px",padding:"24px",display:"flex",flexDirection:"column",justifyContent:"space-between"}}
                 >
                   <div className="space-y-3.5">
-                    <div className="flex items-center justify-between text-[11px] text-gray-600 font-mono">
-                      <span className="bg-blue-950 text-blue-400 px-2 py-0.5 rounded font-semibold border border-blue-900/50">
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",fontSize:"11px",fontFamily:"monospace",color:"#4b5563"}}>
+                      <span style={{
+                        ...(post.category==="Side Hustles"?{background:"linear-gradient(135deg,#f0fdf4,#dcfce7)",color:"#16a34a",border:"1px solid #bbf7d0"}:
+                           post.category==="Careers"?{background:"linear-gradient(135deg,#eff6ff,#dbeafe)",color:"#2563eb",border:"1px solid #bfdbfe"}:
+                           post.category==="Business"?{background:"linear-gradient(135deg,#fdf4ff,#fae8ff)",color:"#9333ea",border:"1px solid #e9d5ff"}:
+                           {background:"linear-gradient(135deg,#f8fafc,#f1f5f9)",color:"#64748b",border:"1px solid #e2e8f0"}),
+                        fontSize:"11px",fontWeight:"700",padding:"3px 10px",borderRadius:"999px",display:"inline-block"
+                      }}>
                         {post.category}
                       </span>
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 style={{fontWeight:"800",fontSize:"18px",background:"linear-gradient(135deg,#4b5563,#6b7280)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",lineHeight:"1.4"}}>
+                    <h3 style={{fontWeight:"800",fontSize:"18px",background:"linear-gradient(135deg,#1e40af,#4f46e5)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",lineHeight:"1.4"}}>
                       {post.title}
                     </h3>
 
