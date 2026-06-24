@@ -1243,7 +1243,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     ? blogPosts 
     : blogPosts.filter(post => post.category === activeCategory);
 
-  const categories = ["All", "Careers", "Side Hustles", "Business"];
+  const categories = ["All", "Careers", "Side Hustles", "Business", "Tools"];
 
   const renderActiveToolResult = () => {
     if (!toolResult) return null;
