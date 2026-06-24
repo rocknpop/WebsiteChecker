@@ -48,6 +48,18 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
     if (mouseLeaveTimer.current) clearTimeout(mouseLeaveTimer.current);
   };
 
+  useEffect(() => {
+    const btn = document.getElementById("mobile-menu-btn");
+    const evalBtn = document.getElementById("eval-now-btn");
+    const handleResize = () => {
+      if (btn) btn.style.display = window.innerWidth < 768 ? "flex" : "none";
+      if (evalBtn) evalBtn.style.display = window.innerWidth >= 768 ? "flex" : "none";
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const navLinks = [
     { name: "Decision Engine",   path: "/" },
     { name: "Diagnostics Suite", path: "/status" },
@@ -124,8 +136,10 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               {/* Evaluate Now — desktop only */}
               <button
+                id="eval-now-btn"
                 onClick={() => handleLinkClick("/")}
-                className="hidden md:flex items-center space-x-1.5 px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold rounded-full shadow-md transition-colors duration-150 active:scale-95"
+                style={{ display: "flex" }}
+                className="items-center space-x-1.5 px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold rounded-full shadow-md transition-colors duration-150 active:scale-95"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Evaluate Now</span>
@@ -133,6 +147,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
               {/* Hamburger — mobile only, always rendered */}
               <button
+                id="mobile-menu-btn"
                 onClick={() => setIsOpen((v) => !v)}
                 style={{
                   display: "flex",
@@ -144,7 +159,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                   background: "transparent",
                   cursor: "pointer",
                 }}
-                className="md:hidden"
                 aria-label={isOpen ? "Close menu" : "Open menu"}
               >
                 {isOpen
