@@ -117,13 +117,13 @@ export function DisclaimerPage() {
 export function AboutUsPage() {
   return (
     <LegalLayout title="About DownOrUp.net">
-      <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-slate-900/60 rounded-3xl border border-slate-800 mb-6">
-        <div className="p-4.5 bg-blue-600 rounded-2xl text-white flex items-center justify-center font-bold text-2xl w-14 h-14 shrink-0 shadow-lg shadow-indigo-500/10">
+      <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-blue-50 rounded-3xl border border-blue-200 mb-6">
+        <div className="p-4.5 bg-blue-600 rounded-2xl text-white flex items-center justify-center font-bold text-2xl w-14 h-14 shrink-0 shadow-lg shadow-blue-200">
           ↑
         </div>
         <div>
-          <h4 className="font-bold text-white text-base">"Should You Do It?"</h4>
-          <p className="text-xs text-slate-250 mt-0.5">
+          <h4 className="font-bold text-gray-900 text-base">"Should You Do It?"</h4>
+          <p className="text-xs text-gray-700 mt-0.5">
             We built DownOrUp.net to remove decision paralysis. By aggregating modern market indicators with state-of-the-art AI parsing, we help founders analyze trade-offs in seconds.
           </p>
         </div>
