@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Sparkles, Menu, X, TrendingUp, ChevronRight } from "lucide-react";
 
 interface HeaderProps {
@@ -30,7 +30,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
   return (
     <>
-      <header id="site-header" className="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm">
+      <header id="site-header" className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
 
@@ -44,7 +44,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                 <TrendingUp className="h-5 w-5 text-white" />
               </div>
               <div className="leading-tight">
-                <span className="font-sans font-extrabold text-xl tracking-tight bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 bg-clip-text text-transparent">
+                <span className="font-sans font-extrabold text-xl tracking-tight bg-linear-to-r from-blue-700 via-blue-500 to-indigo-600 bg-clip-text text-transparent">
                   DownOrUp<span className="text-blue-500">.net</span>
                 </span>
                 <span className="text-[10px] block font-mono text-gray-400 -mt-0.5 font-semibold tracking-wide">
@@ -111,7 +111,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
         >
           <div className="absolute inset-0 bg-gray-900/30 backdrop-blur-xs" onClick={() => setIsOpen(false)} />
           <div
-            className={`absolute inset-y-0 right-0 w-full max-w-xs bg-white border-l border-gray-200 shadow-2xl p-6 flex flex-col transform transition-transform duration-300 ${
+            className={`absolute inset-y-0 right-0 w-full max-w-xs bg-white border-l border-gray-200 shadow-2xl p-6 flex flex-col transform transition-transform duration-300 ease-in-out ${
               isOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
