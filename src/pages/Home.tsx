@@ -1648,7 +1648,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 <span className="text-xs text-gray-400 font-mono">• {selectedPost.publishedAt}</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-gray-800 via-gray-600 to-gray-500 bg-clip-text text-transparent leading-tight">
+              <h1 style={{fontSize:"2rem",fontWeight:"800",background:"linear-gradient(135deg,#1e40af,#4f46e5)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",lineHeight:"1.3"}}>
                 {selectedPost.title}
               </h1>
 
@@ -1741,7 +1741,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 className="font-extrabold text-lg bg-gradient-to-r from-gray-700 to-gray-500 bg-clip-text text-transparent group-hover:from-blue-600 group-hover:to-indigo-500 transition-all leading-snug">
+                    <h3 style={{fontWeight:"800",fontSize:"18px",background:"linear-gradient(135deg,#4b5563,#6b7280)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",lineHeight:"1.4"}}>
                       {post.title}
                     </h3>
 

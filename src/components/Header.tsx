@@ -43,8 +43,8 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             <div style={{height:"32px",width:"32px",flexShrink:0,background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"10px",display:"flex",alignItems:"center",justifyContent:"center"}}>
               <TrendingUp style={{height:"18px",width:"18px",color:"white"}} />
             </div>
-            <span style={{fontWeight:"900",fontSize:"18px",color:"#111827",whiteSpace:"nowrap"}}>
-              DownOrUp<span style={{color:"#2563eb"}}>.net</span>
+            <span style={{fontWeight:"900",fontSize:"18px",whiteSpace:"nowrap",background:"linear-gradient(135deg,#06b6d4,#3b82f6,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>
+              DownOrUp.net
             </span>
           </div>
 
