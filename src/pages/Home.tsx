@@ -2244,9 +2244,9 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
           {/* AUDIENCE PROFILES */}
           <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 grid sm:grid-cols-2 gap-6">
-            <div className="space-y-1.5">
-              <h4 className="text-xs font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Recommended For</h4>
-              <p className="text-xs sm:text-sm text-gray-800 leading-relaxed font-sans">{report.recommendedFor}</p>
+            <div className="space-y-1.5" style={{background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:"12px",padding:"16px"}}>
+              <h4 style={{background:"linear-gradient(135deg,#16a34a,#059669)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",fontWeight:"800",fontSize:"12px",letterSpacing:"0.1em",textTransform:"uppercase"}}>Recommended For</h4>
+              <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-sans">{report.recommendedFor}</p>
             </div>
             <div className="space-y-1.5" style={{background:"#fff5f5",border:"1px solid #fecaca",borderRadius:"12px",padding:"16px"}}>
               <h4 style={{background:"linear-gradient(135deg,#dc2626,#e11d48)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",fontWeight:"800",fontSize:"12px",letterSpacing:"0.1em",textTransform:"uppercase"}}>Not Recommended For</h4>
