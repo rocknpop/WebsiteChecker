@@ -1791,16 +1791,14 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         <h1 className={`text-3xl sm:text-7xl font-black tracking-tight text-gray-900 leading-none${isMobile ? "" : " animate-fade-in-up animation-delay-200"}`}>
           {(() => {
             const prefix = "Should You ";
-            const suffix = "Do It?";
             if (twText.length <= prefix.length) {
-              return <span className={twText.length < prefix.length || twDone ? (twDone ? "" : "typewriter-cursor") : ""}>{twText || <>&nbsp;</>}</span>;
+              return <span className={twDone ? "" : "typewriter-cursor"}>{twText || <>&nbsp;</>}</span>;
             }
-            const gradientPart = twText.slice(prefix.length);
             return (
               <>
                 <span>{prefix}</span>
-                <span className={`bg-gradient-to-r from-blue-600 via-indigo-500 to-amber-500 bg-clip-text text-transparent${twDone ? "" : " typewriter-cursor"}`}>
-                  {gradientPart}
+                <span className={`bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent${twDone ? "" : " typewriter-cursor"}`}>
+                  {twText.slice(prefix.length)}
                 </span>
               </>
             );
@@ -1840,7 +1838,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <button
               key={chip}
               onClick={() => handleChipClick(chip)}
-              className="px-3 py-1.5 bg-white border border-gray-200 shadow-sm hover:border-blue-300 hover:text-blue-600 rounded-full text-xs text-gray-700 font-medium transition-all duration-150 cursor-pointer active:scale-95"
+              className="px-3 py-1.5 bg-white border border-gray-200 shadow-sm hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded-full text-xs text-gray-700 font-medium transition-all duration-200 cursor-pointer active:scale-95"
             >
               {chip}
             </button>
