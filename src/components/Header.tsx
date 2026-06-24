@@ -30,10 +30,10 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   }, [isOpen]);
 
   const navLinks = [
-    { name: "Decision Engine", path: "/" },
-    { name: "Diagnostics Suite", path: "/status" },
-    { name: "Blog / Insights", path: "/blog" },
-    { name: "About", path: "/about" },
+    { name: "Decision Engine", path: "/", tooltip: "AI-powered decision analysis" },
+    { name: "Diagnostics Suite", path: "/status", tooltip: "Check website status, DNS, SSL & more" },
+    { name: "Blog / Insights", path: "/blog", tooltip: "Expert guides & strategic advice" },
+    { name: "About", path: "/about", tooltip: "Our mission & how it works" },
   ];
 
   const isActive = (path: string) =>
@@ -86,20 +86,29 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
               {navLinks.map((link) => {
                 const active = isActive(link.path);
                 return (
-                  <button
-                    key={link.path}
-                    onClick={() => handleLinkClick(link.path)}
-                    className={`relative px-4 py-2 rounded-full text-sm transition-all duration-200 ${
-                      active
-                        ? "bg-blue-50 text-blue-600 font-semibold"
-                        : "text-gray-600 hover:bg-blue-50 hover:text-blue-600 font-medium"
-                    }`}
-                  >
-                    {link.name}
-                    {active && (
-                      <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-blue-600 rounded-full" />
+                  <div key={link.path} className="relative group/nav">
+                    <button
+                      onClick={() => handleLinkClick(link.path)}
+                      className={`relative px-4 py-2 rounded-full text-sm transition-all duration-200 cursor-pointer ${
+                        active
+                          ? "bg-blue-50 text-blue-600 font-semibold"
+                          : "text-gray-600 hover:bg-blue-50 hover:text-blue-600 font-medium"
+                      }`}
+                    >
+                      {link.name}
+                      {/* Animated blue dot indicator for active link */}
+                      {active && (
+                        <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
+                      )}
+                    </button>
+                    {/* Tooltip */}
+                    {link.tooltip && (
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1.5 bg-gray-900 text-white text-[11px] font-medium rounded-lg whitespace-nowrap opacity-0 group-hover/nav:opacity-100 pointer-events-none transition-opacity duration-200 z-50 shadow-lg">
+                        {link.tooltip}
+                        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+                      </div>
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </nav>
@@ -108,7 +117,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => handleLinkClick("/")}
-                className="hidden sm:flex items-center space-x-1.5 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold rounded-full shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+                className="hidden sm:flex items-center space-x-1.5 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 active:scale-95"
               >
                 <Sparkles className="w-3.5 h-3.5 animate-pulse" />
                 <span>Evaluate Now</span>

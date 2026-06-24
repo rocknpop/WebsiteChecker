@@ -1796,8 +1796,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             }
             return (
               <>
-                <span>{prefix}</span>
-                <span className={`bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent${twDone ? "" : " typewriter-cursor"}`}>
+                <span className="text-gray-900">{prefix}</span>
+                <span className={`bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent${twDone ? "" : " typewriter-cursor"}`}>
                   {twText.slice(prefix.length)}
                 </span>
               </>
