@@ -56,6 +56,24 @@ interface DecisionReport {
   reasoning: string;
   faqs: FAQ[];
   timestamp: string;
+  
+  // Witty Coach and SEO extensions
+  formatted_verdict?: string;
+  verdict_reasoning?: string;
+  detailed_analysis?: {
+    key_benefit_or_risk: string;
+    market_relevance: string;
+    required_effort: string;
+    ideal_candidate: string;
+  };
+  actionable_next_step?: string;
+  social_share_text?: string;
+  seo?: {
+    decision_title: string;
+    meta_description: string;
+    seo_summary: string;
+    slug: string;
+  };
 }
 
 // Global cache for ultra-fast performance and 100% Lighthouse / PageSpeed score
@@ -381,12 +399,16 @@ app.post("/api/analyze-decision", async (req, res) => {
   if (!process.env.GEMINI_API_KEY) {
     console.warn("[AI Engine] GEMINI_API_KEY is not defined. Falling back to dynamic mock generation.");
     // Fallback Mock generation to prevent any crash
-    const verdicts: ("UP" | "NEUTRAL" | "DOWN")[] = ["UP", "NEUTRAL", "DOWN"];
-    const chosenVerdict = verdicts[Math.floor(Math.random() * verdicts.length)];
+    const chosenVerdict = Math.random() > 0.5 ? "UP" : "DOWN";
+    const formattedVerdict = chosenVerdict === "UP" ? "UP ✅" : "DOWN ❌";
     const fallbackReport: DecisionReport = {
       query: normalizedQuery,
       verdict: chosenVerdict,
-      confidenceScore: 70 + Math.floor(Math.random() * 25),
+      formatted_verdict: formattedVerdict,
+      verdict_reasoning: chosenVerdict === "UP"
+        ? `${normalizedQuery} shows tremendous potential with high growth indices in 2026.`
+        : `${normalizedQuery} carries significant risk factors and market oversaturation in 2026.`,
+      confidenceScore: 82 + Math.floor(Math.random() * 15),
       summary: `Evaluating: "${normalizedQuery}". This is an automated diagnostic preview. Connect your live Gemini API key in Settings > Secrets to enable complete AI analytical coverage.`,
       pros: [
         "Provides immediate learning and practical experience",
@@ -406,6 +428,24 @@ app.post("/api/analyze-decision", async (req, res) => {
       recommendedFor: "Proactive problem solvers looking for modern side hustles or lifestyle optimizations.",
       notRecommendedFor: "People searching for instantaneous, guaranteed results with zero effort.",
       reasoning: `This is a strategic review of ${normalizedQuery}. Under diagnostic conditions, the opportunities indicate high learning metrics but require operational prudence. Setup your real GEMINI_API_KEY in the workspace to see detailed, state-of-the-art reports.`,
+      detailed_analysis: {
+        key_benefit_or_risk: chosenVerdict === "UP"
+          ? "Unlocks a high-growth leveraged skill or lifestyle asset with compounding value."
+          : "Represents high customer-acquisition friction or potential burnout risk without proven returns.",
+        market_relevance: "The market in 2026 is rapidly evolving. High demand persists for unique, non-commodity value.",
+        required_effort: "Demands solid initial focus and 10-15 hours per week of disciplined work over 6 months.",
+        ideal_candidate: "Self-motivated individuals who learn daily, leverage modern AI tools, and tolerate uncertainty."
+      },
+      actionable_next_step: chosenVerdict === "UP"
+        ? `Start by taking 1 hour to outline your roadmap, set up a dedicated workspace, and build your first minimal prototype.`
+        : `Instead, investigate adjacent lower-risk or higher-margin models that match your capital and skill levels.`,
+      social_share_text: `Just got my verdict from downorup.net: ${normalizedQuery} is ${formattedVerdict}! Time to take strategic action! 🚀`,
+      seo: {
+        decision_title: `Should I ${normalizedQuery}? Verdict: ${formattedVerdict} | DownOrUp.net`,
+        meta_description: `Read the brutal, data-backed truth about whether you should ${normalizedQuery.toLowerCase()} in 2026.`,
+        seo_summary: `The dilemma of whether to ${normalizedQuery.toLowerCase()} is one faced by many professionals in 2026. This comprehensive strategic evaluation analyzes the direct cost, effort, and market saturation levels to give you a definitive binary answer. By looking at immediate trends, we can see if this choice matches your risk appetite or if you should seek alternatives.`,
+        slug: normalizedQuery.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+      },
       faqs: [
         { question: "What are the benefits?", answer: "Acquisition of highly versatile skills, personal growth, and potential digital independence." },
         { question: "What are the risks?", answer: "Logistical friction, initial loss of leisure time, and minor capital expenditure." },
@@ -429,7 +469,9 @@ app.post("/api/analyze-decision", async (req, res) => {
       type: Type.OBJECT,
       properties: {
         query: { type: Type.STRING },
-        verdict: { type: Type.STRING, description: "Must be 'UP', 'NEUTRAL', or 'DOWN'" },
+        verdict: { type: Type.STRING, description: "Must be 'UP' or 'DOWN'" },
+        formatted_verdict: { type: Type.STRING, description: "Must be 'UP ✅' or 'DOWN ❌'" },
+        verdict_reasoning: { type: Type.STRING, description: "A concise, single-sentence summary of the main reason for the verdict (e.g., 'Python remains the #1 language for high-growth fields like AI and Data Science.')." },
         confidenceScore: { type: Type.INTEGER, description: "Confidence percentage (0 to 100)" },
         summary: { type: Type.STRING, description: "A concise, highly professional summary overview of 1-2 sentences" },
         pros: { 
@@ -450,6 +492,28 @@ app.post("/api/analyze-decision", async (req, res) => {
         recommendedFor: { type: Type.STRING, description: "Who this decision is ideal for" },
         notRecommendedFor: { type: Type.STRING, description: "Who should strictly avoid this decision" },
         reasoning: { type: Type.STRING, description: "A highly comprehensive, strategic, and detailed final verdict reasoning" },
+        detailed_analysis: {
+          type: Type.OBJECT,
+          properties: {
+            key_benefit_or_risk: { type: Type.STRING, description: "The single most compelling reason to do/not do it." },
+            market_relevance: { type: Type.STRING, description: "Analysis of the current trend, job market, or saturation level (where applicable)." },
+            required_effort: { type: Type.STRING, description: "An honest assessment of the time, cost, or emotional effort required." },
+            ideal_candidate: { type: Type.STRING, description: "Who is best suited for this decision (even if the verdict is DOWN, mention who might still do it)." }
+          },
+          required: ["key_benefit_or_risk", "market_relevance", "required_effort", "ideal_candidate"]
+        },
+        actionable_next_step: { type: Type.STRING, description: "A clear 'If you decide to do this, start by...' or 'Instead, you should look into...' advice." },
+        social_share_text: { type: Type.STRING, description: "A viral-ready snippet suitable for Twitter/X or LinkedIn." },
+        seo: {
+          type: Type.OBJECT,
+          properties: {
+            decision_title: { type: Type.STRING, description: "The SEO-optimized page title (e.g., 'Should I Learn Python? Verdict: UP | Is it Worth it?')." },
+            meta_description: { type: Type.STRING, description: "A compelling description summarizing the decision and its outcome." },
+            seo_summary: { type: Type.STRING, description: "A 2-3 paragraph detailed breakdown of the decision, using rich, relevant keywords. This must be unique content." },
+            slug: { type: Type.STRING, description: "An SEO-friendly, URL-safe slug (e.g., 'should-i-learn-python')." }
+          },
+          required: ["decision_title", "meta_description", "seo_summary", "slug"]
+        },
         faqs: {
           type: Type.ARRAY,
           items: {
@@ -464,23 +528,36 @@ app.post("/api/analyze-decision", async (req, res) => {
         }
       },
       required: [
-        "query", "verdict", "confidenceScore", "summary", "pros", "cons",
+        "query", "verdict", "formatted_verdict", "verdict_reasoning", "confidenceScore", "summary", "pros", "cons",
         "difficulty", "cost", "timeToResults", "riskLevel", "potentialReward",
-        "recommendedFor", "notRecommendedFor", "reasoning", "faqs"
+        "recommendedFor", "notRecommendedFor", "reasoning", "detailed_analysis",
+        "actionable_next_step", "social_share_text", "seo", "faqs"
       ]
     };
 
     const prompt = `Perform a comprehensive, detailed strategic decision evaluation of this choice: "${normalizedQuery}".
 Analyze it objectively for the current year 2026. Be realistic, truthful, and data-driven.
 Assess the market conditions, viability, costs, and risks.
-Choose a verdict: "UP" (solid opportunity), "NEUTRAL" (evaluate carefully / proceed with caution), or "DOWN" (avoid / poor outlook / highly saturated).
+Choose a definitive binary verdict: either "UP" or "DOWN". You MUST choose either "UP" or "DOWN". Do not output "Maybe" or "It Depends". Your logic must definitively favor one side based on typical success rates, market demand, or logical reasoning.
 Make sure to answer the 5 specified FAQs fully.`;
 
     const result = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are the world's most sophisticated, objective, and realistic AI Strategic Decision Engine. You evaluate business ideas, career paths, side hustles, purchases, and life opportunities with extreme precision, avoiding hype or generic advice. You return high-value, specific reports.",
+        systemInstruction: `You are the witty, data-driven core engine for "DownOrUp.net", the ultimate AI-powered decision platform.
+Your persona is that of a "Brutally Honest Career & Lifestyle Coach," similar to a supportive but direct mentor. You cut through the noise with data, current trends, and logical analysis, always delivering a decisive "UP ✅" (Do it) or "DOWN ❌" (Don't do it) verdict.
+
+Operation Instructions:
+1. Strict JSON Output: You must ONLY output valid JSON. Do not wrap the JSON in markdown blocks (no \`\`\`json).
+2. Binary Decision: You MUST choose either "UP" or "DOWN". Do not output "Maybe" or "It Depends". Your logic must definitively favor one side based on typical success rates, market demand, or logical reasoning.
+3. SEO Optimization: You are responsible for generating SEO-friendly content within the JSON response.
+   * Create a 'decision_title' (optimized for the user's question, e.g., "Is Learning Python Still Worth It?").
+   * Provide a 'meta_description' (150-160 characters summary).
+   * Generate an 'seo_summary' (2-3 paragraphs) that uses keywords related to the decision, explaining the rationale clearly. Search engines love this unique text.
+4. Tone Constraints:
+   * UP verdicts: Enthusiastic, motivational, but backed by reasons. Use emojis appropriately (e.g., 🚀, 💡).
+   * DOWN verdicts: Critical, honest, and direct about the risks or downsides. Use warning emojis appropriately (e.g., ⚠️, 🚧).`,
         responseMimeType: "application/json",
         responseSchema: responseSchema,
         temperature: 1.0,
@@ -685,7 +762,10 @@ app.get("/sitemap.xml", (req, res) => {
 
 // START DEV OR PRODUCTION MIDDLEWARE INTERACTION
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  const isProd = process.env.NODE_ENV === "production" || 
+                 (typeof __filename !== "undefined" && (__filename.endsWith(".cjs") || __filename.includes("dist")));
+
+  if (!isProd) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",

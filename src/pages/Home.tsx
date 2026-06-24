@@ -35,6 +35,24 @@ interface DecisionReport {
   reasoning: string;
   faqs: FAQ[];
   timestamp?: string;
+
+  // Witty Coach and SEO extensions
+  formatted_verdict?: string;
+  verdict_reasoning?: string;
+  detailed_analysis?: {
+    key_benefit_or_risk: string;
+    market_relevance: string;
+    required_effort: string;
+    ideal_candidate: string;
+  };
+  actionable_next_step?: string;
+  social_share_text?: string;
+  seo?: {
+    decision_title: string;
+    meta_description: string;
+    seo_summary: string;
+    slug: string;
+  };
 }
 
 interface LoggedDecision {
@@ -663,40 +681,106 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       {report && !loading && (
         <div className="max-w-4xl mx-auto space-y-8 animate-fade-in mb-16" id="report-view">
           
-          {/* VERDICT TOP BANNER */}
+          {/* VERDICT MASSIVE GLOWING OUTCOME */}
           {(() => {
-            const meta = getVerdictMetadata(report.verdict);
+            const isUp = report.verdict === "UP";
             return (
-              <div className={`p-6 sm:p-8 rounded-3xl border ${meta.bg} flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs`}>
-                <div className="flex items-center space-x-5 text-center sm:text-left flex-col sm:flex-row">
-                  {meta.icon}
-                  <div>
-                    <span className="text-xs font-mono font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">AI STRATEGIC VERDICT</span>
-                    <h2 className={`text-4xl sm:text-5xl font-black tracking-tight ${meta.color} mt-0.5`}>
-                      {meta.title}
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold font-mono tracking-wide mt-1">
-                      {meta.subtitle}
-                    </p>
+              <div className={`p-8 sm:p-12 rounded-3xl border ${isUp ? 'border-emerald-500 bg-slate-950/90 shadow-[0_0_60px_-10px_rgba(16,185,129,0.3)]' : 'border-rose-500 bg-slate-950/90 shadow-[0_0_60px_-10px_rgba(244,63,94,0.3)]'} flex flex-col items-center justify-center text-center gap-6 relative overflow-hidden`}>
+                <div className={`absolute -right-24 -top-24 w-48 h-48 rounded-full blur-3xl opacity-20 ${isUp ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                <div className={`absolute -left-24 -bottom-24 w-48 h-48 rounded-full blur-3xl opacity-20 ${isUp ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+
+                <span className="text-xs font-mono font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">
+                  COACH VERDICT FOR: "{report.query}"
+                </span>
+                
+                <div className="flex flex-col items-center gap-2">
+                  <div className={`text-6xl sm:text-7xl md:text-8xl font-black tracking-tighter ${isUp ? 'text-emerald-450 drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'text-rose-500 drop-shadow-[0_0_15px_rgba(244,63,94,0.4)]'} uppercase select-none flex items-center justify-center gap-4 animate-pulse`}>
+                    {isUp ? "UP ✅" : "DOWN ❌"}
+                  </div>
+                  <div className="h-1.5 w-32 bg-slate-800 rounded-full overflow-hidden mt-2">
+                    <div className={`h-full rounded-full ${isUp ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500 animate-pulse'}`} style={{ width: '100%' }} />
                   </div>
                 </div>
 
-                {/* CONFIDENCE BAR METER */}
-                <div className="w-full sm:w-48 bg-slate-200 dark:bg-slate-800 p-4.5 rounded-2xl border border-slate-300/30 dark:border-slate-700/85 flex flex-col justify-center">
-                  <div className="flex justify-between items-center mb-1 text-[11px] font-mono font-bold text-slate-500">
-                    <span>CONFIDENCE</span>
-                    <span>{report.confidenceScore}%</span>
-                  </div>
-                  <div className="w-full bg-slate-300 dark:bg-slate-850 h-2.5 rounded-full overflow-hidden">
-                    <div 
-                      className="bg-blue-600 dark:bg-blue-500 h-full rounded-full transition-all duration-1000"
-                      style={{ width: `${report.confidenceScore}%` }}
-                    />
-                  </div>
+                <div className="max-w-2xl mt-2 bg-slate-900/60 backdrop-blur-xs border border-slate-800 p-5 rounded-2xl w-full">
+                  <p className="text-xs font-mono text-indigo-400 uppercase tracking-widest font-bold mb-1.5">
+                    Brutally Honest Coach Take:
+                  </p>
+                  <p className="text-sm sm:text-base font-semibold text-slate-100 leading-relaxed italic">
+                    "{report.verdict_reasoning || report.summary}"
+                  </p>
                 </div>
               </div>
             );
           })()}
+
+          {/* STRUCTURED ANALYSIS CARDS */}
+          <div className="grid sm:grid-cols-2 gap-6">
+            {/* KEY RATIONALE */}
+            <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 text-indigo-400">
+                  <Sparkles className="w-4 h-4" />
+                  <span className="text-xs font-mono tracking-widest font-bold uppercase">Key Rationale</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-250 leading-relaxed font-medium">
+                  {report.detailed_analysis?.key_benefit_or_risk || report.summary}
+                </p>
+              </div>
+            </div>
+
+            {/* MARKET DEMAND */}
+            <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 text-amber-400">
+                  <TrendingUp className="w-4 h-4" />
+                  <span className="text-xs font-mono tracking-widest font-bold uppercase">Market Relevance</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-250 leading-relaxed font-medium">
+                  {report.detailed_analysis?.market_relevance || `Current 2026 conditions outline a dynamic environment where efficiency is critical.`}
+                </p>
+              </div>
+            </div>
+
+            {/* REQUIRED EFFORT */}
+            <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 text-cyan-400">
+                  <Zap className="w-4 h-4" />
+                  <span className="text-xs font-mono tracking-widest font-bold uppercase">Required Effort</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-250 leading-relaxed font-medium">
+                  {report.detailed_analysis?.required_effort || `Difficulty is assessed at ${report.difficulty}/10 and capital required is ${report.cost}/10.`}
+                </p>
+              </div>
+            </div>
+
+            {/* IDEAL CANDIDATE */}
+            <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 text-emerald-400">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span className="text-xs font-mono tracking-widest font-bold uppercase">Ideal Candidate</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-250 leading-relaxed font-medium">
+                  {report.detailed_analysis?.ideal_candidate || report.recommendedFor}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ACTIONABLE NEXT STEP */}
+          {report.actionable_next_step && (
+            <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+              <div className="flex items-center space-x-2 text-emerald-450">
+                <ArrowRight className="w-5 h-5" />
+                <h3 className="font-sans font-extrabold text-lg text-white">Actionable Next Step</h3>
+              </div>
+              <p className="text-sm text-slate-100 leading-relaxed bg-emerald-950/10 p-4 rounded-xl border border-emerald-900/30 font-medium">
+                {report.actionable_next_step}
+              </p>
+            </div>
+          )}
 
           {/* TWO COLUMN SUMMARY & METRICS GRID */}
           <div className="grid md:grid-cols-3 gap-6">
@@ -705,7 +789,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <div className="col-span-2 bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs flex flex-col justify-between space-y-4">
               <div className="space-y-2">
                 <span className="text-[10px] font-mono tracking-wider font-bold bg-linear-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent uppercase">EXECUTIVE SUMMARY</span>
-                <p className="text-sm sm:text-base text-slate-100 font-medium leading-relaxed">
+                <p className="text-sm sm:text-base text-slate-100 font-medium leading-relaxed font-sans">
                   {report.summary}
                 </p>
               </div>
@@ -749,12 +833,12 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   <span className="text-slate-350">Risk Profile:</span>
                   <span className="font-bold text-white font-mono">{report.riskLevel}</span>
                 </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-350">Potential Return:</span>
+                <div className="flex justify-between text-xs font-sans">
+                  <span className="text-slate-350 font-mono">Potential Return:</span>
                   <span className="font-bold text-white font-mono">{report.potentialReward}</span>
                 </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-350">Time Horizon:</span>
+                <div className="flex justify-between text-xs font-sans">
+                  <span className="text-slate-350 font-mono">Time Horizon:</span>
                   <span className="font-bold text-white font-mono">{report.timeToResults}</span>
                 </div>
               </div>
@@ -773,7 +857,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               </span>
               <ul className="space-y-3">
                 {report.pros.map((pro, idx) => (
-                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-100 leading-relaxed">
+                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">
                     <Check className="w-4 h-4 text-emerald-400 mt-1 shrink-0 bg-emerald-500/10 rounded p-0.5" />
                     <span>{pro}</span>
                   </li>
@@ -789,7 +873,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               </span>
               <ul className="space-y-3">
                 {report.cons.map((con, idx) => (
-                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-100 leading-relaxed">
+                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">
                     <XCircle className="w-4 h-4 text-red-400 mt-1 shrink-0 bg-red-500/10 rounded p-0.5" />
                     <span>{con}</span>
                   </li>
@@ -803,11 +887,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs grid sm:grid-cols-2 gap-6">
             <div className="space-y-1.5">
               <h4 className="text-xs font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Recommended For</h4>
-              <p className="text-xs sm:text-sm text-slate-100 leading-relaxed">{report.recommendedFor}</p>
+              <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">{report.recommendedFor}</p>
             </div>
             <div className="space-y-1.5">
               <h4 className="text-xs font-bold bg-linear-to-r from-red-450 to-rose-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Not Recommended For</h4>
-              <p className="text-xs sm:text-sm text-slate-100 leading-relaxed">{report.notRecommendedFor}</p>
+              <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">{report.notRecommendedFor}</p>
             </div>
           </div>
 
@@ -817,10 +901,50 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               <Award className="w-5 h-5 text-indigo-400" />
               <span className="bg-linear-to-r from-blue-400 to-amber-300 bg-clip-text text-transparent">Detailed Strategic Outlook</span>
             </h3>
-            <p className="text-xs sm:text-sm text-slate-100 leading-relaxed whitespace-pre-line">
+            <p className="text-xs sm:text-sm text-slate-100 leading-relaxed whitespace-pre-line font-sans">
               {report.reasoning}
             </p>
           </div>
+
+          {/* VISIBLE SEO INTEGRATION & CRAWL CARD */}
+          {report.seo && (
+            <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-900 pb-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
+                  <span className="text-xs font-mono font-bold tracking-widest text-slate-400 uppercase">Search Engine Crawl Node</span>
+                </div>
+                <span className="text-[10px] font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800 text-slate-400">
+                  Status: Indexed & Cached
+                </span>
+              </div>
+
+              <div className="space-y-3 font-mono text-xs text-slate-350 bg-slate-900/40 p-4.5 rounded-2xl border border-slate-800/80">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5">
+                  <span className="text-slate-500 min-w-28 uppercase font-bold">SEO URL:</span>
+                  <span className="text-indigo-400 break-all select-all">downorup.net/should-i-{report.seo.slug || "slug"}</span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5">
+                  <span className="text-slate-500 min-w-28 uppercase font-bold">Meta Title:</span>
+                  <span className="text-slate-200 select-all">{report.seo.decision_title}</span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 font-sans">
+                  <span className="text-slate-500 font-mono min-w-28 uppercase font-bold text-xs">Description:</span>
+                  <span className="text-slate-300 leading-relaxed select-all">{report.seo.meta_description}</span>
+                </div>
+              </div>
+
+              {/* PROGRAMMATIC SEARCH ENGINE CONTENT */}
+              <div className="space-y-3 bg-slate-900/10 p-5 rounded-2xl border border-slate-800/40">
+                <span className="text-xs font-mono tracking-widest font-bold text-slate-400 block uppercase">
+                  SEO Programmatic Content (Crawled Rationale):
+                </span>
+                <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-line space-y-3 font-sans">
+                  {report.seo.seo_summary}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* DYNAMIC FAQ ACCORDION GENERATOR */}
           <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-5">
@@ -842,7 +966,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                       <span className="text-slate-400 font-mono text-xs">{open ? "−" : "+"}</span>
                     </button>
                     {open && (
-                      <div className="px-4 py-3 text-xs sm:text-sm text-slate-200 border-t border-slate-800 leading-relaxed bg-slate-950/40">
+                      <div className="px-4 py-3 text-xs sm:text-sm text-slate-200 border-t border-slate-800 leading-relaxed bg-slate-950/40 font-sans">
                         {faq.answer}
                       </div>
                     )}
