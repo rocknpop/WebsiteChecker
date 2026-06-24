@@ -1077,19 +1077,19 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         const isDown = statusVal === "down";
 
         let badgeText = "UNKNOWN ⚠️";
-        let badgeClass = "bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-lg shadow-amber-500/20";
+        let badgeClass = "bg-amber-50 text-amber-700 border-amber-300 shadow-lg shadow-amber-500/30";
         let iconClass = "bg-amber-500/15 border border-amber-500/30 text-amber-400";
         let containerGlow = "border-amber-500/25 shadow-[0_0_55px_-12px_rgba(245,158,11,0.35)]";
         let accentPulse = "bg-amber-500/8";
         if (isUp) {
           badgeText = "UP ✅";
-          badgeClass = "bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-lg shadow-emerald-500/20";
+          badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-300 shadow-lg shadow-emerald-500/30";
           iconClass = "bg-emerald-500/15 border border-emerald-500/30 text-emerald-400";
           containerGlow = "border-emerald-500/30 shadow-[0_0_55px_-12px_rgba(16,185,129,0.4)]";
           accentPulse = "bg-emerald-500/8";
         } else if (isDown) {
           badgeText = "DOWN ❌";
-          badgeClass = "bg-red-500/15 text-red-300 border-red-500/40 shadow-lg shadow-red-500/20";
+          badgeClass = "bg-red-50 text-red-700 border-red-300 shadow-lg shadow-red-500/30";
           iconClass = "bg-red-500/15 border border-red-500/30 text-red-400";
           containerGlow = "border-red-500/30 shadow-[0_0_55px_-12px_rgba(239,68,68,0.4)]";
           accentPulse = "bg-red-500/8";
@@ -1114,19 +1114,19 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 relative">
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-gray-200 transition-colors">
+              <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-4 transition-colors">
                 <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">HTTP Code</span>
                 <p className="text-lg font-bold text-gray-900 mt-1 font-mono">{toolResult.statusCode !== undefined ? toolResult.statusCode : "N/A"}</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-gray-200 transition-colors">
+              <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-4 transition-colors">
                 <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Verification Method</span>
                 <p className="text-sm font-bold text-gray-900 mt-1.5">{toolResult.methodName}</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-gray-200 transition-colors">
+              <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-4 transition-colors">
                 <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Latency</span>
                 <p className="text-lg font-bold text-gray-900 mt-1 font-mono">{toolResult.responseTimeMs} ms</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-gray-200 transition-colors">
+              <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-4 transition-colors">
                 <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Resolved IP</span>
                 <p className="text-base font-bold text-gray-900 mt-1.5 font-mono break-all">{toolResult.resolvedIp || "N/A"}</p>
               </div>
@@ -1494,8 +1494,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 }}
                 className={`flex items-center justify-center space-x-2 p-3.5 rounded-2xl border text-xs font-bold transition-all duration-200 cursor-pointer ${
                   active
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 border-transparent text-white shadow-lg shadow-indigo-500/30 scale-[1.02]"
-                    : "bg-white border-gray-200 text-gray-600 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 hover:-translate-y-0.5 hover:shadow-sm"
+                    ? "bg-blue-600 border-transparent text-white shadow-md scale-[1.02]"
+                    : "bg-white border border-gray-200 shadow-sm text-gray-700 hover:border-blue-300 hover:text-blue-600 hover:-translate-y-0.5"
                 }`}
               >
                 {t.icon}
@@ -1522,7 +1522,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <button
               type="submit"
               disabled={toolLoading || (activeTool !== "ip" && !toolInput.trim())}
-              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-md transition-colors duration-200 active:scale-95 flex items-center space-x-1.5 cursor-pointer"
             >
               <span>{toolLoading ? "Checking..." : `Run Status Check`}</span>
             </button>
@@ -1578,7 +1578,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
   // RENDER DIAGNOSTICS SUITE VIEW
   if (activeTool) {
     return (
-      <div className="relative min-h-screen">
+      <div className="relative min-h-screen bg-gray-50">
         <div className="fixed inset-0 bg-gradient-to-b from-blue-50/90 via-indigo-50/30 to-gray-50 pointer-events-none -z-20" />
         <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-blue-300/12 via-indigo-300/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
         {renderDiagnosticsSuite()}
