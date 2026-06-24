@@ -25,7 +25,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   return (
     <>
       <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"white",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
-        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 12px",height:"64px",display:"flex",alignItems:"center",gap:"8px"}}>
+        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 12px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
           <div style={{display:"flex",alignItems:"center",gap:"10px",cursor:"pointer"}} onClick={() => handleLinkClick("/")}>
             <div style={{height:"36px",width:"36px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"10px",display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -57,7 +57,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             ))}
           </nav>
 
-          <div style={{display:"flex",alignItems:"center",gap:"12px",marginLeft:"auto"}}>
+          <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
             <button
               onClick={() => handleLinkClick("/")}
               className="hidden md:flex"
