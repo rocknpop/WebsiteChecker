@@ -477,8 +477,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   let finalStatus: "up" | "down" | "unknown" = "unknown";
                   if (code >= 200 && code <= 399) {
                     finalStatus = "up";
-                  } else if (code >= 400 && code <= 499) {
-                    finalStatus = "unknown";
+                  } else if (code === 401 || code === 403) {
+                    finalStatus = "up";
                   } else if (code >= 500) {
                     finalStatus = "down";
                   }
@@ -506,23 +506,13 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               const m2End = Date.now();
               const responseTime = m2End - m2Start;
 
-              if (res.ok) {
-                checkSuccess = true;
-                finalResult = {
-                  host: hostName,
-                  status: "up",
-                  methodName: "Checked via corsproxy.io",
-                  responseTimeMs: responseTime,
-                  statusCode: res.status,
-                  resolvedIp
-                };
-              } else if (res.status > 0) {
+              if (res.ok || res.status > 0) {
                 checkSuccess = true;
                 let finalStatus: "up" | "down" | "unknown" = "unknown";
                 if (res.status >= 200 && res.status <= 399) {
                   finalStatus = "up";
-                } else if (res.status >= 400 && res.status <= 499) {
-                  finalStatus = "unknown";
+                } else if (res.status === 401 || res.status === 403) {
+                  finalStatus = "up";
                 } else if (res.status >= 500) {
                   finalStatus = "down";
                 }
