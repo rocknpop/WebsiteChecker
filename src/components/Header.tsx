@@ -30,10 +30,10 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   }, [isOpen]);
 
   const navLinks = [
-    { name: "Decision Engine", path: "/", tooltip: "AI-powered decision analysis" },
-    { name: "Diagnostics Suite", path: "/status", tooltip: "Check website status, DNS, SSL & more" },
-    { name: "Blog / Insights", path: "/blog", tooltip: "Expert guides & strategic advice" },
-    { name: "About", path: "/about", tooltip: "Our mission & how it works" },
+    { name: "Decision Engine", path: "/", tooltip: "AI-powered decision analysis", gradient: "" },
+    { name: "Diagnostics Suite", path: "/status", tooltip: "Check website status, DNS, SSL & more", gradient: "from-blue-600 to-cyan-500" },
+    { name: "Blog / Insights", path: "/blog", tooltip: "Expert guides & strategic advice", gradient: "from-purple-600 to-pink-500" },
+    { name: "About", path: "/about", tooltip: "Our mission & how it works", gradient: "from-emerald-500 to-teal-400" },
   ];
 
   const isActive = (path: string) =>
@@ -89,13 +89,19 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                   <div key={link.path} className="relative group/nav">
                     <button
                       onClick={() => handleLinkClick(link.path)}
-                      className={`relative px-4 py-2 rounded-full text-sm transition-all duration-200 cursor-pointer ${
+                      className={`relative group px-4 py-2 rounded-full text-sm transition-all duration-200 cursor-pointer ${
                         active
                           ? "bg-blue-50 text-blue-600 font-semibold"
-                          : "text-gray-600 hover:bg-blue-50 hover:text-blue-600 font-medium"
+                          : "text-gray-600 hover:bg-blue-50 font-medium"
                       }`}
                     >
-                      {link.name}
+                      {!active && link.gradient ? (
+                        <span className={`bg-gradient-to-r ${link.gradient} bg-clip-text group-hover:text-transparent transition-all duration-200`}>
+                          {link.name}
+                        </span>
+                      ) : (
+                        link.name
+                      )}
                       {/* Animated blue dot indicator for active link */}
                       {active && (
                         <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
