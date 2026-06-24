@@ -1,10 +1,10 @@
 ﻿import React, { useState, useEffect } from "react";
 import { 
-  Search, Sparkles, CheckCircle2, AlertCircle, XCircle, ChevronRight, 
-  Award, Zap, ShieldCheck, Heart, ThumbsUp, Star, HelpCircle, 
-  ArrowRight, BookOpen, Clock, AlertTriangle, TrendingUp, DollarSign,
-  User, Check, AlertOctagon, HelpCircle as HelpIcon, ArrowLeft,
-  Globe, Lock, MapPin, Activity, FileText, Database
+  Search, Sparkles, CheckCircle2, AlertCircle, XCircle,
+  Award, Zap, ShieldCheck, ThumbsUp,
+  ArrowRight, Clock, AlertTriangle, TrendingUp,
+  Check, AlertOctagon, HelpCircle as HelpIcon, ArrowLeft,
+  Globe, Lock, MapPin, Activity, FileText
 } from "lucide-react";
 import { getApiUrl } from "../utils/api";
 import { useSEO } from "../hooks/useSEO";
@@ -333,6 +333,15 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     const check = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", check, { passive: true });
     return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Defer below-fold sections until after main content paints
+  const [contentLoaded, setContentLoaded] = useState(false);
+  useEffect(() => {
+    const id = requestIdleCallback
+      ? requestIdleCallback(() => setContentLoaded(true), { timeout: 2000 })
+      : setTimeout(() => setContentLoaded(true), 300) as unknown as number;
+    return () => { cancelIdleCallback ? cancelIdleCallback(id) : clearTimeout(id); };
   }, []);
   useEffect(() => {
     let i = 0;
@@ -1775,11 +1784,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* HERO HERO TITLE BLOCK */}
       <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-purple-500/10 border border-indigo-500/30 text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono animate-fade-in-up shadow-lg shadow-indigo-500/10">
+        <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-purple-500/10 border border-indigo-500/30 text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono${isMobile ? "" : " animate-fade-in-up"} shadow-lg shadow-indigo-500/10">
           <Sparkles className={`w-3.5 h-3.5${isMobile ? "" : " animate-float"}`} />
           <span>DownOrUp.net AI Decision Engine</span>
         </div>
-        <h1 className="text-3xl sm:text-7xl font-black tracking-tight text-gray-900 leading-none animate-fade-in-up animation-delay-200">
+        <h1 className={`text-3xl sm:text-7xl font-black tracking-tight text-gray-900 leading-none${isMobile ? "" : " animate-fade-in-up animation-delay-200"}`}>
           {(() => {
             const prefix = "Should You ";
             const suffix = "Do It?";
@@ -1797,13 +1806,13 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             );
           })()}
         </h1>
-        <p className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto font-medium animate-fade-in-up animation-delay-300">
+        <p className={`text-sm sm:text-base text-gray-400 max-w-xl mx-auto font-medium${isMobile ? "" : " animate-fade-in-up animation-delay-300"}`}>
           Get instant, hyper-realistic, objective AI evaluations before launching side projects, buying gear, or making crucial career and lifestyle choices in 2026.
         </p>
       </div>
 
       {/* CENTRAL PROMPT FORM BLOCK */}
-      <div className="max-w-2xl mx-auto mb-10 animate-fade-in-up animation-delay-400">
+      <div className={`max-w-2xl mx-auto mb-10${isMobile ? "" : " animate-fade-in-up animation-delay-400"}`}>
         <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-300 shadow-md flex items-center transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-400 focus-within:shadow-lg focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
           <div className="flex-1 flex items-center pl-3">
             <Search className="w-5 h-5 text-gray-500 group-focus-within:text-indigo-500 transition-colors" />
@@ -1826,7 +1835,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </form>
 
         {/* POPULAR suggestions chips row */}
-        <div className="mt-4 flex flex-wrap justify-center gap-1 sm:gap-1.5 px-2 sm:px-0 animate-fade-in-up animation-delay-500">
+        <div className={`mt-4 flex flex-wrap justify-center gap-1 sm:gap-1.5 px-2 sm:px-0${isMobile ? "" : " animate-fade-in-up animation-delay-500"}`}>
           {POPULAR_CHIPS.map(chip => (
             <button
               key={chip}
@@ -2249,14 +2258,18 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       </div>
 
       {/* USER ENGAGEMENT: RECENT DECISION STREAM */}
-      <React.Suspense fallback={<div className="mt-12 h-32 bg-gray-100 animate-pulse rounded-2xl" />}>
-        <RecentDecisionsSection decisions={recentDecisions} onChipClick={handleChipClick} />
-      </React.Suspense>
+      {contentLoaded && (
+        <React.Suspense fallback={<div className="mt-12 h-32 bg-gray-100 animate-pulse rounded-2xl" />}>
+          <RecentDecisionsSection decisions={recentDecisions} onChipClick={handleChipClick} />
+        </React.Suspense>
+      )}
 
       {/* RECENT HIGHLIGHTED BLOG INSIGHTS IN HOMEPAGE */}
-      <React.Suspense fallback={<div className="mt-12 h-48 bg-gray-100 animate-pulse rounded-2xl" />}>
-        <BlogSection posts={blogPosts} onNavigate={onNavigate} />
-      </React.Suspense>
+      {contentLoaded && (
+        <React.Suspense fallback={<div className="mt-12 h-48 bg-gray-100 animate-pulse rounded-2xl" />}>
+          <BlogSection posts={blogPosts} onNavigate={onNavigate} />
+        </React.Suspense>
+      )}
 
     </div>
 

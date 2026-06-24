@@ -11,7 +11,12 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    optimizeDeps: {
+      include: ["react", "react-dom"],
+    },
     build: {
+      minify: "terser",
+      cssMinify: true,
       rollupOptions: {
         output: {
           manualChunks: {
