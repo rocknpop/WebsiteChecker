@@ -15,8 +15,7 @@ export default defineConfig(() => {
       include: ["react", "react-dom"],
     },
     build: {
-      minify: "terser",
-      cssMinify: true,
+      minify: "esbuild",
       rollupOptions: {
         output: {
           manualChunks: {
