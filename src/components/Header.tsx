@@ -34,6 +34,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
   const navLinks = [
     { name: "Decision Engine", path: "/" },
+    { name: "Diagnostics Suite", path: "/status" },
     { name: "Blog / Insights", path: "/blog" },
     { name: "About", path: "/about" },
   ];
@@ -72,7 +73,16 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-1" id="desktop-nav">
               {navLinks.map((link) => {
-                const active = currentPath === link.path || (link.path === "/blog" && currentPath.startsWith("/blog"));
+                const active = currentPath === link.path || 
+                  (link.path === "/blog" && currentPath.startsWith("/blog")) ||
+                  (link.path === "/status" && (
+                    currentPath.startsWith("/status") ||
+                    currentPath.startsWith("/dns-lookup") ||
+                    currentPath.startsWith("/ip-lookup") ||
+                    currentPath.startsWith("/ssl-checker") ||
+                    currentPath.startsWith("/whois-lookup") ||
+                    currentPath.startsWith("/port-checker")
+                  ));
                 return (
                   <button
                     key={link.path}
