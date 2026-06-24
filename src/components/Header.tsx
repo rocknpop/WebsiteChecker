@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sparkles, Menu, X, TrendingUp, ChevronRight } from "lucide-react";
 
 interface HeaderProps {
@@ -8,7 +8,14 @@ interface HeaderProps {
 
 export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(true);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const navLinks = [
     { name: "Decision Engine", path: "/" },
@@ -22,12 +29,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
     setIsOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  if (typeof window !== "undefined") {
-    window.addEventListener("resize", () => {
-      setIsMobile(window.innerWidth < 768);
-    });
-  }
 
   return (
     <>
