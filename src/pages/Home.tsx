@@ -2204,7 +2204,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       )}
 
       {/* CORE SEO CONTENT CATEGORIES - SEEDING INTERNAL LINKS FOR ORGANIC TRUST */}
-      <div className="border-t border-slate-200/40 pt-10 mt-10 space-y-10">
+      {contentLoaded && <div className="border-t border-slate-200/40 pt-10 mt-10 space-y-10">
         
         <div className="text-center space-y-2">
           <h3 className="font-extrabold text-xl text-gray-900">Evaluate Key Growth Sectors</h3>
@@ -2259,7 +2259,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
         </div>
 
-      </div>
+      </div>}
 
       {/* USER ENGAGEMENT: RECENT DECISION STREAM */}
       {contentLoaded && (
