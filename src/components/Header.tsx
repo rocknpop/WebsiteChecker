@@ -36,7 +36,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   return (
     <>
       <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
-        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",gap:"16px"}}>
 
           {/* Logo */}
           <div style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",flexShrink:0}} onClick={() => handleLinkClick("/")}>
@@ -64,7 +64,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           )}
 
           {/* Right side */}
-          <div style={{display:"flex",alignItems:"center",gap:"8px",flexShrink:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:"8px",flexShrink:0,marginLeft:"auto"}}>
             {isReady && !isMobile && (
               <button
                 onClick={() => handleLinkClick("/")}
