@@ -38,7 +38,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           </div>
 
           {/* Desktop nav */}
-          <nav className="desktop-nav-link" style={{alignItems:"center",gap:"4px"}}>
+          <nav className="desktop-nav-link desktop-nav-links" style={{alignItems:"center",gap:"4px"}}>
             {navLinks.map((link) => (
               <button
                 key={link.path}
@@ -175,6 +175,17 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           .mobile-menu-btn  { display: none !important; }
         }
       `}</style>
+
+      <style>{`
+  @media (max-width: 767px) {
+    .mobile-menu-btn { display: flex !important; }
+    .desktop-nav-links { display: none !important; }
+    .desktop-eval-btn { display: none !important; }
+  }
+  @media (min-width: 768px) {
+    .mobile-menu-btn { display: none !important; }
+  }
+`}</style>
 
       {/* Spacer for fixed header */}
       <div style={{height:"64px"}} />
