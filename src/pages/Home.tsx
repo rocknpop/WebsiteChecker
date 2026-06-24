@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { 
   Search, Sparkles, CheckCircle2, AlertCircle, XCircle, ChevronRight, 
   Award, Zap, ShieldCheck, Heart, ThumbsUp, Star, HelpCircle, 
@@ -1033,8 +1033,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "UP":
         return {
           icon: <CheckCircle2 className="w-12 h-12 text-emerald-500 animate-pulse" />,
-          color: "text-emerald-500 dark:text-emerald-400",
-          bg: "bg-emerald-500/10 border-emerald-500/30 dark:border-emerald-500/20",
+          color: "text-emerald-500",
+          bg: "bg-emerald-500/10 border-emerald-500/30",
           title: "UP ✅",
           subtitle: "Highly Viable / Strong Opportunity",
           badgeBg: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
@@ -1042,8 +1042,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "NEUTRAL":
         return {
           icon: <AlertTriangle className="w-12 h-12 text-amber-500 animate-bounce" />,
-          color: "text-amber-500 dark:text-amber-400",
-          bg: "bg-amber-500/10 border-amber-500/30 dark:border-amber-500/20",
+          color: "text-amber-500",
+          bg: "bg-amber-500/10 border-amber-500/30",
           title: "NEUTRAL ⚠️",
           subtitle: "Proceed with Caution / High Friction",
           badgeBg: "bg-amber-500/20 text-amber-400 border-amber-500/30"
@@ -1051,8 +1051,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "DOWN":
         return {
           icon: <XCircle className="w-12 h-12 text-red-500 animate-wiggle" />,
-          color: "text-red-500 dark:text-red-400",
-          bg: "bg-red-500/10 border-red-500/30 dark:border-red-500/20",
+          color: "text-red-500",
+          bg: "bg-red-500/10 border-red-500/30",
           title: "DOWN ❌",
           subtitle: "High Risk / Poor Outlook / Saturated",
           badgeBg: "bg-red-500/20 text-red-400 border-red-500/30"
@@ -1096,16 +1096,16 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         }
 
         return (
-          <div className={`bg-slate-950/90 backdrop-blur-sm rounded-3xl border p-6 sm:p-8 space-y-6 relative overflow-hidden transition-all ${containerGlow}`}>
+          <div className={`bg-white backdrop-blur-sm rounded-3xl border p-6 sm:p-8 space-y-6 relative overflow-hidden transition-all ${containerGlow}`}>
             <div className={`absolute inset-0 rounded-3xl ${accentPulse} pointer-events-none`} />
-            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-slate-800/60 pb-6 gap-4 relative">
+            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 gap-4 relative">
               <div className="flex items-center space-x-4">
                 <div className={`h-12 w-12 rounded-2xl flex items-center justify-center ${iconClass}`}>
                   <Globe className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white font-sans">{toolResult.host}</h3>
-                  <p className="text-xs text-slate-400">Website reachability and responsiveness metrics</p>
+                  <h3 className="text-lg font-bold text-gray-900 font-sans">{toolResult.host}</h3>
+                  <p className="text-xs text-gray-500">Website reachability and responsiveness metrics</p>
                 </div>
               </div>
               <div className={`px-5 py-2 rounded-2xl border text-sm font-bold font-mono tracking-wider uppercase ${badgeClass}`}>
@@ -1114,53 +1114,53 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 relative">
-              <div className="bg-slate-900/70 border border-slate-800/60 rounded-2xl p-4 hover:border-slate-700 transition-colors">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">HTTP Code</span>
-                <p className="text-lg font-bold text-white mt-1 font-mono">{toolResult.statusCode !== undefined ? toolResult.statusCode : "N/A"}</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-gray-200 transition-colors">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">HTTP Code</span>
+                <p className="text-lg font-bold text-gray-900 mt-1 font-mono">{toolResult.statusCode !== undefined ? toolResult.statusCode : "N/A"}</p>
               </div>
-              <div className="bg-slate-900/70 border border-slate-800/60 rounded-2xl p-4 hover:border-slate-700 transition-colors">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Verification Method</span>
-                <p className="text-sm font-bold text-white mt-1.5">{toolResult.methodName}</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-gray-200 transition-colors">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Verification Method</span>
+                <p className="text-sm font-bold text-gray-900 mt-1.5">{toolResult.methodName}</p>
               </div>
-              <div className="bg-slate-900/70 border border-slate-800/60 rounded-2xl p-4 hover:border-slate-700 transition-colors">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Latency</span>
-                <p className="text-lg font-bold text-white mt-1 font-mono">{toolResult.responseTimeMs} ms</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-gray-200 transition-colors">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Latency</span>
+                <p className="text-lg font-bold text-gray-900 mt-1 font-mono">{toolResult.responseTimeMs} ms</p>
               </div>
-              <div className="bg-slate-900/70 border border-slate-800/60 rounded-2xl p-4 hover:border-slate-700 transition-colors">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Resolved IP</span>
-                <p className="text-base font-bold text-white mt-1.5 font-mono break-all">{toolResult.resolvedIp || "N/A"}</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-gray-200 transition-colors">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Resolved IP</span>
+                <p className="text-base font-bold text-gray-900 mt-1.5 font-mono break-all">{toolResult.resolvedIp || "N/A"}</p>
               </div>
             </div>
 
             {toolResult.message && (
-              <div className="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-4 text-xs text-slate-300 leading-relaxed font-mono relative">
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-xs text-gray-600 leading-relaxed font-mono relative">
                 <span className="text-indigo-400 font-bold">Details:</span> {toolResult.message}
               </div>
             )}
 
-            <div className="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-5 space-y-3 relative">
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 space-y-3 relative">
               <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Security Telemetry</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">SSL Connection:</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">SSL Connection:</span>
                   <span className="font-mono text-emerald-400 font-bold">Enabled</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">DNS Resolution:</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">DNS Resolution:</span>
                   <span className="font-mono text-emerald-400 font-bold">Passed</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">Verification Engine:</span>
-                  <span className="font-mono text-white">{toolResult.methodName}</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">Verification Engine:</span>
+                  <span className="font-mono text-gray-900">{toolResult.methodName}</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">IP Geolocation:</span>
-                  <span className="font-mono text-slate-300">Checked</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">IP Geolocation:</span>
+                  <span className="font-mono text-gray-600">Checked</span>
                 </div>
               </div>
             </div>
 
-            <div className="text-xs text-slate-400 bg-slate-900/40 border border-slate-800/50 rounded-xl p-4 italic relative">
+            <div className="text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-xl p-4 italic relative">
               Note: Browser security restrictions prevent direct HTTP checks. Results are verified using trusted third-party DNS and proxy services.
             </div>
           </div>
@@ -1169,10 +1169,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "dns": {
         const records = toolResult.records || {};
         return (
-          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-slate-700/50 p-6 sm:p-8 space-y-6 shadow-xl shadow-indigo-500/5">
-            <div className="border-b border-slate-800/60 pb-4">
-              <h3 className="text-lg font-bold text-white font-sans">DNS Lookup: {toolResult.domain}</h3>
-              <p className="text-xs text-slate-400">All primary DNS records returned via Cloudflare DNS over HTTPS</p>
+          <div className="bg-white backdrop-blur-sm rounded-3xl border border-gray-200 p-6 sm:p-8 space-y-6 shadow-xl shadow-indigo-500/5">
+            <div className="border-b border-gray-200 pb-4">
+              <h3 className="text-lg font-bold text-gray-900 font-sans">DNS Lookup: {toolResult.domain}</h3>
+              <p className="text-xs text-gray-500">All primary DNS records returned via Cloudflare DNS over HTTPS</p>
             </div>
 
             <div className="space-y-6">
@@ -1182,25 +1182,25 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   <div key={type} className="space-y-2">
                     <h4 className="text-xs font-bold text-indigo-400 font-mono tracking-widest uppercase">{type} Records</h4>
                     {list.length === 0 ? (
-                      <p className="text-xs text-slate-500 font-mono italic">No {type} records found for this host.</p>
+                      <p className="text-xs text-gray-400 font-mono italic">No {type} records found for this host.</p>
                     ) : (
-                      <div className="overflow-x-auto rounded-xl border border-slate-850 bg-slate-900">
+                      <div className="overflow-x-auto rounded-xl border border-gray-100 bg-gray-50">
                         <table className="w-full text-left border-collapse text-xs">
                           <thead>
-                            <tr className="bg-slate-850 text-slate-300 border-b border-slate-800 font-mono">
+                            <tr className="bg-gray-100 text-gray-600 border-b border-gray-200 font-mono">
                               <th className="p-3">Host Name</th>
                               <th className="p-3">Type</th>
                               <th className="p-3">TTL</th>
                               <th className="p-3">Target / Value</th>
                             </tr>
                           </thead>
-                          <tbody className="font-mono text-slate-200 divide-y divide-slate-850">
+                          <tbody className="font-mono text-gray-700 divide-y divide-gray-100">
                             {list.map((r, i) => (
-                              <tr key={i} className="hover:bg-slate-850/35">
+                              <tr key={i} className="hover:bg-gray-100/35">
                                 <td className="p-3 break-all">{r.name}</td>
                                 <td className="p-3 font-bold text-blue-400">{type}</td>
-                                <td className="p-3 text-slate-400">{r.TTL}</td>
-                                <td className="p-3 break-all text-white">{r.data}</td>
+                                <td className="p-3 text-gray-500">{r.TTL}</td>
+                                <td className="p-3 break-all text-gray-900">{r.data}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -1217,18 +1217,18 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "ip": {
         const data = toolResult;
         return (
-          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-indigo-500/20 p-6 sm:p-8 space-y-6 shadow-xl shadow-indigo-500/8">
-            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-slate-800/60 pb-6 gap-4">
+          <div className="bg-white backdrop-blur-sm rounded-3xl border border-indigo-500/20 p-6 sm:p-8 space-y-6 shadow-xl shadow-indigo-500/8">
+            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 gap-4">
               <div className="flex items-center space-x-4">
                 <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
                   <MapPin className="h-6 w-6 text-indigo-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white font-sans">{data.ip}</h3>
-                  <p className="text-xs text-slate-400">{data.org || data.asn || "Internet Service Provider"}</p>
+                  <h3 className="text-lg font-bold text-gray-900 font-sans">{data.ip}</h3>
+                  <p className="text-xs text-gray-500">{data.org || data.asn || "Internet Service Provider"}</p>
                 </div>
               </div>
-              <div className="px-4 py-2 rounded-2xl border border-slate-850 bg-slate-900 text-xs font-bold font-mono text-slate-300 flex items-center space-x-1.5">
+              <div className="px-4 py-2 rounded-2xl border border-gray-100 bg-gray-50 text-xs font-bold font-mono text-gray-600 flex items-center space-x-1.5">
                 <span>{data.country_code || "US"}</span>
                 <span>•</span>
                 <span>{data.country_name || "United States"}</span>
@@ -1236,42 +1236,42 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">City</span>
-                <p className="text-base font-bold text-white mt-1">{data.city || "N/A"}</p>
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">City</span>
+                <p className="text-base font-bold text-gray-900 mt-1">{data.city || "N/A"}</p>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Region / State</span>
-                <p className="text-base font-bold text-white mt-1">{data.region || "N/A"}</p>
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Region / State</span>
+                <p className="text-base font-bold text-gray-900 mt-1">{data.region || "N/A"}</p>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Postal Code</span>
-                <p className="text-base font-bold text-white mt-1 font-mono">{data.postal || "N/A"}</p>
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Postal Code</span>
+                <p className="text-base font-bold text-gray-900 mt-1 font-mono">{data.postal || "N/A"}</p>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Timezone</span>
-                <p className="text-base font-bold text-white mt-1 font-mono">{data.timezone || "N/A"}</p>
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Timezone</span>
+                <p className="text-base font-bold text-gray-900 mt-1 font-mono">{data.timezone || "N/A"}</p>
               </div>
             </div>
 
-            <div className="bg-slate-900 border border-slate-850 rounded-2xl p-5 space-y-3">
+            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-3">
               <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Network & ASN Details</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">Autonomous System (ASN):</span>
-                  <span className="text-white font-bold">{data.asn || "N/A"}</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">Autonomous System (ASN):</span>
+                  <span className="text-gray-900 font-bold">{data.asn || "N/A"}</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">Latitude / Longitude:</span>
-                  <span className="text-white">{data.latitude ? `${data.latitude}, ${data.longitude}` : "N/A"}</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">Latitude / Longitude:</span>
+                  <span className="text-gray-900">{data.latitude ? `${data.latitude}, ${data.longitude}` : "N/A"}</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">ISP Carrier:</span>
-                  <span className="text-white break-all">{data.org || "N/A"}</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">ISP Carrier:</span>
+                  <span className="text-gray-900 break-all">{data.org || "N/A"}</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">Local Currency:</span>
-                  <span className="text-white">{data.currency_name} ({data.currency})</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">Local Currency:</span>
+                  <span className="text-gray-900">{data.currency_name} ({data.currency})</span>
                 </div>
               </div>
             </div>
@@ -1281,15 +1281,15 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "ssl": {
         const ssl = toolResult;
         return (
-          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-emerald-500/20 p-6 sm:p-8 space-y-6 shadow-xl shadow-emerald-500/8">
-            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-slate-800/60 pb-6 gap-4">
+          <div className="bg-white backdrop-blur-sm rounded-3xl border border-emerald-500/20 p-6 sm:p-8 space-y-6 shadow-xl shadow-emerald-500/8">
+            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 gap-4">
               <div className="flex items-center space-x-4">
                 <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
                   <Lock className="h-6 w-6 text-indigo-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white font-sans">{ssl.domain}</h3>
-                  <p className="text-xs text-slate-400">SSL / TLS handshake validity audit</p>
+                  <h3 className="text-lg font-bold text-gray-900 font-sans">{ssl.domain}</h3>
+                  <p className="text-xs text-gray-500">SSL / TLS handshake validity audit</p>
                 </div>
               </div>
               <div className={`px-4 py-2 rounded-2xl border text-sm font-bold font-mono tracking-wider uppercase ${ssl.sslActive ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"}`}>
@@ -1298,44 +1298,44 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Protocol Version</span>
-                <p className="text-base font-bold text-white mt-1 font-mono">{ssl.protocol}</p>
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Protocol Version</span>
+                <p className="text-base font-bold text-gray-900 mt-1 font-mono">{ssl.protocol}</p>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Recommended Cipher</span>
-                <p className="text-xs font-bold text-slate-300 mt-1.5 font-mono break-all">{ssl.cipher}</p>
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Recommended Cipher</span>
+                <p className="text-xs font-bold text-gray-600 mt-1.5 font-mono break-all">{ssl.cipher}</p>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Resolved IP</span>
-                <p className="text-base font-bold text-white mt-1 font-mono">{ssl.ipAddress}</p>
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] font-mono tracking-wider text-gray-500 uppercase">Resolved IP</span>
+                <p className="text-base font-bold text-gray-900 mt-1 font-mono">{ssl.ipAddress}</p>
               </div>
             </div>
 
-            <div className="bg-slate-900 border border-slate-850 rounded-2xl p-5 space-y-4">
+            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-4">
               <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Certificate Parameters</h4>
               
               <div className="space-y-1.5 text-xs font-mono">
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">Certificate Issuer Authority:</span>
-                  <span className="text-white font-bold">{ssl.issuer}</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">Certificate Issuer Authority:</span>
+                  <span className="text-gray-900 font-bold">{ssl.issuer}</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">Valid From:</span>
-                  <span className="text-slate-300">{ssl.validFrom}</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">Valid From:</span>
+                  <span className="text-gray-600">{ssl.validFrom}</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
-                  <span className="text-slate-400">Valid To (Expiry Date):</span>
-                  <span className="text-slate-300">{ssl.validTo}</span>
+                <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                  <span className="text-gray-500">Valid To (Expiry Date):</span>
+                  <span className="text-gray-600">{ssl.validTo}</span>
                 </div>
               </div>
 
               <div className="pt-2">
-                <div className="flex justify-between items-center text-[10px] text-slate-400 font-mono mb-1.5 uppercase">
+                <div className="flex justify-between items-center text-[10px] text-gray-500 font-mono mb-1.5 uppercase">
                   <span>Certificate Validity Window</span>
                   <span className="text-emerald-400 font-bold">{ssl.daysRemaining} Days Remaining</span>
                 </div>
-                <div className="h-2.5 bg-slate-850 rounded-full overflow-hidden border border-slate-800">
+                <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
                   <div className="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full rounded-full" style={{ width: "80%" }} />
                 </div>
               </div>
@@ -1347,30 +1347,30 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         const data = toolResult;
         const rawText = data.raw_data || JSON.stringify(data, null, 2);
         return (
-          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-slate-700/50 p-6 sm:p-8 space-y-6 shadow-xl shadow-blue-500/5">
-            <div className="border-b border-slate-800/60 pb-4">
-              <h3 className="text-lg font-bold text-white font-sans">WHOIS Registry Lookup: {data.domain || "Query Host"}</h3>
-              <p className="text-xs text-slate-400">Public ICANN registrar data and DNS delegation</p>
+          <div className="bg-white backdrop-blur-sm rounded-3xl border border-gray-200 p-6 sm:p-8 space-y-6 shadow-xl shadow-blue-500/5">
+            <div className="border-b border-gray-200 pb-4">
+              <h3 className="text-lg font-bold text-gray-900 font-sans">WHOIS Registry Lookup: {data.domain || "Query Host"}</h3>
+              <p className="text-xs text-gray-500">Public ICANN registrar data and DNS delegation</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs text-slate-200">
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] text-slate-400 uppercase block mb-1">Registrar</span>
-                <span className="font-bold text-white">{data.registrar || "Unknown / Shielded"}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs text-gray-700">
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] text-gray-500 uppercase block mb-1">Registrar</span>
+                <span className="font-bold text-gray-900">{data.registrar || "Unknown / Shielded"}</span>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] text-slate-400 uppercase block mb-1">Created Date</span>
-                <span className="font-bold text-white">{data.created || "N/A"}</span>
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] text-gray-500 uppercase block mb-1">Created Date</span>
+                <span className="font-bold text-gray-900">{data.created || "N/A"}</span>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
-                <span className="text-[10px] text-slate-400 uppercase block mb-1">Expiration Date</span>
-                <span className="font-bold text-white">{data.expires || "N/A"}</span>
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                <span className="text-[10px] text-gray-500 uppercase block mb-1">Expiration Date</span>
+                <span className="font-bold text-gray-900">{data.expires || "N/A"}</span>
               </div>
             </div>
 
             <div className="space-y-2">
               <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Raw Registry Response</h4>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4 overflow-y-auto max-h-96 font-mono text-xs text-slate-300 leading-relaxed whitespace-pre-wrap select-all">
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 overflow-y-auto max-h-96 font-mono text-xs text-gray-600 leading-relaxed whitespace-pre-wrap select-all">
                 {rawText}
               </div>
             </div>
@@ -1380,21 +1380,21 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "port": {
         const ports = toolResult.ports || [];
         return (
-          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-slate-700/50 p-6 sm:p-8 space-y-6 shadow-xl shadow-blue-500/5">
-            <div className="border-b border-slate-800/60 pb-4 flex justify-between items-center flex-wrap gap-4">
+          <div className="bg-white backdrop-blur-sm rounded-3xl border border-gray-200 p-6 sm:p-8 space-y-6 shadow-xl shadow-blue-500/5">
+            <div className="border-b border-gray-200 pb-4 flex justify-between items-center flex-wrap gap-4">
               <div>
-                <h3 className="text-lg font-bold text-white font-sans">Common Ports Diagnostics: {toolResult.domain}</h3>
-                <p className="text-xs text-slate-400">Verifying external firewall status for host: {toolResult.ipAddress}</p>
+                <h3 className="text-lg font-bold text-gray-900 font-sans">Common Ports Diagnostics: {toolResult.domain}</h3>
+                <p className="text-xs text-gray-500">Verifying external firewall status for host: {toolResult.ipAddress}</p>
               </div>
               <span className="text-xs font-mono bg-indigo-950 text-indigo-400 px-2.5 py-1 rounded-xl border border-indigo-900/50">
                 ICMP/Ping: Responsive
               </span>
             </div>
 
-            <div className="overflow-x-auto rounded-2xl border border-slate-850 bg-slate-900">
+            <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-gray-50">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-slate-850 text-slate-300 border-b border-slate-800 font-mono">
+                  <tr className="bg-gray-100 text-gray-600 border-b border-gray-200 font-mono">
                     <th className="p-3">Port</th>
                     <th className="p-3">Service Name</th>
                     <th className="p-3">Firewall Status</th>
@@ -1402,25 +1402,25 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                     <th className="p-3">Diagnostic Description</th>
                   </tr>
                 </thead>
-                <tbody className="font-mono divide-y divide-slate-850">
+                <tbody className="font-mono divide-y divide-gray-100">
                   {ports.map((p, i) => {
                     const isOpen = p.status === "open";
                     const isFiltered = p.status === "filtered";
                     return (
-                      <tr key={i} className="hover:bg-slate-850/35">
-                        <td className="p-3 text-white font-bold">{p.port}</td>
+                      <tr key={i} className="hover:bg-gray-100/35">
+                        <td className="p-3 text-gray-900 font-bold">{p.port}</td>
                         <td className="p-3 text-blue-400 font-bold">{p.name}</td>
                         <td className="p-3">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                             isOpen ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
                             isFiltered ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" :
-                            "bg-slate-800 text-slate-400"
+                            "bg-slate-800 text-gray-500"
                           }`}>
                             {p.status}
                           </span>
                         </td>
-                        <td className="p-3 text-slate-400 uppercase">{p.expected}</td>
-                        <td className="p-3 text-slate-300">{p.description}</td>
+                        <td className="p-3 text-gray-500 uppercase">{p.expected}</td>
+                        <td className="p-3 text-gray-600">{p.description}</td>
                       </tr>
                     );
                   })}
@@ -1457,17 +1457,17 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="diagnostics-suite">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none -z-10" />
 
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 bg-linear-to-r from-blue-500/10 to-indigo-500/10 border border-indigo-500/20 text-blue-600 dark:text-blue-400 rounded-full text-xs font-semibold tracking-wide font-mono">
+          <div className="inline-flex items-center space-x-2 px-3 py-1 bg-linear-to-r from-blue-500/10 to-indigo-500/10 border border-indigo-500/20 text-blue-600 rounded-full text-xs font-semibold tracking-wide font-mono">
             <Activity className="w-3.5 h-3.5 animate-pulse" />
             <span>Real-time Network Diagnostics Suite</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-950 dark:text-white leading-none">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900 leading-none">
             {activeInfo.name} <span className="bg-linear-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">Utility</span>
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-medium">
+          <p className="text-sm text-gray-400 max-w-xl mx-auto font-medium">
             {activeInfo.description} Full diagnostic checks powered by absolute external APIs with instant, try-catch protected latency evaluations.
           </p>
         </div>
@@ -1495,7 +1495,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 className={`flex items-center justify-center space-x-2 p-3.5 rounded-2xl border text-xs font-bold transition-all duration-200 cursor-pointer ${
                   active
                     ? "bg-gradient-to-r from-blue-600 to-indigo-600 border-transparent text-white shadow-lg shadow-indigo-500/30 scale-[1.02]"
-                    : "bg-white/5 dark:bg-slate-900/60 backdrop-blur-sm border-slate-200/40 dark:border-slate-800/50 text-slate-700 dark:text-slate-350 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 hover:border-indigo-500/30 hover:-translate-y-0.5 hover:shadow-md hover:shadow-indigo-500/10"
+                    : "bg-white border-gray-200 text-gray-600 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 hover:-translate-y-0.5 hover:shadow-sm"
                 }`}
               >
                 {t.icon}
@@ -1506,15 +1506,15 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </div>
 
         <div className="max-w-2xl mx-auto mb-10">
-          <form onSubmit={handleToolSubmit} className="relative group p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/50 shadow-2xl shadow-indigo-500/8 flex items-center transition-all duration-300 focus-within:ring-2 focus-within:ring-indigo-500/40 focus-within:border-indigo-500/40 hover:shadow-indigo-500/15">
+          <form onSubmit={handleToolSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-center transition-all duration-200 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
             <div className="flex-1 flex items-center pl-3">
-              <Search className="w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+              <Search className="w-5 h-5 text-gray-500 group-focus-within:text-indigo-500 transition-colors" />
               <input
                 type="text"
                 value={toolInput}
                 onChange={(e) => setToolInput(e.target.value)}
                 placeholder={getPlaceholder()}
-                className="w-full bg-transparent border-0 focus:ring-0 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm py-2 pl-2 outline-hidden"
+                className="w-full bg-transparent border-0 focus:ring-0 text-slate-900 placeholder-gray-400 text-sm py-2 pl-2 outline-hidden"
                 disabled={toolLoading}
                 aria-label="Input domain or IP query"
               />
@@ -1522,7 +1522,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <button
               type="submit"
               disabled={toolLoading || (activeTool !== "ip" && !toolInput.trim())}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
             >
               <span>{toolLoading ? "Checking..." : `Run Status Check`}</span>
             </button>
@@ -1533,7 +1533,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               window.history.pushState({}, "", "/");
               onNavigate("/");
             }} 
-            className="mt-4 inline-flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 cursor-pointer"
+            className="mt-4 inline-flex items-center space-x-1.5 text-xs font-bold text-gray-400 hover:text-blue-600 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Return to Decision Central Engine</span>
@@ -1541,14 +1541,14 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </div>
 
         {toolLoading && (
-          <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-slate-950/80 backdrop-blur-sm rounded-3xl border border-indigo-500/20 shadow-2xl shadow-indigo-500/10 animate-pulse">
+          <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-white backdrop-blur-sm rounded-3xl border border-indigo-500/20 shadow-2xl shadow-indigo-500/10 animate-pulse">
             <div className="relative w-16 h-16 mx-auto">
-              <div className="absolute inset-0 rounded-full border-4 border-slate-800" />
+              <div className="absolute inset-0 rounded-full border-4 border-gray-200" />
               <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 border-r-blue-500 animate-spin" />
               <div className="absolute inset-2 rounded-full bg-indigo-500/10 blur-sm" />
             </div>
             <div className="space-y-1.5">
-              <h3 className="font-bold text-lg text-white">Contacting Distributed Networks</h3>
+              <h3 className="font-bold text-lg text-gray-900">Contacting Distributed Networks</h3>
               <p className="text-xs text-indigo-400 font-semibold font-mono animate-bounce">
                 Retrieving absolute telemetry metrics via direct external secure proxy...
               </p>
@@ -1560,7 +1560,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="max-w-xl mx-auto p-5 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-start space-x-3.5 mb-10">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-bold text-sm text-red-600 dark:text-red-400">Diagnostic Check Error</h4>
+              <h4 className="font-bold text-sm text-red-600">Diagnostic Check Error</h4>
               <p className="text-xs text-red-500 mt-0.5 leading-relaxed">{toolError}</p>
             </div>
           </div>
@@ -1579,8 +1579,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
   if (activeTool) {
     return (
       <div className="relative min-h-screen">
-        <div className="fixed inset-0 bg-gradient-to-br from-blue-950/40 via-slate-950 to-indigo-950/30 pointer-events-none -z-20" />
-        <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-blue-600/10 via-indigo-600/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="fixed inset-0 bg-gradient-to-b from-blue-50/90 via-indigo-50/30 to-gray-50 pointer-events-none -z-20" />
+        <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-blue-300/12 via-indigo-300/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
         {renderDiagnosticsSuite()}
       </div>
     );
@@ -1599,59 +1599,59 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 window.history.pushState({}, "", "/blog");
                 onNavigate("/blog");
               }} 
-              className="flex items-center space-x-2 text-sm font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer"
+              className="flex items-center space-x-2 text-sm font-semibold text-gray-400 hover:text-slate-800 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to blog library</span>
             </button>
 
-            <article className="bg-slate-950/90 backdrop-blur-sm border border-indigo-500/20 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-indigo-500/8 space-y-6">
+            <article className="bg-white backdrop-blur-sm border border-indigo-500/20 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-indigo-500/8 space-y-6">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="bg-blue-950 text-blue-400 text-xs px-2.5 py-1 rounded-md font-semibold border border-blue-900/50">
                   {selectedPost.category}
                 </span>
-                <span className="text-xs text-slate-300 flex items-center gap-1.5 font-mono">
+                <span className="text-xs text-gray-600 flex items-center gap-1.5 font-mono">
                   <Clock className="w-3.5 h-3.5" />
                   {selectedPost.readTime}
                 </span>
-                <span className="text-xs text-slate-455 font-mono">• {selectedPost.publishedAt}</span>
+                <span className="text-xs text-gray-400 font-mono">• {selectedPost.publishedAt}</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 leading-tight">
                 {selectedPost.title}
               </h1>
 
-              <div className="h-px bg-slate-900" />
+              <div className="h-px bg-gray-50" />
 
               {/* Rich Markdown styled output */}
-              <div className="text-slate-100 leading-relaxed text-base space-y-5">
+              <div className="text-gray-800 leading-relaxed text-base space-y-5">
                 {selectedPost.content.split("\n\n").map((para, i) => {
                   if (para.trim().startsWith("###")) {
                     return (
-                      <h3 key={i} className="text-xl font-bold text-white pt-4 bg-linear-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
+                      <h3 key={i} className="text-xl font-bold text-gray-900 pt-4 bg-linear-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
                         {para.replace("###", "").trim()}
                       </h3>
                     );
                   }
                   if (para.trim().startsWith("1.")) {
                     return (
-                      <div key={i} className="pl-4 border-l-2 border-indigo-550 space-y-2 py-1 bg-slate-900/40 p-3 rounded-r-xl">
+                      <div key={i} className="pl-4 border-l-2 border-indigo-550 space-y-2 py-1 bg-gray-50 p-3 rounded-r-xl">
                         {para.split("\n").map((line, li) => (
-                          <p key={li} className="font-semibold text-slate-100">{line.trim()}</p>
+                          <p key={li} className="font-semibold text-gray-800">{line.trim()}</p>
                         ))}
                       </div>
                     );
                   }
-                  return <p key={i} className="whitespace-pre-line text-slate-200">{para.trim()}</p>;
+                  return <p key={i} className="whitespace-pre-line text-gray-700">{para.trim()}</p>;
                 })}
               </div>
 
-              <div className="h-px bg-slate-900 pt-6" />
+              <div className="h-px bg-gray-50 pt-6" />
 
-              <div className="bg-slate-900/90 rounded-2xl p-6 border border-slate-850 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="bg-gray-50/90 rounded-2xl p-6 border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div>
-                  <h4 className="font-bold text-sm text-white">Evaluate a related decision?</h4>
-                  <p className="text-xs text-slate-300 mt-0.5">Test any idea instantly with our state-of-the-art decision engine.</p>
+                  <h4 className="font-bold text-sm text-gray-900">Evaluate a related decision?</h4>
+                  <p className="text-xs text-gray-600 mt-0.5">Test any idea instantly with our state-of-the-art decision engine.</p>
                 </div>
                 <button 
                   onClick={() => {
@@ -1659,7 +1659,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                     window.history.pushState({}, "", "/");
                     onNavigate("/");
                   }} 
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer"
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
                 >
                   Central Engine
                 </button>
@@ -1670,24 +1670,24 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           /* BLOG DIRECTORY VIEW */
           <div className="space-y-10 animate-fade-in">
             <div className="text-center space-y-3">
-              <h1 className="text-4xl font-extrabold text-slate-950 dark:text-white tracking-tight">
-                DownOrUp.net <span className="bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 dark:from-blue-400 dark:via-cyan-450 dark:to-yellow-300 bg-clip-text text-transparent font-black">Decision Insights</span>
+              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+                DownOrUp.net <span className="bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 bg-clip-text text-transparent font-black">Decision Insights</span>
               </h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
+              <p className="text-sm text-gray-400 max-w-xl mx-auto">
                 Authoritative, objective guides analyzing the actual costs, risk metrics, and structural potential of the most searched side projects and careers in 2026.
               </p>
             </div>
 
             {/* Category tabs */}
-            <div className="flex flex-wrap justify-center gap-1.5 border-b border-slate-100 dark:border-slate-900 pb-4">
+            <div className="flex flex-wrap justify-center gap-1.5 border-b border-slate-100 pb-4">
               {categories.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   className={`px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all ${
                     activeCategory === cat
-                      ? "bg-blue-600 text-white shadow-md shadow-blue-500/10"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200/70 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800"
+                      ? "bg-blue-600 text-gray-900 shadow-md shadow-blue-500/10"
+                      : "bg-slate-100 text-gray-600 hover:bg-slate-200/70"
                   }`}
                 >
                   {cat}
@@ -1700,21 +1700,21 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               {filteredBlogPosts.map(post => (
                 <article 
                   key={post.id} 
-                  className="bg-slate-950/85 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 flex flex-col justify-between shadow-sm hover:shadow-2xl hover:shadow-indigo-500/12 hover:-translate-y-1 duration-300 transition-all group hover:border-indigo-500/30"
+                  className="bg-white backdrop-blur-sm rounded-2xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm hover:shadow-2xl hover:shadow-indigo-500/12 hover:-translate-y-1 duration-300 transition-all group hover:border-indigo-500/30"
                 >
                   <div className="space-y-3.5">
-                    <div className="flex items-center justify-between text-[11px] text-slate-300 font-mono">
+                    <div className="flex items-center justify-between text-[11px] text-gray-600 font-mono">
                       <span className="bg-blue-950 text-blue-400 px-2 py-0.5 rounded font-semibold border border-blue-900/50">
                         {post.category}
                       </span>
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 className="font-extrabold text-lg text-white group-hover:text-blue-400 transition-colors leading-snug">
+                    <h3 className="font-extrabold text-lg text-gray-900 group-hover:text-blue-400 transition-colors leading-snug">
                       {post.title}
                     </h3>
 
-                    <p className="text-xs text-slate-200 leading-relaxed">
+                    <p className="text-xs text-gray-700 leading-relaxed">
                       {post.excerpt}
                     </p>
                   </div>
@@ -1740,13 +1740,13 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
   // RENDER PRIMARY DECISION ENGINE
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen bg-gray-50">
 
     {/* GRADIENT HERO BACKGROUND */}
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-950/40 via-slate-950 via-60% to-purple-950/25 pointer-events-none -z-20" />
-    <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[650px] bg-gradient-to-b from-blue-600/12 via-indigo-600/7 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
-    <div className="fixed top-32 -left-32 w-96 h-96 bg-blue-600/6 rounded-full blur-3xl pointer-events-none -z-10" />
-    <div className="fixed top-64 -right-32 w-96 h-96 bg-purple-600/6 rounded-full blur-3xl pointer-events-none -z-10" />
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-white pointer-events-none -z-20" />
+    <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[650px] bg-gradient-to-b from-blue-300/12 via-indigo-300/6 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+    <div className="fixed top-32 -left-32 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl pointer-events-none -z-10" />
+    <div className="fixed top-64 -right-32 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none -z-10" />
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="main-viewport">
 
@@ -1756,25 +1756,25 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <Sparkles className="w-3.5 h-3.5 animate-spin-slow" />
           <span>DownOrUp.net AI Decision Engine</span>
         </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-950 dark:text-white leading-none">
-          Should You <span className="bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 dark:from-blue-400 dark:via-cyan-450 dark:to-yellow-300 bg-clip-text text-transparent">Do It?</span>
+        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-gray-900 leading-none">
+          Should You <span className="bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 bg-clip-text text-transparent">Do It?</span>
         </h1>
-        <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-medium">
+        <p className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto font-medium">
           Get instant, hyper-realistic, objective AI evaluations before launching side projects, buying gear, or making crucial career and lifestyle choices in 2026.
         </p>
       </div>
 
       {/* CENTRAL PROMPT FORM BLOCK */}
       <div className="max-w-2xl mx-auto mb-10">
-        <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/50 shadow-2xl shadow-indigo-500/8 flex items-center transition-all duration-300 focus-within:ring-2 focus-within:ring-indigo-500/40 focus-within:border-indigo-500/40 hover:shadow-indigo-500/15">
+        <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-center transition-all duration-200 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
           <div className="flex-1 flex items-center pl-3">
-            <Search className="w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+            <Search className="w-5 h-5 text-gray-500 group-focus-within:text-indigo-500 transition-colors" />
             <input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="e.g., Should I start a faceless YouTube channel in 2026?"
-              className="w-full bg-transparent border-0 focus:ring-0 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm py-2 pl-2 outline-hidden"
+              className="w-full bg-transparent border-0 focus:ring-0 text-slate-900 placeholder-gray-400 text-sm py-2 pl-2 outline-hidden"
               disabled={loading}
               aria-label="Input decision query"
             />
@@ -1782,7 +1782,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <button
             type="submit"
             disabled={loading || !inputValue.trim()}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
           >
             <span>Analyze Decision</span>
           </button>
@@ -1794,7 +1794,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <button
               key={chip}
               onClick={() => handleChipClick(chip)}
-              className="px-3 py-1.5 bg-slate-900/60 hover:bg-indigo-950/50 border border-slate-700/50 hover:border-indigo-500/40 rounded-full text-xs text-slate-400 hover:text-indigo-300 font-medium transition-all duration-200 cursor-pointer shadow-sm hover:shadow-indigo-500/10 active:scale-95 backdrop-blur-sm"
+              className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-200 hover:border-gray-300 rounded-full text-xs text-gray-700 hover:text-gray-900 font-medium transition-all duration-150 cursor-pointer active:scale-95"
             >
               {chip}
             </button>
@@ -1804,14 +1804,14 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* DYNAMIC ANALYSIS REPORT LOADER */}
       {loading && (
-        <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-slate-950/80 backdrop-blur-sm rounded-3xl border border-indigo-500/20 shadow-2xl shadow-indigo-500/10 animate-pulse">
+        <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-white backdrop-blur-sm rounded-3xl border border-indigo-500/20 shadow-2xl shadow-indigo-500/10 animate-pulse">
           <div className="relative w-16 h-16 mx-auto">
-            <div className="absolute inset-0 rounded-full border-4 border-slate-800" />
+            <div className="absolute inset-0 rounded-full border-4 border-gray-200" />
             <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 border-r-blue-500 animate-spin" />
             <div className="absolute inset-2 rounded-full bg-indigo-500/10 blur-sm" />
           </div>
           <div className="space-y-1.5">
-            <h3 className="font-bold text-lg text-white">Analyzing Decision Trajectory</h3>
+            <h3 className="font-bold text-lg text-gray-900">Analyzing Decision Trajectory</h3>
             <p className="text-xs text-indigo-400 font-semibold font-mono animate-bounce">
               {loadingSteps[loadingStep]}
             </p>
@@ -1824,7 +1824,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         <div className="max-w-xl mx-auto p-5 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-start space-x-3.5 mb-10">
           <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-bold text-sm text-red-600 dark:text-red-400">Analysis Error</h4>
+            <h4 className="font-bold text-sm text-red-600">Analysis Error</h4>
             <p className="text-xs text-red-500 mt-0.5 leading-relaxed">{error}</p>
           </div>
         </div>
@@ -1838,11 +1838,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           {(() => {
             const isUp = report.verdict === "UP";
             return (
-              <div className={`p-8 sm:p-12 rounded-3xl border ${isUp ? 'border-emerald-500 bg-slate-950/90 shadow-[0_0_60px_-10px_rgba(16,185,129,0.3)]' : 'border-rose-500 bg-slate-950/90 shadow-[0_0_60px_-10px_rgba(244,63,94,0.3)]'} flex flex-col items-center justify-center text-center gap-6 relative overflow-hidden`}>
+              <div className={`p-8 sm:p-12 rounded-3xl border ${isUp ? 'border-emerald-500 bg-white shadow-[0_0_60px_-10px_rgba(16,185,129,0.3)]' : 'border-rose-500 bg-white shadow-[0_0_60px_-10px_rgba(244,63,94,0.3)]'} flex flex-col items-center justify-center text-center gap-6 relative overflow-hidden`}>
                 <div className={`absolute -right-24 -top-24 w-48 h-48 rounded-full blur-3xl opacity-20 ${isUp ? 'bg-emerald-500' : 'bg-rose-500'}`} />
                 <div className={`absolute -left-24 -bottom-24 w-48 h-48 rounded-full blur-3xl opacity-20 ${isUp ? 'bg-emerald-500' : 'bg-rose-500'}`} />
 
-                <span className="text-xs font-mono font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">
+                <span className="text-xs font-mono font-bold tracking-widest text-gray-500 uppercase">
                   COACH VERDICT FOR: "{report.query}"
                 </span>
                 
@@ -1855,11 +1855,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   </div>
                 </div>
 
-                <div className="max-w-2xl mt-2 bg-slate-900/60 backdrop-blur-xs border border-slate-800 p-5 rounded-2xl w-full">
+                <div className="max-w-2xl mt-2 bg-gray-50 backdrop-blur-xs border border-gray-200 p-5 rounded-2xl w-full">
                   <p className="text-xs font-mono text-indigo-400 uppercase tracking-widest font-bold mb-1.5">
                     Brutally Honest Coach Take:
                   </p>
-                  <p className="text-sm sm:text-base font-semibold text-slate-100 leading-relaxed italic">
+                  <p className="text-sm sm:text-base font-semibold text-gray-800 leading-relaxed italic">
                     "{report.verdict_reasoning || report.summary}"
                   </p>
                 </div>
@@ -1870,52 +1870,52 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           {/* STRUCTURED ANALYSIS CARDS */}
           <div className="grid sm:grid-cols-2 gap-6">
             {/* KEY RATIONALE */}
-            <div className="bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-indigo-500/15 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
+            <div className="bg-white backdrop-blur-sm p-6 rounded-3xl border border-indigo-500/15 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-indigo-400">
                   <Sparkles className="w-4 h-4" />
                   <span className="text-xs font-mono tracking-widest font-bold uppercase">Key Rationale</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-250 leading-relaxed font-medium">
+                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
                   {report.detailed_analysis?.key_benefit_or_risk || report.summary}
                 </p>
               </div>
             </div>
 
             {/* MARKET DEMAND */}
-            <div className="bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-amber-500/15 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
+            <div className="bg-white backdrop-blur-sm p-6 rounded-3xl border border-amber-500/15 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-amber-400">
                   <TrendingUp className="w-4 h-4" />
                   <span className="text-xs font-mono tracking-widest font-bold uppercase">Market Relevance</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-250 leading-relaxed font-medium">
+                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
                   {report.detailed_analysis?.market_relevance || `Current 2026 conditions outline a dynamic environment where efficiency is critical.`}
                 </p>
               </div>
             </div>
 
             {/* REQUIRED EFFORT */}
-            <div className="bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-cyan-500/15 shadow-sm hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
+            <div className="bg-white backdrop-blur-sm p-6 rounded-3xl border border-cyan-500/15 shadow-sm hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-cyan-400">
                   <Zap className="w-4 h-4" />
                   <span className="text-xs font-mono tracking-widest font-bold uppercase">Required Effort</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-250 leading-relaxed font-medium">
+                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
                   {report.detailed_analysis?.required_effort || `Difficulty is assessed at ${report.difficulty}/10 and capital required is ${report.cost}/10.`}
                 </p>
               </div>
             </div>
 
             {/* IDEAL CANDIDATE */}
-            <div className="bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-emerald-500/15 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
+            <div className="bg-white backdrop-blur-sm p-6 rounded-3xl border border-emerald-500/15 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-emerald-400">
                   <ShieldCheck className="w-4 h-4" />
                   <span className="text-xs font-mono tracking-widest font-bold uppercase">Ideal Candidate</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-250 leading-relaxed font-medium">
+                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
                   {report.detailed_analysis?.ideal_candidate || report.recommendedFor}
                 </p>
               </div>
@@ -1924,12 +1924,12 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
           {/* ACTIONABLE NEXT STEP */}
           {report.actionable_next_step && (
-            <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-emerald-500/20 shadow-lg shadow-emerald-500/8 hover:shadow-emerald-500/15 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
+            <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-emerald-500/20 shadow-lg shadow-emerald-500/8 hover:shadow-emerald-500/15 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
               <div className="flex items-center space-x-2 text-emerald-450">
                 <ArrowRight className="w-5 h-5" />
-                <h3 className="font-sans font-extrabold text-lg text-white">Actionable Next Step</h3>
+                <h3 className="font-sans font-extrabold text-lg text-gray-900">Actionable Next Step</h3>
               </div>
-              <p className="text-sm text-slate-100 leading-relaxed bg-emerald-950/10 p-4 rounded-xl border border-emerald-900/30 font-medium">
+              <p className="text-sm text-gray-800 leading-relaxed bg-emerald-950/10 p-4 rounded-xl border border-emerald-900/30 font-medium">
                 {report.actionable_next_step}
               </p>
             </div>
@@ -1939,60 +1939,60 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="grid md:grid-cols-3 gap-6">
             
             {/* CONCISE OVERVIEW SUMMARY */}
-            <div className="col-span-2 bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between space-y-4">
+            <div className="col-span-2 bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-2">
                 <span className="text-[10px] font-mono tracking-wider font-bold bg-linear-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent uppercase">EXECUTIVE SUMMARY</span>
-                <p className="text-sm sm:text-base text-slate-100 font-medium leading-relaxed font-sans">
+                <p className="text-sm sm:text-base text-gray-800 font-medium leading-relaxed font-sans">
                   {report.summary}
                 </p>
               </div>
-              <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-350 bg-slate-900 p-2.5 rounded-lg border border-slate-800 w-fit">
+              <div className="flex items-center space-x-2 text-[11px] font-mono text-gray-500 bg-gray-50 p-2.5 rounded-lg border border-gray-200 w-fit">
                 <Clock className="w-3.5 h-3.5" />
                 <span>Analyzed on {report.timestamp ? new Date(report.timestamp).toLocaleDateString() : "June 2026"}</span>
               </div>
             </div>
 
             {/* QUICK SCORES SIDEBAR */}
-            <div className="col-span-1 bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-blue-500/8 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
+            <div className="col-span-1 bg-white backdrop-blur-sm p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-lg hover:shadow-blue-500/8 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
               <span className="text-[10px] font-mono tracking-wider font-bold bg-linear-to-r from-cyan-400 to-blue-450 bg-clip-text text-transparent block uppercase mb-1">SCORE METRICS</span>
               
               {/* DIFFICULTY */}
               <div className="space-y-1">
-                <div className="flex justify-between items-center text-xs font-semibold text-slate-200">
+                <div className="flex justify-between items-center text-xs font-semibold text-gray-700">
                   <span>Difficulty Index</span>
-                  <span className="font-mono font-bold text-slate-100 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">{report.difficulty}/10</span>
+                  <span className="font-mono font-bold text-gray-800 bg-gray-50 px-2 py-0.5 rounded border border-gray-200">{report.difficulty}/10</span>
                 </div>
-                <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-gray-50 rounded-full overflow-hidden">
                   <div className="bg-amber-500 h-full rounded-full" style={{ width: `${report.difficulty * 10}%` }} />
                 </div>
               </div>
 
               {/* COST */}
               <div className="space-y-1 pt-1">
-                <div className="flex justify-between items-center text-xs font-semibold text-slate-200">
+                <div className="flex justify-between items-center text-xs font-semibold text-gray-700">
                   <span>Capital/Cost Required</span>
-                  <span className="font-mono font-bold text-slate-100 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">{report.cost}/10</span>
+                  <span className="font-mono font-bold text-gray-800 bg-gray-50 px-2 py-0.5 rounded border border-gray-200">{report.cost}/10</span>
                 </div>
-                <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-gray-50 rounded-full overflow-hidden">
                   <div className="bg-blue-500 h-full rounded-full" style={{ width: `${report.cost * 10}%` }} />
                 </div>
               </div>
 
-              <div className="h-px bg-slate-900 pt-1" />
+              <div className="h-px bg-gray-50 pt-1" />
 
               {/* THREE DYNAMIC LABELS */}
               <div className="space-y-2 pt-1">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-350">Risk Profile:</span>
-                  <span className="font-bold text-white font-mono">{report.riskLevel}</span>
+                  <span className="text-gray-500">Risk Profile:</span>
+                  <span className="font-bold text-gray-900 font-mono">{report.riskLevel}</span>
                 </div>
                 <div className="flex justify-between text-xs font-sans">
-                  <span className="text-slate-350 font-mono">Potential Return:</span>
-                  <span className="font-bold text-white font-mono">{report.potentialReward}</span>
+                  <span className="text-gray-500 font-mono">Potential Return:</span>
+                  <span className="font-bold text-gray-900 font-mono">{report.potentialReward}</span>
                 </div>
                 <div className="flex justify-between text-xs font-sans">
-                  <span className="text-slate-350 font-mono">Time Horizon:</span>
-                  <span className="font-bold text-white font-mono">{report.timeToResults}</span>
+                  <span className="text-gray-500 font-mono">Time Horizon:</span>
+                  <span className="font-bold text-gray-900 font-mono">{report.timeToResults}</span>
                 </div>
               </div>
             </div>
@@ -2003,14 +2003,14 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="grid md:grid-cols-2 gap-6">
             
             {/* PROS CARD */}
-            <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-emerald-500/20 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
+            <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-emerald-500/20 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
               <span className="inline-flex items-center space-x-1.5 bg-emerald-955/20 text-emerald-400 text-xs px-2.5 py-1 rounded-md border border-emerald-800 font-bold uppercase tracking-wider font-mono">
                 <ThumbsUp className="w-3.5 h-3.5" />
                 <span>Primary Advantages</span>
               </span>
               <ul className="space-y-3">
                 {report.pros.map((pro, idx) => (
-                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">
+                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-gray-800 leading-relaxed font-sans">
                     <Check className="w-4 h-4 text-emerald-400 mt-1 shrink-0 bg-emerald-500/10 rounded p-0.5" />
                     <span>{pro}</span>
                   </li>
@@ -2019,14 +2019,14 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             {/* CONS CARD */}
-            <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-red-500/20 shadow-sm hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
+            <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-red-500/20 shadow-sm hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
               <span className="inline-flex items-center space-x-1.5 bg-red-955/20 text-red-400 text-xs px-2.5 py-1 rounded-md border border-red-800 font-bold uppercase tracking-wider font-mono">
                 <AlertOctagon className="w-3.5 h-3.5" />
                 <span>Primary Disadvantages</span>
               </span>
               <ul className="space-y-3">
                 {report.cons.map((con, idx) => (
-                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">
+                  <li key={idx} className="flex items-start space-x-3 text-xs sm:text-sm text-gray-800 leading-relaxed font-sans">
                     <XCircle className="w-4 h-4 text-red-400 mt-1 shrink-0 bg-red-500/10 rounded p-0.5" />
                     <span>{con}</span>
                   </li>
@@ -2037,62 +2037,62 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* AUDIENCE PROFILES */}
-          <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 grid sm:grid-cols-2 gap-6">
+          <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 grid sm:grid-cols-2 gap-6">
             <div className="space-y-1.5">
               <h4 className="text-xs font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Recommended For</h4>
-              <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">{report.recommendedFor}</p>
+              <p className="text-xs sm:text-sm text-gray-800 leading-relaxed font-sans">{report.recommendedFor}</p>
             </div>
             <div className="space-y-1.5">
               <h4 className="text-xs font-bold bg-linear-to-r from-red-450 to-rose-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Not Recommended For</h4>
-              <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">{report.notRecommendedFor}</p>
+              <p className="text-xs sm:text-sm text-gray-800 leading-relaxed font-sans">{report.notRecommendedFor}</p>
             </div>
           </div>
 
           {/* DETAILED STRATEGIC OUTLOOK REASONING */}
-          <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-indigo-500/15 shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
-            <h3 className="font-sans font-extrabold text-lg text-white flex items-center gap-2">
+          <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-indigo-500/15 shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
+            <h3 className="font-sans font-extrabold text-lg text-gray-900 flex items-center gap-2">
               <Award className="w-5 h-5 text-indigo-400" />
               <span className="bg-linear-to-r from-blue-400 to-amber-300 bg-clip-text text-transparent">Detailed Strategic Outlook</span>
             </h3>
-            <p className="text-xs sm:text-sm text-slate-100 leading-relaxed whitespace-pre-line font-sans">
+            <p className="text-xs sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line font-sans">
               {report.reasoning}
             </p>
           </div>
 
           {/* VISIBLE SEO INTEGRATION & CRAWL CARD */}
           {report.seo && (
-            <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-blue-500/8 transition-all duration-300 space-y-6">
+            <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-lg hover:shadow-blue-500/8 transition-all duration-300 space-y-6">
               <div className="flex items-center justify-between border-b border-slate-900 pb-4">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
-                  <span className="text-xs font-mono font-bold tracking-widest text-slate-400 uppercase">Search Engine Crawl Node</span>
+                  <span className="text-xs font-mono font-bold tracking-widest text-gray-500 uppercase">Search Engine Crawl Node</span>
                 </div>
-                <span className="text-[10px] font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800 text-slate-400">
+                <span className="text-[10px] font-mono bg-gray-50 px-2 py-0.5 rounded border border-gray-200 text-gray-500">
                   Status: Indexed & Cached
                 </span>
               </div>
 
-              <div className="space-y-3 font-mono text-xs text-slate-350 bg-slate-900/40 p-4.5 rounded-2xl border border-slate-800/80">
+              <div className="space-y-3 font-mono text-xs text-gray-500 bg-gray-50 p-4.5 rounded-2xl border border-gray-200">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1.5">
-                  <span className="text-slate-500 min-w-28 uppercase font-bold">SEO URL:</span>
+                  <span className="text-gray-400 min-w-28 uppercase font-bold">SEO URL:</span>
                   <span className="text-indigo-400 break-all select-all">downorup.net/should-i-{report.seo.slug || "slug"}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1.5">
-                  <span className="text-slate-500 min-w-28 uppercase font-bold">Meta Title:</span>
-                  <span className="text-slate-200 select-all">{report.seo.decision_title}</span>
+                  <span className="text-gray-400 min-w-28 uppercase font-bold">Meta Title:</span>
+                  <span className="text-gray-700 select-all">{report.seo.decision_title}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 font-sans">
-                  <span className="text-slate-500 font-mono min-w-28 uppercase font-bold text-xs">Description:</span>
-                  <span className="text-slate-300 leading-relaxed select-all">{report.seo.meta_description}</span>
+                  <span className="text-gray-400 font-mono min-w-28 uppercase font-bold text-xs">Description:</span>
+                  <span className="text-gray-600 leading-relaxed select-all">{report.seo.meta_description}</span>
                 </div>
               </div>
 
               {/* PROGRAMMATIC SEARCH ENGINE CONTENT */}
-              <div className="space-y-3 bg-slate-900/10 p-5 rounded-2xl border border-slate-800/40">
-                <span className="text-xs font-mono tracking-widest font-bold text-slate-400 block uppercase">
+              <div className="space-y-3 bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                <span className="text-xs font-mono tracking-widest font-bold text-gray-500 block uppercase">
                   SEO Programmatic Content (Crawled Rationale):
                 </span>
-                <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-line space-y-3 font-sans">
+                <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line space-y-3 font-sans">
                   {report.seo.seo_summary}
                 </div>
               </div>
@@ -2100,8 +2100,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           )}
 
           {/* DYNAMIC FAQ ACCORDION GENERATOR */}
-          <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-cyan-500/8 hover:-translate-y-0.5 transition-all duration-300 space-y-5">
-            <h3 className="font-sans font-extrabold text-lg text-white flex items-center gap-2">
+          <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-lg hover:shadow-cyan-500/8 hover:-translate-y-0.5 transition-all duration-300 space-y-5">
+            <h3 className="font-sans font-extrabold text-lg text-gray-900 flex items-center gap-2">
               <HelpIcon className="w-5 h-5 text-cyan-400" />
               <span className="bg-linear-to-r from-blue-400 to-cyan-200 bg-clip-text text-transparent">Frequently Asked Questions (FAQ)</span>
             </h3>
@@ -2109,17 +2109,17 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               {report.faqs.map((faq, idx) => {
                 const open = activeFaqIdx === idx;
                 return (
-                  <div key={idx} className="border border-slate-800 rounded-xl overflow-hidden transition-all">
+                  <div key={idx} className="border border-gray-200 rounded-xl overflow-hidden transition-all">
                     <button
                       type="button"
                       onClick={() => setActiveFaqIdx(open ? null : idx)}
-                      className="w-full text-left px-4 py-3 bg-slate-900/60 hover:bg-slate-900 flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-100 cursor-pointer"
+                      className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-gray-50 flex items-center justify-between text-xs sm:text-sm font-semibold text-gray-800 cursor-pointer"
                     >
                       <span>{faq.question}</span>
-                      <span className="text-slate-400 font-mono text-xs">{open ? "−" : "+"}</span>
+                      <span className="text-gray-500 font-mono text-xs">{open ? "−" : "+"}</span>
                     </button>
                     {open && (
-                      <div className="px-4 py-3 text-xs sm:text-sm text-slate-200 border-t border-slate-800 leading-relaxed bg-slate-950/40 font-sans">
+                      <div className="px-4 py-3 text-xs sm:text-sm text-gray-700 border-t border-gray-200 leading-relaxed bg-white font-sans">
                         {faq.answer}
                       </div>
                     )}
@@ -2138,7 +2138,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 window.history.pushState({}, "", "/");
                 onNavigate("/");
               }}
-              className="px-6 py-3 border border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
+              className="px-6 py-3 border border-slate-200 hover:border-slate-350 text-gray-600 hover:text-slate-900 text-xs font-semibold rounded-xl transition-all cursor-pointer"
             >
               Evaluate Another Decision
             </button>
@@ -2148,56 +2148,56 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       )}
 
       {/* CORE SEO CONTENT CATEGORIES - SEEDING INTERNAL LINKS FOR ORGANIC TRUST */}
-      <div className="border-t border-slate-200/40 dark:border-slate-900 pt-10 mt-10 space-y-10">
+      <div className="border-t border-slate-200/40 pt-10 mt-10 space-y-10">
         
         <div className="text-center space-y-2">
-          <h3 className="font-extrabold text-xl text-slate-950 dark:text-white">Evaluate Key Growth Sectors</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">Explore predefined structured analytical reports for highly-searched careers and modern side hustles.</p>
+          <h3 className="font-extrabold text-xl text-gray-900">Evaluate Key Growth Sectors</h3>
+          <p className="text-xs text-gray-400 max-w-md mx-auto">Explore predefined structured analytical reports for highly-searched careers and modern side hustles.</p>
         </div>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
           
           {/* CATEGORY BLOCK: CARERS */}
-          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/40 dark:border-slate-700/50 space-y-3.5 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 hover:border-indigo-500/20">
+          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-blue-500 uppercase">Careers</span>
             <ul className="space-y-2 text-xs">
-              <li><button onClick={() => handleChipClick("Become Software Engineer")} className="hover:text-blue-600 dark:hover:text-blue-400 text-slate-500 text-left cursor-pointer">Become Software Engineer</button></li>
-              <li><button onClick={() => handleChipClick("Become Data Analyst")} className="hover:text-blue-600 dark:hover:text-blue-400 text-slate-500 text-left cursor-pointer">Become Data Analyst</button></li>
-              <li><button onClick={() => handleChipClick("Learn Cybersecurity")} className="hover:text-blue-600 dark:hover:text-blue-400 text-slate-500 text-left cursor-pointer">Learn Cybersecurity</button></li>
-              <li><button onClick={() => handleChipClick("Become UX Designer")} className="hover:text-blue-600 dark:hover:text-blue-400 text-slate-500 text-left cursor-pointer">Become UX Designer</button></li>
+              <li><button onClick={() => handleChipClick("Become Software Engineer")} className="hover:text-blue-600 text-gray-400 text-left cursor-pointer">Become Software Engineer</button></li>
+              <li><button onClick={() => handleChipClick("Become Data Analyst")} className="hover:text-blue-600 text-gray-400 text-left cursor-pointer">Become Data Analyst</button></li>
+              <li><button onClick={() => handleChipClick("Learn Cybersecurity")} className="hover:text-blue-600 text-gray-400 text-left cursor-pointer">Learn Cybersecurity</button></li>
+              <li><button onClick={() => handleChipClick("Become UX Designer")} className="hover:text-blue-600 text-gray-400 text-left cursor-pointer">Become UX Designer</button></li>
             </ul>
           </div>
 
           {/* CATEGORY BLOCK: SIDE HUSTLES */}
-          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/40 dark:border-slate-700/50 space-y-3.5 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 hover:border-indigo-500/20">
+          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-emerald-500 uppercase">Side Hustles</span>
             <ul className="space-y-2 text-xs">
-              <li><button onClick={() => handleChipClick("Start Amazon KDP")} className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-500 text-left cursor-pointer">Start Amazon KDP</button></li>
-              <li><button onClick={() => handleChipClick("Start Print-on-Demand")} className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-500 text-left cursor-pointer">Start Print-on-Demand</button></li>
-              <li><button onClick={() => handleChipClick("Start Dropshipping")} className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-500 text-left cursor-pointer">Start Dropshipping</button></li>
-              <li><button onClick={() => handleChipClick("Become Freelancer")} className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-500 text-left cursor-pointer">Become Freelancer</button></li>
+              <li><button onClick={() => handleChipClick("Start Amazon KDP")} className="hover:text-emerald-600 text-gray-400 text-left cursor-pointer">Start Amazon KDP</button></li>
+              <li><button onClick={() => handleChipClick("Start Print-on-Demand")} className="hover:text-emerald-600 text-gray-400 text-left cursor-pointer">Start Print-on-Demand</button></li>
+              <li><button onClick={() => handleChipClick("Start Dropshipping")} className="hover:text-emerald-600 text-gray-400 text-left cursor-pointer">Start Dropshipping</button></li>
+              <li><button onClick={() => handleChipClick("Become Freelancer")} className="hover:text-emerald-600 text-gray-400 text-left cursor-pointer">Become Freelancer</button></li>
             </ul>
           </div>
 
           {/* CATEGORY BLOCK: BUSINESS */}
-          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/40 dark:border-slate-700/50 space-y-3.5 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 hover:border-indigo-500/20">
+          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-indigo-500 uppercase">Business Ideas</span>
             <ul className="space-y-2 text-xs">
-              <li><button onClick={() => handleChipClick("Start AI Agency")} className="hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-500 text-left cursor-pointer">Start AI Agency</button></li>
-              <li><button onClick={() => handleChipClick("Build SaaS Product")} className="hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-500 text-left cursor-pointer">Build SaaS Product</button></li>
-              <li><button onClick={() => handleChipClick("Start Blogging")} className="hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-500 text-left cursor-pointer">Start Blogging</button></li>
-              <li><button onClick={() => handleChipClick("Create Newsletter")} className="hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-500 text-left cursor-pointer">Create Newsletter</button></li>
+              <li><button onClick={() => handleChipClick("Start AI Agency")} className="hover:text-indigo-600 text-gray-400 text-left cursor-pointer">Start AI Agency</button></li>
+              <li><button onClick={() => handleChipClick("Build SaaS Product")} className="hover:text-indigo-600 text-gray-400 text-left cursor-pointer">Build SaaS Product</button></li>
+              <li><button onClick={() => handleChipClick("Start Blogging")} className="hover:text-indigo-600 text-gray-400 text-left cursor-pointer">Start Blogging</button></li>
+              <li><button onClick={() => handleChipClick("Create Newsletter")} className="hover:text-indigo-600 text-gray-400 text-left cursor-pointer">Create Newsletter</button></li>
             </ul>
           </div>
 
           {/* CATEGORY BLOCK: EDUCATION & PURCHASES */}
-          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/40 dark:border-slate-700/50 space-y-3.5 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 hover:border-indigo-500/20">
+          <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-cyan-500 uppercase">Education & Tech</span>
             <ul className="space-y-2 text-xs">
-              <li><button onClick={() => handleChipClick("Get an MBA")} className="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-500 text-left cursor-pointer">Get an MBA</button></li>
-              <li><button onClick={() => handleChipClick("Learn Coding")} className="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-500 text-left cursor-pointer">Learn Coding</button></li>
-              <li><button onClick={() => handleChipClick("Buy ChatGPT Plus")} className="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-500 text-left cursor-pointer">Buy ChatGPT Plus</button></li>
-              <li><button onClick={() => handleChipClick("Buy MacBook Pro")} className="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-500 text-left cursor-pointer">Buy MacBook Pro</button></li>
+              <li><button onClick={() => handleChipClick("Get an MBA")} className="hover:text-cyan-600 text-gray-400 text-left cursor-pointer">Get an MBA</button></li>
+              <li><button onClick={() => handleChipClick("Learn Coding")} className="hover:text-cyan-600 text-gray-400 text-left cursor-pointer">Learn Coding</button></li>
+              <li><button onClick={() => handleChipClick("Buy ChatGPT Plus")} className="hover:text-cyan-600 text-gray-400 text-left cursor-pointer">Buy ChatGPT Plus</button></li>
+              <li><button onClick={() => handleChipClick("Buy MacBook Pro")} className="hover:text-cyan-600 text-gray-400 text-left cursor-pointer">Buy MacBook Pro</button></li>
             </ul>
           </div>
 
@@ -2207,19 +2207,19 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* USER ENGAGEMENT: RECENT DECISION STREAM */}
       {recentDecisions.length > 0 && (
-        <div className="mt-12 pt-8 border-t border-slate-200/40 dark:border-slate-900 space-y-4">
+        <div className="mt-12 pt-8 border-t border-slate-200/40 space-y-4">
           <div className="flex items-center space-x-2">
             <TrendingUp className="w-5 h-5 text-indigo-500" />
-            <h4 className="font-extrabold text-lg text-slate-950 dark:text-white">Recent Decisions Evaluated</h4>
+            <h4 className="font-extrabold text-lg text-gray-900">Recent Decisions Evaluated</h4>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {recentDecisions.map((dec, idx) => (
               <button
                 key={idx}
                 onClick={() => handleChipClick(dec.query)}
-                className="p-3 bg-white/80 hover:bg-white dark:bg-slate-900/60 dark:hover:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-2xl flex flex-col justify-between items-start text-left cursor-pointer duration-200 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/25 group"
+                className="p-3 bg-white hover:bg-gray-50 border border-gray-100 rounded-2xl flex flex-col justify-between items-start text-left cursor-pointer duration-200 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/25 group"
               >
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2 mb-2">
+                <p className="text-xs font-semibold text-slate-800 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2 mb-2">
                   {dec.query}
                 </p>
                 <div className="flex items-center justify-between w-full">
@@ -2229,7 +2229,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   }`}>
                     {dec.verdict}
                   </span>
-                  <span className="text-[9px] text-slate-400 font-mono">2026</span>
+                  <span className="text-[9px] text-gray-500 font-mono">2026</span>
                 </div>
               </button>
             ))}
@@ -2239,18 +2239,18 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* RECENT HIGHLIGHTED BLOG INSIGHTS IN HOMEPAGE */}
       {blogPosts.length > 0 && (
-        <div className="mt-12 pt-8 border-t border-slate-200/40 dark:border-slate-900 space-y-6">
+        <div className="mt-12 pt-8 border-t border-slate-200/40 space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <BookOpen className="w-5 h-5 text-blue-500" />
-              <h4 className="font-extrabold text-lg text-slate-950 dark:text-white">Expert Guides & Insights</h4>
+              <h4 className="font-extrabold text-lg text-gray-900">Expert Guides & Insights</h4>
             </div>
             <button 
               onClick={() => {
                 window.history.pushState({}, "", "/blog");
                 onNavigate("/blog");
               }}
-              className="text-xs font-bold text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 flex items-center cursor-pointer"
+              className="text-xs font-bold text-blue-600 hover:text-blue-500 flex items-center cursor-pointer"
             >
               <span>Explore all articles</span>
               <ArrowRight className="w-4.5 h-4.5 ml-0.5" />
@@ -2261,24 +2261,24 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             {blogPosts.slice(0, 4).map(post => (
               <article 
                 key={post.id} 
-                className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl border border-slate-200/40 dark:border-slate-700/50 p-5 flex flex-col justify-between shadow-sm hover:shadow-xl hover:shadow-indigo-500/12 hover:-translate-y-1 duration-300 transition-all group cursor-pointer hover:border-indigo-500/30"
+                className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col justify-between shadow-sm hover:shadow-xl hover:shadow-indigo-500/12 hover:-translate-y-1 duration-300 transition-all group cursor-pointer hover:border-indigo-500/30"
                 onClick={() => {
                   window.history.pushState({}, "", `/blog/${post.slug}`);
                   onNavigate(`/blog/${post.slug}`);
                 }}
               >
                 <div className="space-y-3">
-                  <span className="text-[9px] font-mono font-bold bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded">
+                  <span className="text-[9px] font-mono font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded">
                     {post.category}
                   </span>
-                  <h5 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
+                  <h5 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2">
                     {post.title}
                   </h5>
-                  <p className="text-[11px] text-slate-400 line-clamp-3 leading-relaxed">
+                  <p className="text-[11px] text-gray-500 line-clamp-3 leading-relaxed">
                     {post.excerpt}
                   </p>
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-slate-400 pt-4 font-mono">
+                <div className="flex items-center justify-between text-[10px] text-gray-500 pt-4 font-mono">
                   <span>{post.publishedAt}</span>
                   <span>{post.readTime}</span>
                 </div>

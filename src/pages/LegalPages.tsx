@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { ShieldCheck, HelpCircle, FileText, Send, CheckCircle2, Scale, Lock, BookOpen } from "lucide-react";
 
 interface LegalLayoutProps {
@@ -9,11 +9,11 @@ interface LegalLayoutProps {
 function LegalLayout({ title, children }: LegalLayoutProps) {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 animate-fade-in">
-      <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl">
-        <h1 className="text-3xl font-sans font-black text-white pb-4 border-b border-slate-800 mb-8 tracking-tight">
+      <div className="bg-white border border-gray-200 rounded-3xl p-6 sm:p-10 shadow-sm">
+        <h1 className="text-3xl font-sans font-black text-gray-900 pb-4 border-b border-gray-200 mb-8 tracking-tight">
           {title}
         </h1>
-        <article className="prose dark:prose-invert max-w-none text-sm text-slate-100 leading-relaxed space-y-6">
+        <article className="prose max-w-none text-sm text-gray-700 leading-relaxed space-y-6">
           {children}
         </article>
       </div>
@@ -30,7 +30,7 @@ export function PrivacyPolicyPage() {
         At <strong>DownOrUp.net</strong>, we value the confidentiality of your inquiries and personal information. Because our users evaluate highly private lifestyle, investment, career, and side-hustle decisions, our architecture enforces a strict zero-retention baseline.
       </p>
 
-      <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-6">1. Query Privacy & Processing Isolation</h3>
+      <h3 className="text-lg font-bold text-gray-900 mt-6">1. Query Privacy & Processing Isolation</h3>
       <p>
         Any decisions, queries, or ideas you submit via our search bar are transmitted securely using TLS/SSL directly to our server. We utilize the official Google Gemini API to analyze your request.
       </p>
@@ -40,7 +40,7 @@ export function PrivacyPolicyPage() {
         <li>Aggregated logs (such as recent query counts) are held temporarily in system memory to construct popular/trending chips on the homepage, completely stripped of any personal identifiers.</li>
       </ul>
 
-      <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-6">2. GDPR & CCPA Protections</h3>
+      <h3 className="text-lg font-bold text-gray-900 mt-6">2. GDPR & CCPA Protections</h3>
       <p>
         For users residing in the European Union (GDPR) and California (CCPA), you retain the right to clear your local storage at any time. Since our searches are anonymous and do not require user accounts or password signups, we do not store, distribute, or profit from any personal data profiles.
       </p>
@@ -57,12 +57,12 @@ export function CookiePolicyPage() {
         DownOrUp.net utilizes basic browser storage mechanisms (specifically, cookies and browser `localStorage` parameters) to deliver a consistent and high-performance experience.
       </p>
 
-      <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-6">1. How We Use Cookies & Caching</h3>
+      <h3 className="text-lg font-bold text-gray-900 mt-6">1. How We Use Cookies & Caching</h3>
       <p>
         We use browser cache mechanisms to remember your preferred visual mode (Light vs. Dark theme) so you do not experience screen flickering on subsequent pages. No persistent trackers are ever deployed.
       </p>
 
-      <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-6">2. Third-Party Placements</h3>
+      <h3 className="text-lg font-bold text-gray-900 mt-6">2. Third-Party Placements</h3>
       <p>
         In order to support our cloud costs and maintain this platform free of charge for creators worldwide, we allocate space for Google AdSense banners. AdSense partners may utilize anonymous tracking cookies to tailor appropriate marketing recommendations based on your approximate geographic region.
       </p>
@@ -79,12 +79,12 @@ export function TermsPage() {
         By accessing and evaluating ideas on <strong>DownOrUp.net</strong>, you agree to comply with our general acceptable use policies.
       </p>
 
-      <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-6">1. Authorized Non-Commercial License</h3>
+      <h3 className="text-lg font-bold text-gray-900 mt-6">1. Authorized Non-Commercial License</h3>
       <p>
         You are granted a free, non-exclusive license to run individual queries to analyze your startup ideas, side hustles, and career plans. Bulk robotic queries, programmatic scraping of our API endpoints, or stress-testing our systems is strictly prohibited.
       </p>
 
-      <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-6">2. Limitation of Liability</h3>
+      <h3 className="text-lg font-bold text-gray-900 mt-6">2. Limitation of Liability</h3>
       <p>
         DownOrUp.net utilizes artificial intelligence models (such as Gemini 3.5 Flash) to generate automated reports. AI text can sometimes miscalculate financial outcomes or market variables. You acknowledge that our platform's output is for informative or entertainment purposes only, and you accept full legal responsibility for any real-world outcomes resulting from your decisions.
       </p>
@@ -99,7 +99,7 @@ export function DisclaimerPage() {
       <p className="font-mono text-xs text-slate-400 font-semibold text-red-500">CRITICAL READ NOTICE</p>
       <div className="p-4 rounded-2xl bg-red-500/5 border border-red-500/20 text-xs text-slate-500 leading-relaxed">
         <strong>DownOrUp.net is an automated AI Decision Evaluator.</strong> The recommendations, scores, difficulty ratings, pro/con reports, and final "UP/DOWN/NEUTRAL" verdicts returned by our systems are generated using artificial intelligence algorithms. They are NOT, and must never be interpreted as:
-        <ul className="list-disc pl-5 mt-2 space-y-1 font-medium text-slate-600 dark:text-slate-350">
+        <ul className="list-disc pl-5 mt-2 space-y-1 font-medium text-slate-600">
           <li>Professional financial, investment, or banking advice.</li>
           <li>Authorized legal, tax, or corporate structuring counsel.</li>
           <li>Certified career or psychological coaching.</li>
@@ -174,13 +174,13 @@ export function ContactUsPage() {
         {sent ? (
           <div className="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-center py-10 mt-6">
             <CheckCircle2 className="h-10 w-10 text-emerald-500 mx-auto mb-3 animate-bounce" />
-            <span className="font-bold text-slate-900 dark:text-white text-base">Message Logged Successfully</span>
+            <span className="font-bold text-gray-900 text-base">Message Logged Successfully</span>
             <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
               Thank you for contacting DownOrUp.net. Our support coordinator has queued your request and will follow up shortly.
             </p>
             <button 
               onClick={() => setSent(false)} 
-              className="mt-4 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+              className="mt-4 text-xs font-semibold text-blue-600 hover:underline cursor-pointer"
             >
               Submit another ticket
             </button>

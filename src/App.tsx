@@ -117,7 +117,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/20 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300" id="app-viewport">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900" id="app-viewport">
       <Header currentPath={currentPath} onNavigate={navigate} />
       <main className="flex-grow">{renderContent()}</main>
       <Footer onNavigate={navigate} />

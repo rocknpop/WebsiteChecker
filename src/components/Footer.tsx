@@ -53,11 +53,10 @@ export default function Footer({ onNavigate }: FooterProps) {
   ];
 
   return (
-    <footer id="site-footer" className="bg-slate-900 text-slate-300 border-t border-slate-800 transition-colors duration-300">
-      
+    <footer id="site-footer" className="bg-gray-900 text-gray-300 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-8">
-          
+
           {/* Brand Info */}
           <div className="col-span-2 space-y-4">
             <div className="flex items-center space-x-2.5 cursor-pointer" onClick={(e) => handleLinkClick(e, "/")}>
@@ -68,7 +67,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                 DownOrUp.net
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+            <p className="text-xs text-gray-400 leading-relaxed max-w-sm">
               The internet's premiere AI-powered decision platform. Get dynamic, data-driven verdicts on careers, side hustles, software, business ideas, and lifestyle decisions in seconds.
             </p>
             <div className="flex space-x-4 pt-1">
@@ -79,16 +78,16 @@ export default function Footer({ onNavigate }: FooterProps) {
             </div>
           </div>
 
-          {/* Programmatic Categories Columns */}
+          {/* Link Columns */}
           {categories.map((cat, idx) => (
             <div key={idx} className="space-y-3 col-span-1">
               <h4 className="font-sans font-bold text-xs uppercase tracking-wider text-white">{cat.title}</h4>
-              <ul className="space-y-2 text-xs text-slate-400">
+              <ul className="space-y-2 text-xs text-gray-400">
                 {cat.links.map((link, lidx) => (
                   <li key={lidx}>
-                    <a 
-                      href={link.path} 
-                      onClick={(e) => handleLinkClick(e, link.path)} 
+                    <a
+                      href={link.path}
+                      onClick={(e) => handleLinkClick(e, link.path)}
                       className="hover:text-white transition-colors"
                     >
                       {link.name}
@@ -98,31 +97,29 @@ export default function Footer({ onNavigate }: FooterProps) {
               </ul>
             </div>
           ))}
-
         </div>
 
-        {/* Legal Pages Horizontal Bar */}
-        <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col lg:flex-row justify-between items-center gap-6">
-          <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-slate-400">
+        {/* Legal Bar */}
+        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col lg:flex-row justify-between items-center gap-6">
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-gray-400">
             <a href="/about" onClick={(e) => handleLinkClick(e, "/about")} className="hover:text-white transition-colors">About</a>
             <span>•</span>
-            <a href="/privacy-policy" onClick={(e) => handleLinkClick(e, "/privacy-policy")} className="hover:text-slate-200 transition-colors">Privacy Policy</a>
+            <a href="/privacy-policy" onClick={(e) => handleLinkClick(e, "/privacy-policy")} className="hover:text-gray-200 transition-colors">Privacy Policy</a>
             <span>•</span>
-            <a href="/terms-and-conditions" onClick={(e) => handleLinkClick(e, "/terms-and-conditions")} className="hover:text-slate-200 transition-colors">Terms of Service</a>
+            <a href="/terms-and-conditions" onClick={(e) => handleLinkClick(e, "/terms-and-conditions")} className="hover:text-gray-200 transition-colors">Terms of Service</a>
             <span>•</span>
-            <a href="/disclaimer" onClick={(e) => handleLinkClick(e, "/disclaimer")} className="hover:text-slate-200 transition-colors">Disclaimer</a>
+            <a href="/disclaimer" onClick={(e) => handleLinkClick(e, "/disclaimer")} className="hover:text-gray-200 transition-colors">Disclaimer</a>
             <span>•</span>
-            <a href="/cookie-policy" onClick={(e) => handleLinkClick(e, "/cookie-policy")} className="hover:text-slate-200 transition-colors">Cookie Policy</a>
+            <a href="/cookie-policy" onClick={(e) => handleLinkClick(e, "/cookie-policy")} className="hover:text-gray-200 transition-colors">Cookie Policy</a>
           </div>
-
-          <div className="text-xs text-slate-500 text-center lg:text-right font-sans">
+          <div className="text-xs text-gray-500 text-center lg:text-right font-sans">
             <p>© {currentYear} DownOrUp.net. All rights reserved. GDPR & CCPA Compliant.</p>
           </div>
         </div>
 
-        {/* AdSense Placement Area - Highly responsive, zero layout shift */}
-        <div className="mt-8 pt-4 border-t border-slate-800/40 flex justify-center">
-          <div className="w-full max-w-4xl h-[90px] bg-slate-950/70 border border-slate-800/80 rounded-xl flex items-center justify-center text-[10px] text-slate-600 font-mono tracking-widest uppercase select-none">
+        {/* AdSense Placement */}
+        <div className="mt-8 pt-4 border-t border-gray-800/40 flex justify-center">
+          <div className="w-full max-w-4xl h-[90px] bg-gray-800/50 border border-gray-700/50 rounded-xl flex items-center justify-center text-[10px] text-gray-500 font-mono tracking-widest uppercase select-none">
             ADVERTISEMENT SPACE (AdSense Responsive Banner)
           </div>
         </div>
