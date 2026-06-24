@@ -1506,7 +1506,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </div>
 
         <div className="max-w-2xl mx-auto mb-10">
-          <form onSubmit={handleToolSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-center transition-all duration-200 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
+          <form onSubmit={handleToolSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-300 shadow-md flex items-center transition-all duration-200 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
             <div className="flex-1 flex items-center pl-3">
               <Search className="w-5 h-5 text-gray-500 group-focus-within:text-indigo-500 transition-colors" />
               <input
@@ -1522,7 +1522,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <button
               type="submit"
               disabled={toolLoading || (activeTool !== "ip" && !toolInput.trim())}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
+              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
             >
               <span>{toolLoading ? "Checking..." : `Run Status Check`}</span>
             </button>
@@ -1740,13 +1740,14 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
   // RENDER PRIMARY DECISION ENGINE
   return (
-    <div className="relative min-h-screen bg-gray-50">
+    <div className="relative min-h-screen bg-gradient-to-b from-blue-50 via-white to-indigo-50">
 
     {/* GRADIENT HERO BACKGROUND */}
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-white pointer-events-none -z-20" />
     <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[650px] bg-gradient-to-b from-blue-300/12 via-indigo-300/6 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
     <div className="fixed top-32 -left-32 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl pointer-events-none -z-10" />
     <div className="fixed top-64 -right-32 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none -z-10" />
+    <div className="absolute top-0 right-0 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="main-viewport">
 
@@ -1766,7 +1767,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* CENTRAL PROMPT FORM BLOCK */}
       <div className="max-w-2xl mx-auto mb-10">
-        <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-center transition-all duration-200 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
+        <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-300 shadow-md flex items-center transition-all duration-200 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
           <div className="flex-1 flex items-center pl-3">
             <Search className="w-5 h-5 text-gray-500 group-focus-within:text-indigo-500 transition-colors" />
             <input
@@ -1782,7 +1783,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <button
             type="submit"
             disabled={loading || !inputValue.trim()}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
+            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
           >
             <span>Analyze Decision</span>
           </button>
@@ -1794,7 +1795,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <button
               key={chip}
               onClick={() => handleChipClick(chip)}
-              className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-200 hover:border-gray-300 rounded-full text-xs text-gray-700 hover:text-gray-900 font-medium transition-all duration-150 cursor-pointer active:scale-95"
+              className="px-3 py-1.5 bg-white border border-gray-200 shadow-sm hover:border-blue-300 hover:text-blue-600 rounded-full text-xs text-gray-700 font-medium transition-all duration-150 cursor-pointer active:scale-95"
             >
               {chip}
             </button>
