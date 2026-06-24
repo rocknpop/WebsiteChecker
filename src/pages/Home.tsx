@@ -445,89 +445,70 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           let checkSuccess = false;
           let finalResult: any = null;
 
-          // --- DNS PRE-STEP (silent — only collects resolvedIp, never sets checkSuccess) ---
+          // --- PARALLEL: DNS (resolvedIp), Method 1 (allorigins), Method 2 (corsproxy) ---
           let resolvedIp: string | undefined;
-          try {
-            const dnsQueryUrl = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostName)}&type=A`;
-            const dnsRes = await fetchWithTimeout(dnsQueryUrl, {
-              headers: { Accept: "application/dns-json" }
-            }, 7000);
-            if (dnsRes.ok) {
-              const dnsData = await dnsRes.json();
-              if (dnsData.Answer && dnsData.Answer.length > 0) {
-                resolvedIp = dnsData.Answer[0].data;
-              }
-            }
-          } catch (err) {
-            console.warn("DNS pre-step failed:", err);
-          }
 
-          // --- METHOD 1: allorigins.win proxy ---
-          if (!checkSuccess) {
+          const dnsPromise = (async () => {
+            try {
+              const dnsRes = await fetchWithTimeout(
+                `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostName)}&type=A`,
+                { headers: { Accept: "application/dns-json" } },
+                7000
+              );
+              if (dnsRes.ok) {
+                const dnsData = await dnsRes.json();
+                if (dnsData.Answer && dnsData.Answer.length > 0) resolvedIp = dnsData.Answer[0].data;
+              }
+            } catch (err) {
+              console.warn("DNS pre-step failed:", err);
+            }
+          })();
+
+          const m1Promise = (async () => {
             const m1Start = Date.now();
-            try {
-              const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-              const res = await fetchWithTimeout(proxyUrl, {}, 7000);
-              if (res.ok) {
-                const resJson = await res.json();
-                const code = resJson.status?.http_code;
-                if (typeof code === "number" && code > 0) {
-                  const m1End = Date.now();
-                  checkSuccess = true;
-                  let finalStatus: "up" | "down" | "unknown" = "unknown";
-                  if (code >= 200 && code <= 399) {
-                    finalStatus = "up";
-                  } else if (code === 401 || code === 403) {
-                    finalStatus = "up";
-                  } else if (code >= 500) {
-                    finalStatus = "down";
-                  }
-                  finalResult = {
-                    host: hostName,
-                    status: finalStatus,
-                    methodName: "Checked via allorigins.win proxy",
-                    responseTimeMs: m1End - m1Start,
-                    statusCode: code,
-                    resolvedIp
-                  };
-                }
-              }
-            } catch (err) {
-              console.warn("Method 1 (allorigins proxy) failed:", err);
-            }
-          }
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+            const res = await fetchWithTimeout(proxyUrl, {}, 7000);
+            if (!res.ok) throw new Error("allorigins request failed");
+            const resJson = await res.json();
+            const code = resJson.status?.http_code;
+            if (typeof code !== "number" || code <= 0) throw new Error("allorigins returned no valid http_code");
+            let finalStatus: "up" | "down" | "unknown" = "unknown";
+            if (code >= 200 && code <= 399) finalStatus = "up";
+            else if (code === 401 || code === 403) finalStatus = "up";
+            else if (code >= 500) finalStatus = "down";
+            return {
+              host: hostName,
+              status: finalStatus,
+              methodName: "Checked via allorigins.win proxy",
+              responseTimeMs: Date.now() - m1Start,
+              statusCode: code,
+            };
+          })();
 
-          // --- METHOD 2: corsproxy.io ---
-          if (!checkSuccess) {
+          const m2Promise = (async () => {
             const m2Start = Date.now();
-            try {
-              const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
-              const res = await fetchWithTimeout(proxyUrl, {}, 7000);
-              const m2End = Date.now();
-              const responseTime = m2End - m2Start;
+            const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
+            const res = await fetchWithTimeout(proxyUrl, {}, 7000);
+            let finalStatus: "up" | "down" | "unknown" = "unknown";
+            if (res.status >= 200 && res.status <= 399) finalStatus = "up";
+            else if (res.status === 401 || res.status === 403) finalStatus = "up";
+            else if (res.status >= 500) finalStatus = "down";
+            return {
+              host: hostName,
+              status: finalStatus,
+              methodName: "Checked via corsproxy.io",
+              responseTimeMs: Date.now() - m2Start,
+              statusCode: res.status,
+            };
+          })();
 
-              if (res.ok || res.status > 0) {
-                checkSuccess = true;
-                let finalStatus: "up" | "down" | "unknown" = "unknown";
-                if (res.status >= 200 && res.status <= 399) {
-                  finalStatus = "up";
-                } else if (res.status === 401 || res.status === 403) {
-                  finalStatus = "up";
-                } else if (res.status >= 500) {
-                  finalStatus = "down";
-                }
-                finalResult = {
-                  host: hostName,
-                  status: finalStatus,
-                  methodName: "Checked via corsproxy.io",
-                  responseTimeMs: responseTime,
-                  statusCode: res.status,
-                  resolvedIp
-                };
-              }
-            } catch (err) {
-              console.warn("Method 2 (corsproxy) failed:", err);
-            }
+          try {
+            const raceResult = await Promise.any([m1Promise, m2Promise]);
+            checkSuccess = true;
+            finalResult = { ...raceResult, resolvedIp };
+          } catch {
+            console.warn("Methods 1 and 2 both failed, falling through to image ping.");
+            await dnsPromise;
           }
 
           // --- METHOD 3: image ping ---
