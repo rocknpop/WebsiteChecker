@@ -36,7 +36,8 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             </span>
           </div>
 
-          <nav style={{alignItems:"center",gap:"4px"}} className="hidden md:flex">
+          {/* Center: desktop nav only — force hidden on mobile via style tag */}
+          <nav className="hdr-desktop-nav" style={{alignItems:"center",gap:"4px"}}>
             {navLinks.map((link) => (
               <button
                 key={link.path}
@@ -57,10 +58,11 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             ))}
           </nav>
 
-          <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
+          {/* Right: Evaluate Now (desktop) + Hamburger (mobile) — always separate from nav */}
+          <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
             <button
               onClick={() => handleLinkClick("/")}
-              className="hidden md:flex"
+              className="hdr-desktop-eval"
               style={{alignItems:"center",gap:"6px",padding:"8px 20px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"999px",fontWeight:"700",fontSize:"14px",cursor:"pointer",boxShadow:"0 2px 8px rgba(37,99,235,0.4)"}}
             >
               <Sparkles style={{height:"14px",width:"14px"}} />
@@ -69,8 +71,8 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
             <button
               onClick={() => setIsOpen((v) => !v)}
-              className="md:hidden"
-              style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px"}}
+              className="hdr-mobile-btn"
+              style={{alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px"}}
               aria-label="Toggle menu"
             >
               {isOpen
@@ -154,6 +156,17 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           </div>
         </div>
       )}
+
+      <style>{`
+        .hdr-desktop-nav  { display: none !important; }
+        .hdr-desktop-eval { display: none !important; }
+        .hdr-mobile-btn   { display: flex !important; }
+        @media (min-width: 768px) {
+          .hdr-desktop-nav  { display: flex !important; }
+          .hdr-desktop-eval { display: flex !important; }
+          .hdr-mobile-btn   { display: none !important; }
+        }
+      `}</style>
 
       <div style={{height:"64px"}} />
     </>
