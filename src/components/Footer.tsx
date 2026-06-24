@@ -55,37 +55,6 @@ export default function Footer({ onNavigate }: FooterProps) {
   return (
     <footer id="site-footer" className="bg-slate-900 text-slate-300 border-t border-slate-800 transition-colors duration-300">
       
-      {/* Monetization Slot - Affiliate Recommendation Box */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-        <div className="bg-slate-950/60 rounded-2xl p-6 border border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="max-w-xl">
-            <span className="inline-block bg-blue-500/15 text-blue-400 text-xs px-2.5 py-1 rounded-md font-mono font-bold border border-blue-500/20 mb-2 uppercase tracking-wider">
-              SPONSORED RECOMMENDATION
-            </span>
-            <p className="text-sm font-bold text-white">Unlock Premium Custom AI Report Generation</p>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              Need a highly tailored corporate audit, deep financial modeling, or bespoke market validation reports? Access premium analytical suites from our verified SaaS partners with up to 35% discount.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={(e) => handleLinkClick(e, "/")}
-              className="whitespace-nowrap bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs px-4.5 py-2.5 rounded-xl transition-all active:scale-95 text-center cursor-pointer"
-            >
-              Start Custom Analysis
-            </button>
-            <a 
-              href="https://ai.google.dev" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="whitespace-nowrap border border-slate-800 hover:border-slate-700 text-slate-300 font-semibold text-xs px-3.5 py-2.5 rounded-xl transition-colors text-center"
-            >
-              Developer SDK
-            </a>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-8">
           
