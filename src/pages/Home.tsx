@@ -1077,21 +1077,28 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         const isDown = statusVal === "down";
 
         let badgeText = "UNKNOWN ⚠️";
-        let badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/20";
-        let iconClass = "bg-amber-500/10 border border-amber-500/20 text-amber-500";
+        let badgeClass = "bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-lg shadow-amber-500/20";
+        let iconClass = "bg-amber-500/15 border border-amber-500/30 text-amber-400";
+        let containerGlow = "border-amber-500/25 shadow-[0_0_55px_-12px_rgba(245,158,11,0.35)]";
+        let accentPulse = "bg-amber-500/8";
         if (isUp) {
           badgeText = "UP ✅";
-          badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
-          iconClass = "bg-emerald-500/10 border border-emerald-500/20 text-emerald-500";
+          badgeClass = "bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-lg shadow-emerald-500/20";
+          iconClass = "bg-emerald-500/15 border border-emerald-500/30 text-emerald-400";
+          containerGlow = "border-emerald-500/30 shadow-[0_0_55px_-12px_rgba(16,185,129,0.4)]";
+          accentPulse = "bg-emerald-500/8";
         } else if (isDown) {
           badgeText = "DOWN ❌";
-          badgeClass = "bg-red-500/10 text-red-400 border-red-500/20";
-          iconClass = "bg-red-500/10 border border-red-500/20 text-red-500";
+          badgeClass = "bg-red-500/15 text-red-300 border-red-500/40 shadow-lg shadow-red-500/20";
+          iconClass = "bg-red-500/15 border border-red-500/30 text-red-400";
+          containerGlow = "border-red-500/30 shadow-[0_0_55px_-12px_rgba(239,68,68,0.4)]";
+          accentPulse = "bg-red-500/8";
         }
 
         return (
-          <div className="bg-slate-950 rounded-3xl border border-slate-800 p-6 sm:p-8 space-y-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-slate-850 pb-6 gap-4">
+          <div className={`bg-slate-950/90 backdrop-blur-sm rounded-3xl border p-6 sm:p-8 space-y-6 relative overflow-hidden transition-all ${containerGlow}`}>
+            <div className={`absolute inset-0 rounded-3xl ${accentPulse} pointer-events-none`} />
+            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-slate-800/60 pb-6 gap-4 relative">
               <div className="flex items-center space-x-4">
                 <div className={`h-12 w-12 rounded-2xl flex items-center justify-center ${iconClass}`}>
                   <Globe className="h-6 w-6" />
@@ -1101,37 +1108,37 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   <p className="text-xs text-slate-400">Website reachability and responsiveness metrics</p>
                 </div>
               </div>
-              <div className={`px-4 py-2 rounded-2xl border text-sm font-bold font-mono tracking-wider uppercase ${badgeClass}`}>
+              <div className={`px-5 py-2 rounded-2xl border text-sm font-bold font-mono tracking-wider uppercase ${badgeClass}`}>
                 {badgeText}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 relative">
+              <div className="bg-slate-900/70 border border-slate-800/60 rounded-2xl p-4 hover:border-slate-700 transition-colors">
                 <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">HTTP Code</span>
                 <p className="text-lg font-bold text-white mt-1 font-mono">{toolResult.statusCode !== undefined ? toolResult.statusCode : "N/A"}</p>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
+              <div className="bg-slate-900/70 border border-slate-800/60 rounded-2xl p-4 hover:border-slate-700 transition-colors">
                 <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Verification Method</span>
                 <p className="text-sm font-bold text-white mt-1.5">{toolResult.methodName}</p>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
+              <div className="bg-slate-900/70 border border-slate-800/60 rounded-2xl p-4 hover:border-slate-700 transition-colors">
                 <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Latency</span>
                 <p className="text-lg font-bold text-white mt-1 font-mono">{toolResult.responseTimeMs} ms</p>
               </div>
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4">
+              <div className="bg-slate-900/70 border border-slate-800/60 rounded-2xl p-4 hover:border-slate-700 transition-colors">
                 <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Resolved IP</span>
                 <p className="text-base font-bold text-white mt-1.5 font-mono break-all">{toolResult.resolvedIp || "N/A"}</p>
               </div>
             </div>
 
             {toolResult.message && (
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-4 text-xs text-slate-300 leading-relaxed font-mono">
+              <div className="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-4 text-xs text-slate-300 leading-relaxed font-mono relative">
                 <span className="text-indigo-400 font-bold">Details:</span> {toolResult.message}
               </div>
             )}
 
-            <div className="bg-slate-900 border border-slate-850 rounded-2xl p-5 space-y-3">
+            <div className="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-5 space-y-3 relative">
               <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Security Telemetry</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div className="flex items-center justify-between py-1 border-b border-slate-850/50">
@@ -1153,7 +1160,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               </div>
             </div>
 
-            <div className="text-xs text-slate-400 bg-slate-900/50 border border-slate-850/50 rounded-xl p-4 italic">
+            <div className="text-xs text-slate-400 bg-slate-900/40 border border-slate-800/50 rounded-xl p-4 italic relative">
               Note: Browser security restrictions prevent direct HTTP checks. Results are verified using trusted third-party DNS and proxy services.
             </div>
           </div>
@@ -1162,8 +1169,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "dns": {
         const records = toolResult.records || {};
         return (
-          <div className="bg-slate-950 rounded-3xl border border-slate-800 p-6 sm:p-8 space-y-6">
-            <div className="border-b border-slate-850 pb-4">
+          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-slate-700/50 p-6 sm:p-8 space-y-6 shadow-xl shadow-indigo-500/5">
+            <div className="border-b border-slate-800/60 pb-4">
               <h3 className="text-lg font-bold text-white font-sans">DNS Lookup: {toolResult.domain}</h3>
               <p className="text-xs text-slate-400">All primary DNS records returned via Cloudflare DNS over HTTPS</p>
             </div>
@@ -1210,8 +1217,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "ip": {
         const data = toolResult;
         return (
-          <div className="bg-slate-950 rounded-3xl border border-slate-800 p-6 sm:p-8 space-y-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-slate-850 pb-6 gap-4">
+          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-indigo-500/20 p-6 sm:p-8 space-y-6 shadow-xl shadow-indigo-500/8">
+            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-slate-800/60 pb-6 gap-4">
               <div className="flex items-center space-x-4">
                 <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
                   <MapPin className="h-6 w-6 text-indigo-500" />
@@ -1274,8 +1281,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "ssl": {
         const ssl = toolResult;
         return (
-          <div className="bg-slate-950 rounded-3xl border border-slate-800 p-6 sm:p-8 space-y-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-slate-850 pb-6 gap-4">
+          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-emerald-500/20 p-6 sm:p-8 space-y-6 shadow-xl shadow-emerald-500/8">
+            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-slate-800/60 pb-6 gap-4">
               <div className="flex items-center space-x-4">
                 <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
                   <Lock className="h-6 w-6 text-indigo-500" />
@@ -1340,8 +1347,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         const data = toolResult;
         const rawText = data.raw_data || JSON.stringify(data, null, 2);
         return (
-          <div className="bg-slate-950 rounded-3xl border border-slate-800 p-6 sm:p-8 space-y-6">
-            <div className="border-b border-slate-850 pb-4">
+          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-slate-700/50 p-6 sm:p-8 space-y-6 shadow-xl shadow-blue-500/5">
+            <div className="border-b border-slate-800/60 pb-4">
               <h3 className="text-lg font-bold text-white font-sans">WHOIS Registry Lookup: {data.domain || "Query Host"}</h3>
               <p className="text-xs text-slate-400">Public ICANN registrar data and DNS delegation</p>
             </div>
@@ -1373,8 +1380,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       case "port": {
         const ports = toolResult.ports || [];
         return (
-          <div className="bg-slate-950 rounded-3xl border border-slate-800 p-6 sm:p-8 space-y-6">
-            <div className="border-b border-slate-850 pb-4 flex justify-between items-center flex-wrap gap-4">
+          <div className="bg-slate-950/90 backdrop-blur-sm rounded-3xl border border-slate-700/50 p-6 sm:p-8 space-y-6 shadow-xl shadow-blue-500/5">
+            <div className="border-b border-slate-800/60 pb-4 flex justify-between items-center flex-wrap gap-4">
               <div>
                 <h3 className="text-lg font-bold text-white font-sans">Common Ports Diagnostics: {toolResult.domain}</h3>
                 <p className="text-xs text-slate-400">Verifying external firewall status for host: {toolResult.ipAddress}</p>
@@ -1485,10 +1492,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   window.history.pushState({}, "", `/${route}`);
                   onNavigate(`/${route}`);
                 }}
-                className={`flex items-center justify-center space-x-2 p-3.5 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center justify-center space-x-2 p-3.5 rounded-2xl border text-xs font-bold transition-all duration-200 cursor-pointer ${
                   active
-                    ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/10 scale-102"
-                    : "bg-white dark:bg-slate-950 border-slate-200/50 dark:border-slate-850 text-slate-700 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700"
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 border-transparent text-white shadow-lg shadow-indigo-500/30 scale-[1.02]"
+                    : "bg-white/5 dark:bg-slate-900/60 backdrop-blur-sm border-slate-200/40 dark:border-slate-800/50 text-slate-700 dark:text-slate-350 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 hover:border-indigo-500/30 hover:-translate-y-0.5 hover:shadow-md hover:shadow-indigo-500/10"
                 }`}
               >
                 {t.icon}
@@ -1499,11 +1506,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </div>
 
         <div className="max-w-2xl mx-auto mb-10">
-          <form onSubmit={handleToolSubmit} className="relative group p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 shadow-xl flex items-center transition-all focus-within:ring-2 focus-within:ring-blue-500/30">
+          <form onSubmit={handleToolSubmit} className="relative group p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/50 shadow-2xl shadow-indigo-500/8 flex items-center transition-all duration-300 focus-within:ring-2 focus-within:ring-indigo-500/40 focus-within:border-indigo-500/40 hover:shadow-indigo-500/15">
             <div className="flex-1 flex items-center pl-3">
-              <Search className="w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-              <input 
-                type="text" 
+              <Search className="w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+              <input
+                type="text"
                 value={toolInput}
                 onChange={(e) => setToolInput(e.target.value)}
                 placeholder={getPlaceholder()}
@@ -1512,10 +1519,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 aria-label="Input domain or IP query"
               />
             </div>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={toolLoading || (activeTool !== "ip" && !toolInput.trim())}
-              className="bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
             >
               <span>{toolLoading ? "Checking..." : `Run Status Check`}</span>
             </button>
@@ -1534,14 +1541,15 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </div>
 
         {toolLoading && (
-          <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-slate-950 rounded-3xl border border-slate-850 shadow-xl animate-pulse">
+          <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-slate-950/80 backdrop-blur-sm rounded-3xl border border-indigo-500/20 shadow-2xl shadow-indigo-500/10 animate-pulse">
             <div className="relative w-16 h-16 mx-auto">
               <div className="absolute inset-0 rounded-full border-4 border-slate-800" />
-              <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
+              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 border-r-blue-500 animate-spin" />
+              <div className="absolute inset-2 rounded-full bg-indigo-500/10 blur-sm" />
             </div>
             <div className="space-y-1.5">
               <h3 className="font-bold text-lg text-white">Contacting Distributed Networks</h3>
-              <p className="text-xs text-blue-400 font-semibold font-mono animate-bounce">
+              <p className="text-xs text-indigo-400 font-semibold font-mono animate-bounce">
                 Retrieving absolute telemetry metrics via direct external secure proxy...
               </p>
             </div>
@@ -1569,7 +1577,13 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
   // RENDER DIAGNOSTICS SUITE VIEW
   if (activeTool) {
-    return renderDiagnosticsSuite();
+    return (
+      <div className="relative min-h-screen">
+        <div className="fixed inset-0 bg-gradient-to-br from-blue-950/40 via-slate-950 to-indigo-950/30 pointer-events-none -z-20" />
+        <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-blue-600/10 via-indigo-600/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+        {renderDiagnosticsSuite()}
+      </div>
+    );
   }
 
   // RENDER BLOG VIEW
@@ -1591,7 +1605,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               <span>Back to blog library</span>
             </button>
 
-            <article className="bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl space-y-6">
+            <article className="bg-slate-950/90 backdrop-blur-sm border border-indigo-500/20 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-indigo-500/8 space-y-6">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="bg-blue-950 text-blue-400 text-xs px-2.5 py-1 rounded-md font-semibold border border-blue-900/50">
                   {selectedPost.category}
@@ -1686,7 +1700,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               {filteredBlogPosts.map(post => (
                 <article 
                   key={post.id} 
-                  className="bg-slate-950 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between shadow-xs hover:shadow-md hover:-translate-y-0.5 duration-200 transition-all group"
+                  className="bg-slate-950/85 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 flex flex-col justify-between shadow-sm hover:shadow-2xl hover:shadow-indigo-500/12 hover:-translate-y-1 duration-300 transition-all group hover:border-indigo-500/30"
                 >
                   <div className="space-y-3.5">
                     <div className="flex items-center justify-between text-[11px] text-slate-300 font-mono">
@@ -1726,14 +1740,19 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
   // RENDER PRIMARY DECISION ENGINE
   return (
+    <div className="relative min-h-screen">
+
+    {/* GRADIENT HERO BACKGROUND */}
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-950/40 via-slate-950 via-60% to-purple-950/25 pointer-events-none -z-20" />
+    <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[650px] bg-gradient-to-b from-blue-600/12 via-indigo-600/7 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+    <div className="fixed top-32 -left-32 w-96 h-96 bg-blue-600/6 rounded-full blur-3xl pointer-events-none -z-10" />
+    <div className="fixed top-64 -right-32 w-96 h-96 bg-purple-600/6 rounded-full blur-3xl pointer-events-none -z-10" />
+
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="main-viewport">
-      
-      {/* GLOW DECORATIONS */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
       {/* HERO HERO TITLE BLOCK */}
       <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 bg-linear-to-r from-blue-500/10 to-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono animate-fade-in">
+        <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-purple-500/10 border border-indigo-500/30 text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono animate-fade-in shadow-lg shadow-indigo-500/10">
           <Sparkles className="w-3.5 h-3.5 animate-spin-slow" />
           <span>DownOrUp.net AI Decision Engine</span>
         </div>
@@ -1747,11 +1766,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* CENTRAL PROMPT FORM BLOCK */}
       <div className="max-w-2xl mx-auto mb-10">
-        <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 shadow-xl flex items-center transition-all focus-within:ring-2 focus-within:ring-blue-500/30">
+        <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/50 shadow-2xl shadow-indigo-500/8 flex items-center transition-all duration-300 focus-within:ring-2 focus-within:ring-indigo-500/40 focus-within:border-indigo-500/40 hover:shadow-indigo-500/15">
           <div className="flex-1 flex items-center pl-3">
-            <Search className="w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-            <input 
-              type="text" 
+            <Search className="w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+            <input
+              type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="e.g., Should I start a faceless YouTube channel in 2026?"
@@ -1760,10 +1779,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               aria-label="Input decision query"
             />
           </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading || !inputValue.trim()}
-            className="bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
           >
             <span>Analyze Decision</span>
           </button>
@@ -1775,7 +1794,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <button
               key={chip}
               onClick={() => handleChipClick(chip)}
-              className="px-3 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-full text-xs text-slate-350 hover:text-blue-400 font-medium transition-all duration-150 cursor-pointer shadow-xs active:scale-95"
+              className="px-3 py-1.5 bg-slate-900/60 hover:bg-indigo-950/50 border border-slate-700/50 hover:border-indigo-500/40 rounded-full text-xs text-slate-400 hover:text-indigo-300 font-medium transition-all duration-200 cursor-pointer shadow-sm hover:shadow-indigo-500/10 active:scale-95 backdrop-blur-sm"
             >
               {chip}
             </button>
@@ -1785,14 +1804,15 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* DYNAMIC ANALYSIS REPORT LOADER */}
       {loading && (
-        <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-slate-950 rounded-3xl border border-slate-800 shadow-xl animate-pulse">
+        <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-slate-950/80 backdrop-blur-sm rounded-3xl border border-indigo-500/20 shadow-2xl shadow-indigo-500/10 animate-pulse">
           <div className="relative w-16 h-16 mx-auto">
             <div className="absolute inset-0 rounded-full border-4 border-slate-800" />
-            <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 border-r-blue-500 animate-spin" />
+            <div className="absolute inset-2 rounded-full bg-indigo-500/10 blur-sm" />
           </div>
           <div className="space-y-1.5">
             <h3 className="font-bold text-lg text-white">Analyzing Decision Trajectory</h3>
-            <p className="text-xs text-blue-400 font-semibold font-mono animate-bounce">
+            <p className="text-xs text-indigo-400 font-semibold font-mono animate-bounce">
               {loadingSteps[loadingStep]}
             </p>
           </div>
@@ -1850,7 +1870,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           {/* STRUCTURED ANALYSIS CARDS */}
           <div className="grid sm:grid-cols-2 gap-6">
             {/* KEY RATIONALE */}
-            <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-3 flex flex-col justify-between">
+            <div className="bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-indigo-500/15 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-indigo-400">
                   <Sparkles className="w-4 h-4" />
@@ -1863,7 +1883,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             {/* MARKET DEMAND */}
-            <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-3 flex flex-col justify-between">
+            <div className="bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-amber-500/15 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-amber-400">
                   <TrendingUp className="w-4 h-4" />
@@ -1876,7 +1896,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             {/* REQUIRED EFFORT */}
-            <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-3 flex flex-col justify-between">
+            <div className="bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-cyan-500/15 shadow-sm hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-cyan-400">
                   <Zap className="w-4 h-4" />
@@ -1889,7 +1909,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             {/* IDEAL CANDIDATE */}
-            <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-3 flex flex-col justify-between">
+            <div className="bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-emerald-500/15 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-3 flex flex-col justify-between group">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-emerald-400">
                   <ShieldCheck className="w-4 h-4" />
@@ -1904,7 +1924,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
           {/* ACTIONABLE NEXT STEP */}
           {report.actionable_next_step && (
-            <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+            <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-emerald-500/20 shadow-lg shadow-emerald-500/8 hover:shadow-emerald-500/15 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
               <div className="flex items-center space-x-2 text-emerald-450">
                 <ArrowRight className="w-5 h-5" />
                 <h3 className="font-sans font-extrabold text-lg text-white">Actionable Next Step</h3>
@@ -1919,7 +1939,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="grid md:grid-cols-3 gap-6">
             
             {/* CONCISE OVERVIEW SUMMARY */}
-            <div className="col-span-2 bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs flex flex-col justify-between space-y-4">
+            <div className="col-span-2 bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-2">
                 <span className="text-[10px] font-mono tracking-wider font-bold bg-linear-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent uppercase">EXECUTIVE SUMMARY</span>
                 <p className="text-sm sm:text-base text-slate-100 font-medium leading-relaxed font-sans">
@@ -1933,7 +1953,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             {/* QUICK SCORES SIDEBAR */}
-            <div className="col-span-1 bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+            <div className="col-span-1 bg-slate-950/80 backdrop-blur-sm p-6 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-blue-500/8 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
               <span className="text-[10px] font-mono tracking-wider font-bold bg-linear-to-r from-cyan-400 to-blue-450 bg-clip-text text-transparent block uppercase mb-1">SCORE METRICS</span>
               
               {/* DIFFICULTY */}
@@ -1983,7 +2003,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="grid md:grid-cols-2 gap-6">
             
             {/* PROS CARD */}
-            <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+            <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-emerald-500/20 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
               <span className="inline-flex items-center space-x-1.5 bg-emerald-955/20 text-emerald-400 text-xs px-2.5 py-1 rounded-md border border-emerald-800 font-bold uppercase tracking-wider font-mono">
                 <ThumbsUp className="w-3.5 h-3.5" />
                 <span>Primary Advantages</span>
@@ -1999,7 +2019,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             {/* CONS CARD */}
-            <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+            <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-red-500/20 shadow-sm hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
               <span className="inline-flex items-center space-x-1.5 bg-red-955/20 text-red-400 text-xs px-2.5 py-1 rounded-md border border-red-800 font-bold uppercase tracking-wider font-mono">
                 <AlertOctagon className="w-3.5 h-3.5" />
                 <span>Primary Disadvantages</span>
@@ -2017,7 +2037,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* AUDIENCE PROFILES */}
-          <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs grid sm:grid-cols-2 gap-6">
+          <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 grid sm:grid-cols-2 gap-6">
             <div className="space-y-1.5">
               <h4 className="text-xs font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent uppercase tracking-widest font-mono">Recommended For</h4>
               <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">{report.recommendedFor}</p>
@@ -2029,7 +2049,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* DETAILED STRATEGIC OUTLOOK REASONING */}
-          <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-4">
+          <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-indigo-500/15 shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
             <h3 className="font-sans font-extrabold text-lg text-white flex items-center gap-2">
               <Award className="w-5 h-5 text-indigo-400" />
               <span className="bg-linear-to-r from-blue-400 to-amber-300 bg-clip-text text-transparent">Detailed Strategic Outlook</span>
@@ -2041,7 +2061,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
           {/* VISIBLE SEO INTEGRATION & CRAWL CARD */}
           {report.seo && (
-            <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-6">
+            <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-blue-500/8 transition-all duration-300 space-y-6">
               <div className="flex items-center justify-between border-b border-slate-900 pb-4">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
@@ -2080,7 +2100,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           )}
 
           {/* DYNAMIC FAQ ACCORDION GENERATOR */}
-          <div className="bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xs space-y-5">
+          <div className="bg-slate-950/80 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-slate-700/50 shadow-sm hover:shadow-lg hover:shadow-cyan-500/8 hover:-translate-y-0.5 transition-all duration-300 space-y-5">
             <h3 className="font-sans font-extrabold text-lg text-white flex items-center gap-2">
               <HelpIcon className="w-5 h-5 text-cyan-400" />
               <span className="bg-linear-to-r from-blue-400 to-cyan-200 bg-clip-text text-transparent">Frequently Asked Questions (FAQ)</span>
@@ -2138,7 +2158,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
           
           {/* CATEGORY BLOCK: CARERS */}
-          <div className="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-900 space-y-3.5 shadow-2xs">
+          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/40 dark:border-slate-700/50 space-y-3.5 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 hover:border-indigo-500/20">
             <span className="text-[10px] font-mono tracking-widest font-bold text-blue-500 uppercase">Careers</span>
             <ul className="space-y-2 text-xs">
               <li><button onClick={() => handleChipClick("Become Software Engineer")} className="hover:text-blue-600 dark:hover:text-blue-400 text-slate-500 text-left cursor-pointer">Become Software Engineer</button></li>
@@ -2149,7 +2169,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* CATEGORY BLOCK: SIDE HUSTLES */}
-          <div className="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-900 space-y-3.5 shadow-2xs">
+          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/40 dark:border-slate-700/50 space-y-3.5 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 hover:border-indigo-500/20">
             <span className="text-[10px] font-mono tracking-widest font-bold text-emerald-500 uppercase">Side Hustles</span>
             <ul className="space-y-2 text-xs">
               <li><button onClick={() => handleChipClick("Start Amazon KDP")} className="hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-500 text-left cursor-pointer">Start Amazon KDP</button></li>
@@ -2160,7 +2180,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* CATEGORY BLOCK: BUSINESS */}
-          <div className="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-900 space-y-3.5 shadow-2xs">
+          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/40 dark:border-slate-700/50 space-y-3.5 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 hover:border-indigo-500/20">
             <span className="text-[10px] font-mono tracking-widest font-bold text-indigo-500 uppercase">Business Ideas</span>
             <ul className="space-y-2 text-xs">
               <li><button onClick={() => handleChipClick("Start AI Agency")} className="hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-500 text-left cursor-pointer">Start AI Agency</button></li>
@@ -2171,7 +2191,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
 
           {/* CATEGORY BLOCK: EDUCATION & PURCHASES */}
-          <div className="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-900 space-y-3.5 shadow-2xs">
+          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/40 dark:border-slate-700/50 space-y-3.5 shadow-sm hover:shadow-lg hover:shadow-indigo-500/8 hover:-translate-y-0.5 transition-all duration-300 hover:border-indigo-500/20">
             <span className="text-[10px] font-mono tracking-widest font-bold text-cyan-500 uppercase">Education & Tech</span>
             <ul className="space-y-2 text-xs">
               <li><button onClick={() => handleChipClick("Get an MBA")} className="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-500 text-left cursor-pointer">Get an MBA</button></li>
@@ -2197,7 +2217,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               <button
                 key={idx}
                 onClick={() => handleChipClick(dec.query)}
-                className="p-3 bg-white hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-900 border border-slate-200/60 dark:border-slate-850/80 rounded-2xl flex flex-col justify-between items-start text-left cursor-pointer duration-150 transition-all hover:scale-102 hover:shadow-xs group"
+                className="p-3 bg-white/80 hover:bg-white dark:bg-slate-900/60 dark:hover:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-2xl flex flex-col justify-between items-start text-left cursor-pointer duration-200 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/25 group"
               >
                 <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2 mb-2">
                   {dec.query}
@@ -2241,7 +2261,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             {blogPosts.slice(0, 4).map(post => (
               <article 
                 key={post.id} 
-                className="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200/50 dark:border-slate-900 p-5 flex flex-col justify-between shadow-xs hover:shadow-md duration-200 transition-all group cursor-pointer"
+                className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl border border-slate-200/40 dark:border-slate-700/50 p-5 flex flex-col justify-between shadow-sm hover:shadow-xl hover:shadow-indigo-500/12 hover:-translate-y-1 duration-300 transition-all group cursor-pointer hover:border-indigo-500/30"
                 onClick={() => {
                   window.history.pushState({}, "", `/blog/${post.slug}`);
                   onNavigate(`/blog/${post.slug}`);
@@ -2267,6 +2287,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
         </div>
       )}
+
+    </div>
 
     </div>
   );
