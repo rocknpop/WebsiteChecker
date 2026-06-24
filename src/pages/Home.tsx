@@ -445,38 +445,26 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           let checkSuccess = false;
           let finalResult: any = null;
 
-          // --- METHOD 1 ---
-          if (!checkSuccess) {
-            const m1Start = Date.now();
-            try {
-              const dnsQueryUrl = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostName)}&type=A`;
-              const res = await fetchWithTimeout(dnsQueryUrl, {
-                headers: { Accept: "application/dns-json" }
-              }, 7000);
-              
-              if (res.ok) {
-                const data = await res.json();
-                if (data.Answer && data.Answer.length > 0) {
-                  const m1End = Date.now();
-                  checkSuccess = true;
-                  finalResult = {
-                    host: hostName,
-                    status: "unknown",
-                    methodName: "Checked via DNS resolution",
-                    responseTimeMs: m1End - m1Start,
-                    resolvedIp: data.Answer[0].data,
-                    message: "Domain resolves via DNS ✅, but direct HTTP status could not be confirmed due to browser security limits."
-                  };
-                }
+          // --- DNS PRE-STEP (silent — only collects resolvedIp, never sets checkSuccess) ---
+          let resolvedIp: string | undefined;
+          try {
+            const dnsQueryUrl = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostName)}&type=A`;
+            const dnsRes = await fetchWithTimeout(dnsQueryUrl, {
+              headers: { Accept: "application/dns-json" }
+            }, 7000);
+            if (dnsRes.ok) {
+              const dnsData = await dnsRes.json();
+              if (dnsData.Answer && dnsData.Answer.length > 0) {
+                resolvedIp = dnsData.Answer[0].data;
               }
-            } catch (err) {
-              console.warn("Method 1 (DNS check) failed:", err);
             }
+          } catch (err) {
+            console.warn("DNS pre-step failed:", err);
           }
 
-          // --- METHOD 2 ---
+          // --- METHOD 1: allorigins.win proxy ---
           if (!checkSuccess) {
-            const m2Start = Date.now();
+            const m1Start = Date.now();
             try {
               const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
               const res = await fetchWithTimeout(proxyUrl, {}, 7000);
@@ -484,7 +472,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 const resJson = await res.json();
                 const code = resJson.status?.http_code;
                 if (typeof code === "number") {
-                  const m2End = Date.now();
+                  const m1End = Date.now();
                   checkSuccess = true;
                   let finalStatus: "up" | "down" | "unknown" = "unknown";
                   if (code >= 200 && code <= 399) {
@@ -498,25 +486,26 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                     host: hostName,
                     status: finalStatus,
                     methodName: "Checked via allorigins.win proxy",
-                    responseTimeMs: m2End - m2Start,
-                    statusCode: code
+                    responseTimeMs: m1End - m1Start,
+                    statusCode: code,
+                    resolvedIp
                   };
                 }
               }
             } catch (err) {
-              console.warn("Method 2 (allorigins proxy) failed:", err);
+              console.warn("Method 1 (allorigins proxy) failed:", err);
             }
           }
 
-          // --- METHOD 3 ---
+          // --- METHOD 2: corsproxy.io ---
           if (!checkSuccess) {
-            const m3Start = Date.now();
+            const m2Start = Date.now();
             try {
               const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
               const res = await fetchWithTimeout(proxyUrl, {}, 7000);
-              const m3End = Date.now();
-              const responseTime = m3End - m3Start;
-              
+              const m2End = Date.now();
+              const responseTime = m2End - m2Start;
+
               if (res.ok) {
                 checkSuccess = true;
                 finalResult = {
@@ -524,7 +513,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   status: "up",
                   methodName: "Checked via corsproxy.io",
                   responseTimeMs: responseTime,
-                  statusCode: res.status
+                  statusCode: res.status,
+                  resolvedIp
                 };
               } else if (res.status > 0) {
                 checkSuccess = true;
@@ -541,30 +531,32 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   status: finalStatus,
                   methodName: "Checked via corsproxy.io",
                   responseTimeMs: responseTime,
-                  statusCode: res.status
+                  statusCode: res.status,
+                  resolvedIp
                 };
               }
             } catch (err) {
-              console.warn("Method 3 (corsproxy) failed:", err);
+              console.warn("Method 2 (corsproxy) failed:", err);
             }
           }
 
-          // --- METHOD 4 ---
+          // --- METHOD 3: image ping ---
           if (!checkSuccess) {
-            const m4Start = Date.now();
+            const m3Start = Date.now();
             try {
               const pingRes = await runImagePing(targetUrl, 6000);
-              const m4End = Date.now();
+              const m3End = Date.now();
               checkSuccess = true;
               finalResult = {
                 host: hostName,
                 status: pingRes.status,
                 methodName: "Checked via image ping fallback",
-                responseTimeMs: m4End - m4Start,
+                responseTimeMs: m3End - m3Start,
+                resolvedIp,
                 message: pingRes.status === "unknown" ? "Site responded so it EXISTS but may be blocking image hotlinking. Show as REACHABLE ⚠️" : undefined
               };
             } catch (err) {
-              console.warn("Method 4 (image ping fallback) failed:", err);
+              console.warn("Method 3 (image ping fallback) failed:", err);
             }
           }
 
