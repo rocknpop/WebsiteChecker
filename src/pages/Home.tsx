@@ -321,6 +321,20 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
   const [error, setError] = useState<string | null>(null);
   
   const [report, setReport] = useState<DecisionReport | null>(null);
+
+  // Typewriter effect for hero heading
+  const TYPEWRITER_FULL = "Should You Do It?";
+  const [twText, setTwText] = useState("");
+  const [twDone, setTwDone] = useState(false);
+  useEffect(() => {
+    let i = 0;
+    const id = setInterval(() => {
+      i++;
+      setTwText(TYPEWRITER_FULL.slice(0, i));
+      if (i >= TYPEWRITER_FULL.length) { clearInterval(id); setTwDone(true); }
+    }, 55);
+    return () => clearInterval(id);
+  }, []);
   const [recentDecisions, setRecentDecisions] = useState<LoggedDecision[]>(SEED_RECENT_DECISIONS);
   
   // Blog-related state
@@ -1740,7 +1754,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
   // RENDER PRIMARY DECISION ENGINE
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-blue-50 via-white to-indigo-50">
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 animate-gradient-shift">
 
     {/* GRADIENT HERO BACKGROUND */}
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-white pointer-events-none -z-20" />
@@ -1753,21 +1767,21 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* HERO HERO TITLE BLOCK */}
       <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-purple-500/10 border border-indigo-500/30 text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono animate-fade-in shadow-lg shadow-indigo-500/10">
-          <Sparkles className="w-3.5 h-3.5 animate-spin-slow" />
+        <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-purple-500/10 border border-indigo-500/30 text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono animate-fade-in-up shadow-lg shadow-indigo-500/10">
+          <Sparkles className="w-3.5 h-3.5 animate-float" />
           <span>DownOrUp.net AI Decision Engine</span>
         </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-gray-900 leading-none">
-          Should You <span className="bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 bg-clip-text text-transparent">Do It?</span>
+        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-gray-900 leading-none animate-fade-in-up animation-delay-200">
+          <span className={twDone ? "" : "typewriter-cursor"}>{twText}</span>
         </h1>
-        <p className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto font-medium">
+        <p className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto font-medium animate-fade-in-up animation-delay-300">
           Get instant, hyper-realistic, objective AI evaluations before launching side projects, buying gear, or making crucial career and lifestyle choices in 2026.
         </p>
       </div>
 
       {/* CENTRAL PROMPT FORM BLOCK */}
-      <div className="max-w-2xl mx-auto mb-10">
-        <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-300 shadow-md flex items-center transition-all duration-200 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
+      <div className="max-w-2xl mx-auto mb-10 animate-fade-in-up animation-delay-400">
+        <form onSubmit={handleFormSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-300 shadow-md flex items-center transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-400 focus-within:shadow-lg focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">
           <div className="flex-1 flex items-center pl-3">
             <Search className="w-5 h-5 text-gray-500 group-focus-within:text-indigo-500 transition-colors" />
             <input
@@ -1789,7 +1803,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </form>
 
         {/* POPULAR suggestions chips row */}
-        <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+        <div className="mt-4 flex flex-wrap justify-center gap-1.5 animate-fade-in-up animation-delay-500">
           {POPULAR_CHIPS.map(chip => (
             <button
               key={chip}
