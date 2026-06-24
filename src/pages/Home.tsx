@@ -1592,7 +1592,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
   // RENDER DIAGNOSTICS SUITE VIEW
   if (activeTool) {
     return (
-      <div className="relative min-h-screen bg-gray-50">
+      <div className="relative min-h-screen bg-gray-50 animate-fade-in">
         <div className="fixed inset-0 bg-gradient-to-b from-blue-50/90 via-indigo-50/30 to-gray-50 pointer-events-none -z-20" />
         <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-blue-300/12 via-indigo-300/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
         {renderDiagnosticsSuite()}
@@ -1754,7 +1754,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
   // RENDER PRIMARY DECISION ENGINE
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 animate-gradient-shift">
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 animate-gradient-shift animate-fade-in">
 
     {/* GRADIENT HERO BACKGROUND */}
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-white pointer-events-none -z-20" />
@@ -1771,7 +1771,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <Sparkles className="w-3.5 h-3.5 animate-float" />
           <span>DownOrUp.net AI Decision Engine</span>
         </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-gray-900 leading-none animate-fade-in-up animation-delay-200">
+        <h1 className="text-3xl sm:text-6xl font-black tracking-tight text-gray-900 leading-none animate-fade-in-up animation-delay-200">
           <span className={twDone ? "" : "typewriter-cursor"}>{twText}</span>
         </h1>
         <p className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto font-medium animate-fade-in-up animation-delay-300">
@@ -1803,7 +1803,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </form>
 
         {/* POPULAR suggestions chips row */}
-        <div className="mt-4 flex flex-wrap justify-center gap-1.5 animate-fade-in-up animation-delay-500">
+        <div className="mt-4 flex flex-wrap justify-center gap-1 sm:gap-1.5 px-2 sm:px-0 animate-fade-in-up animation-delay-500">
           {POPULAR_CHIPS.map(chip => (
             <button
               key={chip}
@@ -1816,20 +1816,26 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         </div>
       </div>
 
-      {/* DYNAMIC ANALYSIS REPORT LOADER */}
+      {/* SKELETON LOADER */}
       {loading && (
-        <div className="max-w-2xl mx-auto py-16 text-center space-y-6 bg-white backdrop-blur-sm rounded-3xl border border-indigo-500/20 shadow-2xl shadow-indigo-500/10 animate-pulse">
-          <div className="relative w-16 h-16 mx-auto">
-            <div className="absolute inset-0 rounded-full border-4 border-gray-200" />
-            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 border-r-blue-500 animate-spin" />
-            <div className="absolute inset-2 rounded-full bg-indigo-500/10 blur-sm" />
+        <div className="max-w-4xl mx-auto space-y-4 animate-pulse mb-10">
+          {/* Verdict skeleton */}
+          <div className="h-48 bg-gray-100 rounded-3xl w-full" />
+          {/* Metric row skeleton */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-20 bg-gray-100 rounded-2xl" />
+            ))}
           </div>
-          <div className="space-y-1.5">
-            <h3 className="font-bold text-lg text-gray-900">Analyzing Decision Trajectory</h3>
-            <p className="text-xs text-indigo-400 font-semibold font-mono animate-bounce">
-              {loadingSteps[loadingStep]}
-            </p>
+          {/* Text block skeletons */}
+          <div className="space-y-2.5">
+            <div className="h-4 bg-gray-100 rounded-full w-3/4" />
+            <div className="h-4 bg-gray-100 rounded-full w-5/6" />
+            <div className="h-4 bg-gray-100 rounded-full w-2/3" />
           </div>
+          <p className="text-center text-xs text-indigo-400 font-mono font-semibold pt-2 animate-bounce">
+            {loadingSteps[loadingStep]}
+          </p>
         </div>
       )}
 
@@ -2231,7 +2237,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               <button
                 key={idx}
                 onClick={() => handleChipClick(dec.query)}
-                className="p-3 bg-white hover:bg-gray-50 border border-gray-100 rounded-2xl flex flex-col justify-between items-start text-left cursor-pointer duration-200 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/25 group"
+                className="p-3 bg-white border border-gray-100 rounded-2xl flex flex-col justify-between items-start text-left cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:border-blue-200 active:scale-95 group"
               >
                 <p className="text-xs font-semibold text-slate-800 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2 mb-2">
                   {dec.query}
