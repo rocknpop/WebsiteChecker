@@ -47,7 +47,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
           {/* Desktop nav - only renders when not mobile */}
           {!isMobile && (
-            <nav style={{display:"flex",alignItems:"center",gap:"4px"}}>
+            <nav style={{display: typeof window !== "undefined" && window.innerWidth >= 768 ? "flex" : "none", alignItems:"center", gap:"4px"}}>
               {navLinks.map((link) => (
                 <button
                   key={link.path}
@@ -65,7 +65,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             {!isMobile && (
               <button
                 onClick={() => handleLinkClick("/")}
-                style={{display:"flex",alignItems:"center",gap:"6px",padding:"8px 20px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"999px",fontWeight:"700",fontSize:"14px",cursor:"pointer",boxShadow:"0 2px 8px rgba(37,99,235,0.3)"}}
+                style={{display: typeof window !== "undefined" && window.innerWidth >= 768 ? "flex" : "none", alignItems:"center", gap:"6px", padding:"8px 20px", background:"linear-gradient(135deg,#2563eb,#4f46e5)", color:"white", border:"none", borderRadius:"999px", fontWeight:"700", fontSize:"14px", cursor:"pointer"}}
               >
                 <Sparkles style={{height:"14px",width:"14px"}} />
                 Evaluate Now
@@ -75,7 +75,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             {isMobile && (
               <button
                 onClick={() => setIsOpen((v) => !v)}
-                style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px"}}
+                style={{display: typeof window !== "undefined" && window.innerWidth < 768 ? "flex" : "none", alignItems:"center", justifyContent:"center", padding:"8px", border:"none", background:"transparent", cursor:"pointer", borderRadius:"8px"}}
                 aria-label="Toggle menu"
               >
                 {isOpen
