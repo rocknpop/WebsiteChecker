@@ -35,7 +35,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
   return (
     <>
-      <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
+      <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)",overflowX:"hidden",maxWidth:"100vw"}}>
         <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
           {/* Logo - left */}
