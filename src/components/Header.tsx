@@ -24,21 +24,21 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
   return (
     <>
-      <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"white",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
-        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
+        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 12px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
           {/* Logo */}
           <div style={{display:"flex",alignItems:"center",gap:"10px",cursor:"pointer"}} onClick={() => handleLinkClick("/")}>
-            <div style={{height:"36px",width:"36px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"10px",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <TrendingUp style={{height:"20px",width:"20px",color:"white"}} />
+            <div style={{height:"clamp(28px,5vw,36px)",width:"clamp(28px,5vw,36px)",background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"10px",display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <TrendingUp style={{height:"clamp(14px,3vw,20px)",width:"clamp(14px,3vw,20px)",color:"white"}} />
             </div>
-            <span style={{fontWeight:"900",fontSize:"22px",color:"#111827"}}>
+            <span style={{fontWeight:"900",fontSize:"clamp(16px,4vw,22px)",color:"#111827"}}>
               DownOrUp<span style={{color:"#2563eb"}}>.net</span>
             </span>
           </div>
 
           {/* Desktop nav */}
-          <nav style={{display:"flex",alignItems:"center",gap:"4px"}} className="hidden md:flex">
+          <nav className="desktop-nav-link" style={{alignItems:"center",gap:"4px"}}>
             {navLinks.map((link) => (
               <button
                 key={link.path}
@@ -64,7 +64,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             {/* Evaluate Now — desktop */}
             <button
               onClick={() => handleLinkClick("/")}
-              className="hidden md:flex"
+              className="desktop-eval-btn"
               style={{alignItems:"center",gap:"6px",padding:"8px 20px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"999px",fontWeight:"700",fontSize:"14px",cursor:"pointer",boxShadow:"0 2px 8px rgba(37,99,235,0.4)"}}
             >
               <Sparkles style={{height:"14px",width:"14px"}} />
@@ -74,8 +74,10 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             {/* Hamburger — mobile */}
             <button
               onClick={() => setIsOpen((v) => !v)}
-              className="md:hidden"
-              style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px"}}
+              className="mobile-menu-btn"
+              style={{alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px",transition:"background 0.15s"}}
+              onTouchStart={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#f3f4f6"; }}
+              onTouchEnd={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
               aria-label="Toggle menu"
             >
               {isOpen
@@ -161,6 +163,18 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           </div>
         </div>
       )}
+
+      <style>{`
+        .desktop-nav-link { display: none !important; }
+        .desktop-eval-btn { display: none !important; }
+        .mobile-menu-btn  { display: flex !important; }
+
+        @media (min-width: 768px) {
+          .desktop-nav-link { display: flex !important; }
+          .desktop-eval-btn { display: flex !important; }
+          .mobile-menu-btn  { display: none !important; }
+        }
+      `}</style>
 
       {/* Spacer for fixed header */}
       <div style={{height:"64px"}} />

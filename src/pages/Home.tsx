@@ -1648,7 +1648,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 <span className="text-xs text-gray-400 font-mono">• {selectedPost.publishedAt}</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 leading-tight">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-gray-800 via-gray-600 to-gray-500 bg-clip-text text-transparent leading-tight">
                 {selectedPost.title}
               </h1>
 
@@ -1701,7 +1701,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           /* BLOG DIRECTORY VIEW */
           <div className="space-y-10 animate-fade-in">
             <div className="text-center space-y-3">
-              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+              <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-gray-800 via-gray-600 to-gray-500 bg-clip-text text-transparent">
                 DownOrUp.net <span className="bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 bg-clip-text text-transparent font-black">Decision Insights</span>
               </h1>
               <p className="text-sm text-gray-400 max-w-xl mx-auto">
@@ -1741,7 +1741,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 className="font-extrabold text-lg text-gray-900 group-hover:text-blue-400 transition-colors leading-snug">
+                    <h3 className="font-extrabold text-lg bg-gradient-to-r from-gray-700 to-gray-500 bg-clip-text text-transparent group-hover:from-blue-600 group-hover:to-indigo-500 transition-all leading-snug">
                       {post.title}
                     </h3>
 
