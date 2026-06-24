@@ -1063,7 +1063,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     switch (verdict) {
       case "UP":
         return {
-          icon: <CheckCircle2 className={`w-12 h-12 text-emerald-500${isMobile ? "" : " animate-pulse"}`} />,
+          icon: <CheckCircle2 className="w-12 h-12 text-emerald-500 animate-pulse" />,
           color: "text-emerald-500",
           bg: "bg-emerald-500/10 border-emerald-500/30",
           title: "UP ✅",
@@ -1492,7 +1492,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
           <div className="inline-flex items-center space-x-2 px-3 py-1 bg-linear-to-r from-blue-500/10 to-indigo-500/10 border border-indigo-500/20 text-blue-600 rounded-full text-xs font-semibold tracking-wide font-mono">
-            <Activity className={`w-3.5 h-3.5${isMobile ? "" : " animate-pulse"}`} />
+            <Activity className="w-3.5 h-3.5 animate-pulse" />
             <span>Real-time Network Diagnostics Suite</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900 leading-none">
@@ -1901,7 +1901,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                     {isUp ? "UP ✅" : "DOWN ❌"}
                   </div>
                   <div className="h-1.5 w-32 bg-slate-800 rounded-full overflow-hidden mt-2">
-                    <div className={`h-full rounded-full ${isUp ? `bg-emerald-500${isMobile ? "" : " animate-pulse"}` : `bg-rose-500${isMobile ? "" : " animate-pulse"}`}`} style={{ width: '100%' }} />
+                    <div className={`h-full rounded-full ${isUp ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500 animate-pulse'}`} style={{ width: '100%' }} />
                   </div>
                 </div>
 
