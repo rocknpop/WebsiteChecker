@@ -1784,7 +1784,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
       {/* HERO HERO TITLE BLOCK */}
       <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-purple-500/10 border border-indigo-500/30 text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono${isMobile ? "" : " animate-fade-in-up"} shadow-lg shadow-indigo-500/10">
+        <div className={`inline-flex items-center space-x-2 px-4 py-1.5 bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-purple-500/10 border border-indigo-500/30 text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono${isMobile ? "" : " animate-fade-in-up"} shadow-lg shadow-indigo-500/10`}>
           <Sparkles className={`w-3.5 h-3.5${isMobile ? "" : " animate-float"}`} />
           <span>DownOrUp.net AI Decision Engine</span>
         </div>
