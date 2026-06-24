@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import { getApiUrl } from "../utils/api";
 import { useSEO } from "../hooks/useSEO";
+const RecentDecisionsSection = React.lazy(() => import("../components/RecentDecisionsSection"));
+const BlogSection = React.lazy(() => import("../components/BlogSection"));
 
 interface HomeProps {
   currentPath: string;
@@ -326,6 +328,12 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
   const TYPEWRITER_FULL = "Should You Do It?";
   const [twText, setTwText] = useState("");
   const [twDone, setTwDone] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
   useEffect(() => {
     let i = 0;
     const id = setInterval(() => {
@@ -1754,7 +1762,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
   // RENDER PRIMARY DECISION ENGINE
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 animate-gradient-shift animate-fade-in">
+    <div className={`relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 animate-fade-in${isMobile ? "" : " animate-gradient-shift"}`}>
 
     {/* GRADIENT HERO BACKGROUND */}
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-white pointer-events-none -z-20" />
@@ -1768,10 +1776,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       {/* HERO HERO TITLE BLOCK */}
       <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
         <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-purple-500/10 border border-indigo-500/30 text-indigo-400 rounded-full text-xs font-semibold tracking-wide font-mono animate-fade-in-up shadow-lg shadow-indigo-500/10">
-          <Sparkles className="w-3.5 h-3.5 animate-float" />
+          <Sparkles className={`w-3.5 h-3.5${isMobile ? "" : " animate-float"}`} />
           <span>DownOrUp.net AI Decision Engine</span>
         </div>
-        <h1 className="text-5xl sm:text-7xl font-black tracking-tight text-gray-900 leading-none animate-fade-in-up animation-delay-200">
+        <h1 className="text-3xl sm:text-7xl font-black tracking-tight text-gray-900 leading-none animate-fade-in-up animation-delay-200">
           {(() => {
             const prefix = "Should You ";
             const suffix = "Do It?";
@@ -2241,87 +2249,14 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       </div>
 
       {/* USER ENGAGEMENT: RECENT DECISION STREAM */}
-      {recentDecisions.length > 0 && (
-        <div className="mt-12 pt-8 border-t border-slate-200/40 space-y-4">
-          <div className="flex items-center space-x-2">
-            <TrendingUp className="w-5 h-5 text-indigo-500" />
-            <h4 className="font-extrabold text-lg text-gray-900">Recent Decisions Evaluated</h4>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {recentDecisions.map((dec, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleChipClick(dec.query)}
-                className="p-3 bg-white border border-gray-100 rounded-2xl flex flex-col justify-between items-start text-left cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:border-blue-200 active:scale-95 group"
-              >
-                <p className="text-xs font-semibold text-slate-800 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2 mb-2">
-                  {dec.query}
-                </p>
-                <div className="flex items-center justify-between w-full">
-                  <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                    dec.verdict === "UP" ? "bg-emerald-500/10 text-emerald-500" :
-                    dec.verdict === "DOWN" ? "bg-red-500/10 text-red-500" : "bg-amber-500/10 text-amber-500"
-                  }`}>
-                    {dec.verdict}
-                  </span>
-                  <span className="text-[9px] text-gray-500 font-mono">2026</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <React.Suspense fallback={<div className="mt-12 h-32 bg-gray-100 animate-pulse rounded-2xl" />}>
+        <RecentDecisionsSection decisions={recentDecisions} onChipClick={handleChipClick} />
+      </React.Suspense>
 
       {/* RECENT HIGHLIGHTED BLOG INSIGHTS IN HOMEPAGE */}
-      {blogPosts.length > 0 && (
-        <div className="mt-12 pt-8 border-t border-slate-200/40 space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <BookOpen className="w-5 h-5 text-blue-500" />
-              <h4 className="font-extrabold text-lg text-gray-900">Expert Guides & Insights</h4>
-            </div>
-            <button 
-              onClick={() => {
-                window.history.pushState({}, "", "/blog");
-                onNavigate("/blog");
-              }}
-              className="text-xs font-bold text-blue-600 hover:text-blue-500 flex items-center cursor-pointer"
-            >
-              <span>Explore all articles</span>
-              <ArrowRight className="w-4.5 h-4.5 ml-0.5" />
-            </button>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {blogPosts.slice(0, 4).map(post => (
-              <article 
-                key={post.id} 
-                className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col justify-between shadow-sm hover:shadow-xl hover:shadow-indigo-500/12 hover:-translate-y-1 duration-300 transition-all group cursor-pointer hover:border-indigo-500/30"
-                onClick={() => {
-                  window.history.pushState({}, "", `/blog/${post.slug}`);
-                  onNavigate(`/blog/${post.slug}`);
-                }}
-              >
-                <div className="space-y-3">
-                  <span className="text-[9px] font-mono font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded">
-                    {post.category}
-                  </span>
-                  <h5 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2">
-                    {post.title}
-                  </h5>
-                  <p className="text-[11px] text-gray-500 line-clamp-3 leading-relaxed">
-                    {post.excerpt}
-                  </p>
-                </div>
-                <div className="flex items-center justify-between text-[10px] text-gray-500 pt-4 font-mono">
-                  <span>{post.publishedAt}</span>
-                  <span>{post.readTime}</span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      )}
+      <React.Suspense fallback={<div className="mt-12 h-48 bg-gray-100 animate-pulse rounded-2xl" />}>
+        <BlogSection posts={blogPosts} onNavigate={onNavigate} />
+      </React.Suspense>
 
     </div>
 
