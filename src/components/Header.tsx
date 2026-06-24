@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Sparkles, Menu, X, TrendingUp, ChevronRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Sparkles, Menu, TrendingUp, ChevronRight } from "lucide-react";
 
 interface HeaderProps {
   currentPath: string;
@@ -9,22 +9,47 @@ interface HeaderProps {
 export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef<HTMLDivElement>(null);
+  const mouseLeaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     document.documentElement.classList.remove("dark");
     localStorage.removeItem("preferred-theme");
   }, []);
 
+  // Scroll: shadow + auto-close menu after 10px
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50);
+      if (window.scrollY > 10) setIsOpen(false);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Click outside to close
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
+
+  const handleMouseLeave = () => {
+    mouseLeaveTimer.current = setTimeout(() => setIsOpen(false), 300);
+  };
+
+  const handleMouseEnter = () => {
+    if (mouseLeaveTimer.current) clearTimeout(mouseLeaveTimer.current);
+  };
 
   const navLinks = [
     { name: "Decision Engine",   path: "/" },
@@ -52,11 +77,11 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   };
 
   return (
-    <>
+    <div ref={navRef} onMouseLeave={handleMouseLeave} onMouseEnter={handleMouseEnter}>
       <header
         id="site-header"
-        className={`fixed top-0 left-0 right-0 z-40 border-b border-gray-100 transition-shadow duration-200 ${
-          scrolled ? "bg-white/95 backdrop-blur-lg shadow-md" : "bg-white/80 backdrop-blur-md shadow-sm"
+        className={`fixed top-0 left-0 right-0 z-50 border-b border-gray-100 transition-shadow duration-200 ${
+          scrolled ? "bg-white shadow-md" : "bg-white shadow-sm"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -122,27 +147,19 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
       {/* Mobile Drawer — only mounted when open */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-[60]">
           <div
             className="absolute inset-0 bg-gray-900/40"
             onClick={() => setIsOpen(false)}
           />
           <div className="absolute inset-y-0 right-0 w-72 bg-white shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-              <span className="flex items-center space-x-2">
-                <div className="h-7 w-7 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="h-4 w-4 text-white" />
-                </div>
-                <span className="font-black text-lg text-gray-900">
-                  DownOrUp<span className="text-blue-600">.net</span>
-                </span>
+            <div className="flex items-center px-5 py-4 border-b border-gray-100">
+              <div className="h-7 w-7 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center mr-2">
+                <TrendingUp className="h-4 w-4 text-white" />
+              </div>
+              <span className="font-black text-lg text-gray-900">
+                DownOrUp<span className="text-blue-600">.net</span>
               </span>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-              >
-                <X className="h-5 w-5" />
-              </button>
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 py-5 space-y-1">
@@ -167,7 +184,15 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                 );
               })}
 
-              <div className="mt-6 p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100">
+              <button
+                onClick={() => handleLinkClick("/")}
+                className="mt-4 w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-bold rounded-xl shadow-sm active:scale-95"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Evaluate Now</span>
+              </button>
+
+              <div className="mt-4 p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100">
                 <h4 className="text-xs font-bold text-gray-900 flex items-center gap-1.5 mb-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
                   AI Decision Engine
@@ -192,6 +217,6 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
       )}
 
       <div className="h-16" />
-    </>
+    </div>
   );
 }
