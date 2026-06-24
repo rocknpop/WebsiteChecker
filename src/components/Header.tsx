@@ -8,6 +8,7 @@ interface HeaderProps {
 
 export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 768);
 
   const navLinks = [
     { name: "Decision Engine", path: "/" },
@@ -22,78 +23,75 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  if (typeof window !== "undefined") {
+    window.addEventListener("resize", () => {
+      setIsMobile(window.innerWidth < 768);
+    });
+  }
+
   return (
     <>
       <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
-        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 12px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
           {/* Logo */}
-          <div style={{display:"flex",alignItems:"center",gap:"10px",cursor:"pointer"}} onClick={() => handleLinkClick("/")}>
-            <div style={{height:"clamp(28px,5vw,36px)",width:"clamp(28px,5vw,36px)",background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"10px",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <TrendingUp style={{height:"clamp(14px,3vw,20px)",width:"clamp(14px,3vw,20px)",color:"white"}} />
+          <div style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",flexShrink:0}} onClick={() => handleLinkClick("/")}>
+            <div style={{height:"32px",width:"32px",flexShrink:0,background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"10px",display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <TrendingUp style={{height:"18px",width:"18px",color:"white"}} />
             </div>
-            <span style={{fontWeight:"900",fontSize:"clamp(16px,4vw,22px)",color:"#111827"}}>
+            <span style={{fontWeight:"900",fontSize:"18px",color:"#111827",whiteSpace:"nowrap"}}>
               DownOrUp<span style={{color:"#2563eb"}}>.net</span>
             </span>
           </div>
 
-          {/* Desktop nav */}
-          <nav className="desktop-nav-link desktop-nav-links" style={{display:"flex",alignItems:"center",gap:"4px"}}>
-            {navLinks.map((link) => (
-              <button
-                key={link.path}
-                onClick={() => handleLinkClick(link.path)}
-                style={{
-                  padding:"8px 16px",
-                  borderRadius:"999px",
-                  border:"none",
-                  background: currentPath === link.path ? "#eff6ff" : "transparent",
-                  color: currentPath === link.path ? "#2563eb" : "#4b5563",
-                  fontWeight: currentPath === link.path ? "600" : "500",
-                  fontSize:"14px",
-                  cursor:"pointer",
-                }}
-              >
-                {link.name}
-              </button>
-            ))}
-          </nav>
+          {/* Desktop nav - only renders when not mobile */}
+          {!isMobile && (
+            <nav style={{display:"flex",alignItems:"center",gap:"4px"}}>
+              {navLinks.map((link) => (
+                <button
+                  key={link.path}
+                  onClick={() => handleLinkClick(link.path)}
+                  style={{padding:"8px 16px",borderRadius:"999px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#4b5563",fontWeight:currentPath===link.path?"600":"500",fontSize:"14px",cursor:"pointer"}}
+                >
+                  {link.name}
+                </button>
+              ))}
+            </nav>
+          )}
 
           {/* Right side */}
-          <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
-            {/* Evaluate Now — desktop */}
-            <button
-              onClick={() => handleLinkClick("/")}
-              className="desktop-eval-btn"
-              style={{display:"flex",alignItems:"center",gap:"6px",padding:"8px 20px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"999px",fontWeight:"700",fontSize:"14px",cursor:"pointer",boxShadow:"0 2px 8px rgba(37,99,235,0.4)"}}
-            >
-              <Sparkles style={{height:"14px",width:"14px"}} />
-              Evaluate Now
-            </button>
+          <div style={{display:"flex",alignItems:"center",gap:"8px",flexShrink:0}}>
+            {!isMobile && (
+              <button
+                onClick={() => handleLinkClick("/")}
+                style={{display:"flex",alignItems:"center",gap:"6px",padding:"8px 20px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"999px",fontWeight:"700",fontSize:"14px",cursor:"pointer",boxShadow:"0 2px 8px rgba(37,99,235,0.3)"}}
+              >
+                <Sparkles style={{height:"14px",width:"14px"}} />
+                Evaluate Now
+              </button>
+            )}
 
-            {/* Hamburger — mobile */}
-            <button
-              onClick={() => setIsOpen((v) => !v)}
-              className="mobile-menu-btn"
-              style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px",transition:"background 0.15s"}}
-              onTouchStart={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#f3f4f6"; }}
-              onTouchEnd={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
-              aria-label="Toggle menu"
-            >
-              {isOpen
-                ? <X style={{height:"24px",width:"24px",color:"#374151"}} />
-                : <Menu style={{height:"24px",width:"24px",color:"#374151"}} />}
-            </button>
+            {isMobile && (
+              <button
+                onClick={() => setIsOpen((v) => !v)}
+                style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px"}}
+                aria-label="Toggle menu"
+              >
+                {isOpen
+                  ? <X style={{height:"24px",width:"24px",color:"#374151"}} />
+                  : <Menu style={{height:"24px",width:"24px",color:"#374151"}} />}
+              </button>
+            )}
           </div>
         </div>
       </header>
 
-      {/* Mobile menu */}
-      {isOpen && (
+      {/* Mobile drawer */}
+      {isMobile && isOpen && (
         <div style={{position:"fixed",inset:0,zIndex:9998}}>
           <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.4)"}} onClick={() => setIsOpen(false)} />
-          <div style={{position:"absolute",top:0,right:0,bottom:0,width:"280px",background:"white",boxShadow:"-4px 0 20px rgba(0,0,0,0.15)",display:"flex",flexDirection:"column"}}>
-            <div style={{padding:"20px 20px 16px",borderBottom:"1px solid #f3f4f6",display:"flex",alignItems:"center",gap:"8px"}}>
+          <div style={{position:"absolute",top:0,right:0,bottom:0,width:"280px",background:"white",boxShadow:"-4px 0 20px rgba(0,0,0,0.15)",display:"flex",flexDirection:"column",zIndex:9999}}>
+            <div style={{padding:"20px",borderBottom:"1px solid #f3f4f6",display:"flex",alignItems:"center",gap:"8px"}}>
               <div style={{height:"28px",width:"28px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"8px",display:"flex",alignItems:"center",justifyContent:"center"}}>
                 <TrendingUp style={{height:"16px",width:"16px",color:"white"}} />
               </div>
@@ -102,55 +100,20 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
               </span>
             </div>
 
-            <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
-              <p style={{fontSize:"10px",fontFamily:"monospace",letterSpacing:"0.1em",textTransform:"uppercase",color:"#9ca3af",fontWeight:"600",padding:"0 8px",marginBottom:"8px"}}>
-                Navigation
-              </p>
+            <div style={{flex:1,overflowY:"auto",padding:"16px",display:"flex",flexDirection:"column",gap:"4px"}}>
               {navLinks.map((link) => (
                 <button
                   key={link.path}
                   onClick={() => handleLinkClick(link.path)}
-                  style={{
-                    width:"100%",
-                    display:"flex",
-                    alignItems:"center",
-                    justifyContent:"space-between",
-                    padding:"12px 16px",
-                    borderRadius:"12px",
-                    border:"none",
-                    background: currentPath === link.path ? "#eff6ff" : "transparent",
-                    color: currentPath === link.path ? "#2563eb" : "#374151",
-                    fontWeight: currentPath === link.path ? "600" : "500",
-                    fontSize:"14px",
-                    cursor:"pointer",
-                    marginBottom:"4px",
-                    textAlign:"left",
-                  }}
+                  style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",borderRadius:"12px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#374151",fontWeight:currentPath===link.path?"600":"500",fontSize:"14px",cursor:"pointer",textAlign:"left"}}
                 >
                   <span>{link.name}</span>
-                  <ChevronRight style={{height:"16px",width:"16px",color: currentPath === link.path ? "#93c5fd" : "#d1d5db"}} />
+                  <ChevronRight style={{height:"16px",width:"16px",color:"#d1d5db"}} />
                 </button>
               ))}
-
               <button
                 onClick={() => handleLinkClick("/")}
-                style={{
-                  marginTop:"16px",
-                  width:"100%",
-                  display:"flex",
-                  alignItems:"center",
-                  justifyContent:"center",
-                  gap:"8px",
-                  padding:"12px 24px",
-                  background:"linear-gradient(135deg,#2563eb,#4f46e5)",
-                  color:"white",
-                  border:"none",
-                  borderRadius:"12px",
-                  fontWeight:"700",
-                  fontSize:"14px",
-                  cursor:"pointer",
-                  boxShadow:"0 2px 8px rgba(37,99,235,0.4)",
-                }}
+                style={{marginTop:"12px",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:"8px",padding:"12px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"12px",fontWeight:"700",fontSize:"14px",cursor:"pointer"}}
               >
                 <Sparkles style={{height:"16px",width:"16px"}} />
                 Evaluate Now
@@ -158,25 +121,12 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             </div>
 
             <div style={{padding:"16px 20px",borderTop:"1px solid #f3f4f6",textAlign:"center"}}>
-              <p style={{fontSize:"10px",fontFamily:"monospace",color:"#9ca3af"}}>© 2026 DownOrUp.net</p>
+              <p style={{fontSize:"11px",fontFamily:"monospace",color:"#9ca3af"}}>© 2026 DownOrUp.net</p>
             </div>
           </div>
         </div>
       )}
 
-      <style>{`
-        .desktop-nav-link { display: none !important; }
-        .desktop-eval-btn { display: none !important; }
-        .mobile-menu-btn  { display: flex !important; }
-
-        @media (min-width: 768px) {
-          .desktop-nav-link { display: flex !important; }
-          .desktop-eval-btn { display: flex !important; }
-          .mobile-menu-btn  { display: none !important; }
-        }
-      `}</style>
-
-      {/* Spacer for fixed header */}
       <div style={{height:"64px"}} />
     </>
   );
