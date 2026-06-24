@@ -1771,8 +1771,23 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <Sparkles className="w-3.5 h-3.5 animate-float" />
           <span>DownOrUp.net AI Decision Engine</span>
         </div>
-        <h1 className="text-3xl sm:text-6xl font-black tracking-tight text-gray-900 leading-none animate-fade-in-up animation-delay-200">
-          <span className={twDone ? "" : "typewriter-cursor"}>{twText}</span>
+        <h1 className="text-5xl sm:text-7xl font-black tracking-tight text-gray-900 leading-none animate-fade-in-up animation-delay-200">
+          {(() => {
+            const prefix = "Should You ";
+            const suffix = "Do It?";
+            if (twText.length <= prefix.length) {
+              return <span className={twText.length < prefix.length || twDone ? (twDone ? "" : "typewriter-cursor") : ""}>{twText || <>&nbsp;</>}</span>;
+            }
+            const gradientPart = twText.slice(prefix.length);
+            return (
+              <>
+                <span>{prefix}</span>
+                <span className={`bg-gradient-to-r from-blue-600 via-indigo-500 to-amber-500 bg-clip-text text-transparent${twDone ? "" : " typewriter-cursor"}`}>
+                  {gradientPart}
+                </span>
+              </>
+            );
+          })()}
         </h1>
         <p className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto font-medium animate-fade-in-up animation-delay-300">
           Get instant, hyper-realistic, objective AI evaluations before launching side projects, buying gear, or making crucial career and lifestyle choices in 2026.
