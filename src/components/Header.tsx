@@ -134,11 +134,22 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
               {/* Hamburger — mobile only, always rendered */}
               <button
                 onClick={() => setIsOpen((v) => !v)}
-                className="md:hidden p-2 rounded-xl text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-150 cursor-pointer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "8px",
+                  borderRadius: "8px",
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                }}
+                className="md:hidden"
                 aria-label={isOpen ? "Close menu" : "Open menu"}
-                style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
               >
-                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {isOpen
+                  ? <X className="h-6 w-6" style={{ color: "#374151" }} />
+                  : <Menu className="h-6 w-6" style={{ color: "#374151" }} />}
               </button>
             </div>
           </div>
