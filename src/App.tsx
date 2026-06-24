@@ -5,7 +5,6 @@ import { useSEO } from "./hooks/useSEO";
 
 // Page imports
 import Home from "./pages/Home";
-import StatusPage from "./pages/StatusPage";
 import MyIpPage from "./pages/MyIp";
 import {
   PrivacyPolicyPage,
@@ -13,223 +12,198 @@ import {
   DisclaimerPage,
   CookiePolicyPage,
   DmcaPage,
-  AcceptableUsePage
+  AcceptableUsePage,
+  AboutUsPage,
+  EditorialPolicyPage,
+  MethodologyPage,
+  DataSourcesPage,
+  HowCheckedPage,
+  TransparencyReportPage,
+  ContactUsPage
 } from "./pages/LegalPages";
 
-// Route to SEO Metadata Mapper
+// Route to SEO Metadata Mapper (Full EEAT & Programmatic SEO scale support)
 function getSeoMetadata(path: string): { title: string; description: string } {
+  // 1. Core General Platform SEO Matches
   if (path === "/" || path === "/index.html") {
     return {
-      title: "Check If Any Website Is Down | Website Status Checker, IP Ping Test & DNS Lookup – DownOrUp",
-      description: "Check website availability, run IP ping tests, DNS lookups, SSL checks, traceroutes, and network diagnostics with DownOrUp. Fast, free, and accurate."
+      title: "Username Availability Checker – Check Instagram, TikTok, YouTube & X handles – HandleHunt",
+      description: "Secure a consistent online brand identity. Concurrently check username availability across Instagram, TikTok, YouTube, X, Reddit, GitHub, Snapchat, and Threads instantly."
     };
   }
-  if (path === "/status") {
+
+  // 2. Programmatic SEO Platform Checkers
+  if (path === "/instagram-username-checker") {
     return {
-      title: "Public Status Directory – DownOrUp",
-      description: "Explore response times, CDN detections, and SSL status logs for popular global websites and diagnostic nodes."
+      title: "Free Instagram Username Checker – Check Instagram Handle Availability – HandleHunt",
+      description: "Instantly check custom Instagram username availability. Verify is @handle taken, review brandability guidelines, and discover premium available Instagram names."
     };
   }
+  if (path === "/tiktok-username-checker") {
+    return {
+      title: "TikTok Username Checker – Check TikTok Handles Instantly – HandleHunt",
+      description: "Verify TikTok handle availability. Audit active profile registry slots concurrently and protect your social network branding before registering."
+    };
+  }
+  if (path === "/youtube-username-checker") {
+    return {
+      title: "YouTube Handle Checker – Check Custom @Handles Availability – HandleHunt",
+      description: "Validate custom YouTube Handles with @ prefix instantly. Guarantee trademark immunity and obtain clean creator suggestions."
+    };
+  }
+  if (path === "/x-username-checker") {
+    return {
+      title: "X / Twitter Username Checker – Verify X Handle Availability – HandleHunt",
+      description: "Check X profiles in real-time. Keep character limits within 15 count values and review alternative suggestions instantly."
+    };
+  }
+  if (path === "/github-username-checker") {
+    return {
+      title: "GitHub Handle Checker – Check Dev Namespaces Instantly – HandleHunt",
+      description: "Check GitHub username availability for personal portolios, organizations, or corporate repos. Maintain tech alignment instantly."
+    };
+  }
+  if (path === "/reddit-username-checker") {
+    return {
+      title: "Reddit Username Checker – Scan Reddit Usernames – HandleHunt",
+      description: "Check Reddit pseudonym availability. Ensure complete anonymized brand consistency and secure unique available nicknames."
+    };
+  }
+
+  // 3. Curated Programmatic Category Pages
+  if (path === "/gamer-usernames") {
+    return {
+      title: "Cool Gamer Username Ideas – Explore Available Gaming Nicknames – HandleHunt",
+      description: "Unlock bold, unique and fully premium gaming usernames. Copy instantly or scan live availability across 10 prominent platforms."
+    };
+  }
+  if (path === "/creator-usernames") {
+    return {
+      title: "Creative Username Ideas for Influencers & Videographers – HandleHunt",
+      description: "Browse high-appeal ideas for video creators, bloggers, and visual artists. Check multi-network availability with one click."
+    };
+  }
+  if (path === "/business-usernames") {
+    return {
+      title: "Professional Business Brand Names & Clean Identifiers – HandleHunt",
+      description: "Find highly memorable, authority-driven names for consulting, services, and local agencies. Ensure cohesive brand handles."
+    };
+  }
+  if (path === "/startup-usernames") {
+    return {
+      title: "Brandable Startup Names & Consistent Tech Handles – HandleHunt",
+      description: "Identify high-growth modern tech identities. Complete brand checks for modern SaaS products with matching handles."
+    };
+  }
+  if (path === "/influencer-usernames") {
+    return {
+      title: "Premium Influencer Username Ideas & Brand Handles – HandleHunt",
+      description: "Discover clean aesthetic ideas for social creators, lifestyle bloggers, and fashion leaders. Securability assured."
+    };
+  }
+
+  // 4. Fallback Long-Tail SEO wildcard routes
   if (path.startsWith("/username/")) {
     const user = path.substring("/username/".length);
     return {
-      title: `Is @${user} Taken? Social Username Availability Checker – DownOrUp`,
-      description: `Instantly check if username "${user}" is available on Instagram, YouTube, TikTok, X (Twitter), Reddit, and GitHub with DownOrUp.`
+      title: `Is @${user} Available? Social Username Check Report – HandleHunt`,
+      description: `View full availability, brandability metrics, and global name consistency ratio for username "${user}" across 10 social networks.`
     };
   }
-  if (path.startsWith("/is-") && path.endsWith("-down")) {
-    const raw = path.substring(4, path.length - 5);
-    return {
-      title: `Is ${raw} Down Right Now? Real-Time Outage Tracker – DownOrUp`,
-      description: `Check live outage reports, network latencies, HTTP error codes, and server response logs for ${raw} instantly.`
-    };
-  }
-  if (path.startsWith("/status/")) {
-    const domain = path.substring("/status/".length);
-    return {
-      title: `Is ${domain} Down? Active Website Status Checker – DownOrUp`,
-      description: `Instantly check if ${domain} is currently down or experiencing a global outage. Get SSL validity, latency, port telemetry, and AI diagnosis.`
-    };
-  }
-  if (path.startsWith("/website-status/")) {
-    const domain = path.substring("/website-status/".length);
-    return {
-      title: `Is ${domain} Down? Active Website Status Checker – DownOrUp`,
-      description: `Instantly check if ${domain} is currently down or experiencing a global outage. Get SSL validity, latency, port telemetry, and AI diagnosis.`
-    };
-  }
-  if (path === "/ip-ping-tester") {
-    return {
-      title: "Free Network IP Ping Tester & Low Latency Tool – DownOrUp",
-      description: "Perform real-time packet transmission tests to determine minimum, maximum, and average diagnostic latency metrics."
-    };
-  }
-  if (path === "/dns-lookup") {
-    return {
-      title: "Advanced DNS Lookup & TTL Resolver Tool – DownOrUp",
-      description: "Fetch dynamic A, AAAA, MX, TXT, CNAME, and NS records instantly with comprehensive TTL parameter mappings."
-    };
-  }
-  if (path === "/ip-lookup") {
-    return {
-      title: "IP Tracker, Geographic Details & Whois IP Lookup – DownOrUp",
-      description: "Geolocate IPv4 or IPv6 parameters to resolve ISP registries, regional network nodes, and registry configurations."
-    };
-  }
-  if (path === "/ssl-checker") {
-    return {
-      title: "SSL Certificate Validation & Chain Security Inspector – DownOrUp",
-      description: "Verify expiration thresholds, validation chains, issuers, and SAN domains for active secure socket layers."
-    };
-  }
-  if (path === "/http-header-checker") {
-    return {
-      title: "HTTPS Response Header Inspector & Security Auditer – DownOrUp",
-      description: "Extract active header values, analyze missing security mechanisms, and review recommended performance directives."
-    };
-  }
-  if (path === "/dns-propagation" || path === "/dns-propagation-checker") {
-    return {
-      title: "Global DNS Propagation Checker & Namespace Resolver – DownOrUp",
-      description: "Audit updated zone definitions globally using independent propagation nodes across different geographic hubs."
-    };
-  }
-  if (path === "/whois-lookup") {
-    return {
-      title: "Domain Whois Registry Lookup & Expiration Checker – DownOrUp",
-      description: "Access authoritative domain ownership dates, registrar details, administrative parameters, and nameservers."
-    };
-  }
-  if (path === "/port-checker") {
-    return {
-      title: "Open Port Checker & Severe Network Vulnerability Scanner – DownOrUp",
-      description: "Audit accessibility for core server channels like HTTP (80, 443), SSH (22), FTP (21) and SQL databases."
-    };
-  }
-  if (path === "/speed-test" || path === "/website-speed-test") {
-    return {
-      title: "Website Speed Test, TTFB Optimization & Page Load Analyzer – DownOrUp",
-      description: "Calculate TTFB, DNS lookup delay, secure SSL socket negotiation, and receive custom performance layout suggestions."
-    };
-  }
-  if (path === "/traceroute" || path === "/traceroute-tool") {
-    return {
-      title: "Visual Traceroute Tool & Geographically Parsed Network Hop Map – DownOrUp",
-      description: "Trace data packages to their target destinations to visualize localized network node bottlenecks to avoid latency."
-    };
-  }
-  if (path === "/redirect-checker") {
-    return {
-      title: "Recursive Redirect Chain Auditor & Loop Detector – DownOrUp",
-      description: "Observe response path redirection jumps (301, 302, etc.) to discover infinite validation cycles or incorrect routes."
-    };
-  }
-  if (path === "/screenshot-tool" || path === "/website-screenshot-tool") {
-    return {
-      title: "Multi-Viewport Website Screenshot Tool & Rendering Capture – DownOrUp",
-      description: "Capture instant, precise responsive layouts of custom domain displays for multi-device styling audits."
-    };
-  }
-  if (path === "/email-security" || path === "/spf-checker" || path === "/dkim-checker" || path === "/dmarc-checker") {
-    return {
-      title: "Email Security Suite: SPF, DKIM, and DMARC Checkers – DownOrUp",
-      description: "Verify configuration standards for automated spf, dkim and dmarc validation rules to enforce inbox alignment."
-    };
-  }
-  if (path === "/blacklist-scanner" || path === "/blacklist-checker") {
-    return {
-      title: "Spam & Security Domain Blacklist Checker – DownOrUp",
-      description: "Scan domains against major industry blacklist catalogs to check safe/suspicious server reputation flags."
-    };
-  }
-  if (path === "/domain-age" || path === "/domain-age-checker") {
-    return {
-      title: "Domain Age Checker – Registration & Lifespan Tracker – DownOrUp",
-      description: "Determine the exact operational duration since initial registry creation for specific secure namespaces."
-    };
-  }
-  if (path === "/blog") {
-    return {
-      title: "Performance, DNS, SSL & Networking Resource Blog – DownOrUp",
-      description: "Learn why websites crash, how traceroute packets analyze hops, optimizing DNS resolution speeds, and security practices."
-    };
-  }
+
+  // 5. Technical utility
   if (path === "/my-ip") {
     return {
-      title: "What Is My IP Address? Check Public IP, Geolocation Coordinates & ISP – DownOrUp",
-      description: "Detect your public IPv4 or IPv6 address and geolocate your regional coordinates, internet service provider (ISP), and connection threat score instantly."
+      title: "What Is My IP Address? Check Public IP, Geolocation Coordinates – HandleHunt",
+      description: "Locate your live IPv4/IPv6 address, discover internet service provider (ISP) parameters, and test browser connection security."
     };
   }
+
+  // 6. EEAT Validation Pages
   if (path === "/about-us") {
     return {
-      title: "About Us – Corporate Mission, Integrity, & Global Staff – DownOrUp",
-      description: "Discover our mission in diagnostic telemetry. Meet our engineering talent deploying robust cloud inspection nodes."
+      title: "About Us – Our Mission, Strategy & Engineering – HandleHunt",
+      description: "Meet the team and branding experts delivering reliable username checking and consistency insights."
     };
   }
   if (path === "/editorial-policy") {
     return {
-      title: "Editorial Policy & Objectivity Standards – DownOrUp",
-      description: "Review our guidelines for editorial accuracy, peer-reviewed network tutorials, and factual data integrity frameworks."
+      title: "Editorial Policy & Data Integrity Guidelines – HandleHunt",
+      description: "We focus on transparent accuracy. Read how we construct brand audits and recommendations without bias."
     };
   }
   if (path === "/methodology") {
     return {
-      title: "Measurement Methodology & Uptime Calculation – DownOrUp",
-      description: "Audit the server execution parameters under which latency metrics and global node reachability indexes are generated."
+      title: "Measurement & Concurrency Checking Methodology – HandleHunt",
+      description: "Review our parallel retrieval pipeline architectures, response time averages, and error fallbacks."
     };
   }
   if (path === "/data-sources") {
     return {
-      title: "Authoritative Diagnostic Data Sources & API Sync – DownOrUp",
-      description: "Learn more about our backend network telemetry, whois registries, security feeds, and cloud lookup providers."
+      title: "Authoritative Checking Data Sources & APIs – HandleHunt",
+      description: "Detailed compilation of public networking nodes, DNS lookups, and registries queried in our diagnostic checks."
+    };
+  }
+  if (path === "/how-checked") {
+    return {
+      title: "How Social Media Username Availability Is Checked – HandleHunt",
+      description: "Get answers to how status responses are verified behind-the-scenes, and why locked accounts return specific outcomes."
+    };
+  }
+  if (path === "/transparency") {
+    return {
+      title: "Transparency and Zero-Telemetry Solvency Report – HandleHunt",
+      description: "Review our security commitment. Your searches are private, never front-run, and never sold to aggregators."
     };
   }
   if (path === "/contact-us") {
     return {
-      title: "Contact Us & High Priority System Support – DownOrUp",
-      description: "Reach our network administration, compliance, or developer relations divisions regarding tool accuracy."
+      title: "Contact Us – High-Priority Support Admin – HandleHunt",
+      description: "Reach our support coordinator regarding system errors, branding proposals, or trademark disputes."
     };
   }
+
+  // 7. Core Legal compliance mappings
   if (path === "/privacy-policy") {
     return {
-      title: "Privacy Policy, System Logs, & Analytical Tracking – DownOrUp",
-      description: "Review our strict telemetry storage parameters, analytical processing terms, and total absence of user selling."
+      title: "Privacy Policy | GDPR & CCPA Compliance – HandleHunt",
+      description: "We protect search telemetry. Read how we isolate search queries, localStorage settings, and Google AdSense parameters."
     };
   }
   if (path === "/terms-and-conditions") {
     return {
-      title: "Terms and Conditions & System Telemetry Acceptable Use – DownOrUp",
-      description: "Understand requirements surrounding public diagnostic usage, automation constraints, and trademark guidelines."
+      title: "Terms and Conditions of Use – HandleHunt",
+      description: "Platform guidelines and user agreement terms regarding fair usage of our free check status intelligence."
     };
   }
   if (path === "/disclaimer") {
     return {
-      title: "Compliance Disclaimer & Metric Integrity Statement – DownOrUp",
-      description: "Familiarize yourself with our liability limitations, real-time error accuracy thresholds, and platform performance expectations."
+      title: "Legal & Corporate Trademark Disclaimer – HandleHunt",
+      description: "All corporate trademark symbols are properties of their respective social networks. Read fair-use disclosures."
     };
   }
   if (path === "/cookie-policy") {
     return {
-      title: "Cookie Policy & Local Session Management Rules – DownOrUp",
-      description: "We utilize local token variables solely for responsive theme adjustments and user tool search preferences."
+      title: "Cookie Policy – Interface Caching Preferences – HandleHunt",
+      description: "We cookies to persist your custom bookmarked name lists without requiring login accounts."
     };
   }
   if (path === "/dmca") {
     return {
-      title: "DMCA Copyright Compliance Policy – DownOrUp",
-      description: "Our protocol for registering copyright infringement issues regarding static tutorials or structural content."
+      title: "DMCA Copyright Compliance Policy – HandleHunt",
+      description: "Guidelines and instructions to submit intellectual property takedowns or verify trademark registration."
     };
   }
   if (path === "/acceptable-use-policy") {
     return {
-      title: "Acceptable Use Policy – Prevention of Brute Scraping – DownOrUp",
-      description: "Detailed operational boundaries for client testing frequencies, lookup scripts, and network querying."
+      title: "Acceptable Use Policy – Prevention of Bulk Scraping – HandleHunt",
+      description: "Fair-use boundaries. Automation crawlers and continuous programmatic stress checks are strictly prohibited."
     };
   }
 
   return {
-    title: "DownOrUp – Website Status Checker, IP Ping Test, DNS Lookup & SSL Checker",
-    description: "Check website availability, run IP ping tests, DNS lookups, SSL checks, traceroutes, and network diagnostics with DownOrUp. Fast, free, and accurate."
+    title: "HandleHunt – Check Username Availability Across Social Media Channels",
+    description: "Scan username availability on Instagram, TikTok, YouTube, X, Reddit, and GitHub. Secure a consistent online visual presence."
   };
 }
 
@@ -258,84 +232,60 @@ export default function App() {
     setCurrentPath(path);
   };
 
-  // Helper: check if a domain was searched, then navigate
-  const handleCheckStatus = (domain: string) => {
-    let clean = domain.trim().toLowerCase();
-    // Strip protocols if entered
-    clean = clean.replace(/^(https?:\/\/)?(www\.)?/, "");
-    clean = clean.split("/")[0]; // keep only host
-    if (clean) {
-      navigate(`/status/${clean}`);
-    }
-  };
-
   // Route Router mapping
   const renderContent = () => {
-    if (currentPath === "/" || currentPath === "/index.html") {
-      return <Home onCheckStatus={handleCheckStatus} onNavigate={navigate} />;
-    }
+    // 1. Programmatic SEO Platform paths and Category paths fall directly inside the upgraded Home console with dynamic configurations
+    const isPlatformPath = [
+      "/instagram-username-checker",
+      "/tiktok-username-checker",
+      "/youtube-username-checker",
+      "/x-username-checker",
+      "/github-username-checker",
+      "/reddit-username-checker"
+    ].includes(currentPath);
 
-    if (currentPath.startsWith("/status/")) {
-      const domain = currentPath.substring("/status/".length);
-      return <StatusPage domain={domain} onNavigate={navigate} onCheckStatus={handleCheckStatus} />;
-    }
+    const isCategoryPath = [
+      "/gamer-usernames",
+      "/creator-usernames",
+      "/business-usernames",
+      "/startup-usernames",
+      "/influencer-usernames"
+    ].includes(currentPath);
 
-    if (currentPath.startsWith("/website-status/")) {
-      const domain = currentPath.substring("/website-status/".length);
-      return <StatusPage domain={domain} onNavigate={navigate} onCheckStatus={handleCheckStatus} />;
-    }
+    const isUsernameWildcard = currentPath.startsWith("/username/");
 
-    if (currentPath.startsWith("/is-") && currentPath.endsWith("-down")) {
-      let raw = currentPath.substring(4, currentPath.length - 5).trim().toLowerCase();
-      const map: Record<string, string> = {
-        chatgpt: "chatgpt.com",
-        youtube: "youtube.com",
-        instagram: "instagram.com",
-        facebook: "facebook.com",
-        gmail: "gmail.com",
-        whatsapp: "whatsapp.com",
-        discord: "discord.com",
-        paypal: "paypal.com",
-        reddit: "reddit.com",
-        netflix: "netflix.com",
-        google: "google.com"
-      };
-      const domain = map[raw] || (raw.includes(".") ? raw : `${raw}.com`);
-      return <StatusPage domain={domain} onNavigate={navigate} onCheckStatus={handleCheckStatus} />;
+    if (currentPath === "/" || currentPath === "/index.html" || isPlatformPath || isCategoryPath || isUsernameWildcard) {
+      return <Home currentPath={currentPath} onNavigate={navigate} />;
     }
 
     if (currentPath === "/my-ip") {
       return <MyIpPage />;
     }
 
-    // Legal Pages
-    if (currentPath === "/privacy-policy") {
-      return <PrivacyPolicyPage />;
-    }
-    if (currentPath === "/terms-and-conditions") {
-      return <TermsPage />;
-    }
-    if (currentPath === "/disclaimer") {
-      return <DisclaimerPage />;
-    }
-    if (currentPath === "/cookie-policy") {
-      return <CookiePolicyPage />;
-    }
-    if (currentPath === "/dmca") {
-      return <DmcaPage />;
-    }
-    if (currentPath === "/acceptable-use-policy") {
-      return <AcceptableUsePage />;
-    }
+    // 2. Trust EEAT & Legal Compliance views
+    if (currentPath === "/privacy-policy") return <PrivacyPolicyPage />;
+    if (currentPath === "/terms-and-conditions") return <TermsPage />;
+    if (currentPath === "/disclaimer") return <DisclaimerPage />;
+    if (currentPath === "/cookie-policy") return <CookiePolicyPage />;
+    if (currentPath === "/dmca") return <DmcaPage />;
+    if (currentPath === "/acceptable-use-policy") return <AcceptableUsePage />;
+
+    if (currentPath === "/about-us") return <AboutUsPage />;
+    if (currentPath === "/editorial-policy") return <EditorialPolicyPage />;
+    if (currentPath === "/methodology") return <MethodologyPage />;
+    if (currentPath === "/data-sources") return <DataSourcesPage />;
+    if (currentPath === "/how-checked") return <HowCheckedPage />;
+    if (currentPath === "/transparency") return <TransparencyReportPage />;
+    if (currentPath === "/contact-us") return <ContactUsPage />;
 
     // Fallback error-safe 404 handler
     return (
       <div className="max-w-md mx-auto py-24 text-center px-4">
         <h2 className="text-3xl font-display font-extrabold text-gray-900 mb-2">404 - Diagnostic Error</h2>
-        <p className="text-sm text-gray-500 mb-6 font-mono">Unmapped diagnostic pipeline trajectory.</p>
+        <p className="text-sm text-gray-500 mb-6 font-mono">Unmapped namespace trajectory.</p>
         <button
           onClick={() => navigate("/")}
-          className="bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-all"
+          className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl transition-all"
         >
           Return to central console
         </button>
