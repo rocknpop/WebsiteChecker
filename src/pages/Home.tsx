@@ -1782,10 +1782,9 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           </div>
           <button
             type="submit"
-            disabled={loading || !inputValue.trim()}
-            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg active:scale-95 flex items-center space-x-1.5 cursor-pointer disabled:pointer-events-none"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-md transition-colors duration-200 active:scale-95 flex items-center space-x-1.5 cursor-pointer"
           >
-            <span>Analyze Decision</span>
+            <span>{loading ? "Analyzing..." : "Analyze Decision"}</span>
           </button>
         </form>
 
