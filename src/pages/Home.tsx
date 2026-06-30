@@ -1285,7 +1285,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   <Globe className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 font-sans">{toolResult.host}</h3>
+                  <h2 className="text-lg font-bold text-gray-900 font-sans">{toolResult.host}</h2>
                   <p className="text-xs text-gray-500">Website reachability and responsiveness metrics</p>
                 </div>
               </div>
@@ -1320,7 +1320,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             )}
 
             <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 space-y-3 relative">
-              <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Security Telemetry</h4>
+              <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Security Telemetry</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div className="flex items-center justify-between py-1 border-b border-gray-100">
                   <span className="text-gray-500">SSL Connection:</span>
@@ -1352,7 +1352,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         return (
           <div className="bg-white backdrop-blur-sm rounded-3xl border border-gray-200 p-6 sm:p-8 space-y-6 shadow-xl shadow-indigo-500/5">
             <div className="border-b border-gray-200 pb-4">
-              <h3 className="text-lg font-bold text-gray-900 font-sans">DNS Lookup: {toolResult.domain}</h3>
+              <h2 className="text-lg font-bold text-gray-900 font-sans">DNS Lookup: {toolResult.domain}</h2>
               <p className="text-xs text-gray-500">All primary DNS records returned via Cloudflare DNS over HTTPS</p>
             </div>
 
@@ -1361,7 +1361,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 const list = records[type] || [];
                 return (
                   <div key={type} className="space-y-2">
-                    <h4 className="text-xs font-bold text-indigo-400 font-mono tracking-widest uppercase">{type} Records</h4>
+                    <h3 className="text-xs font-bold text-indigo-400 font-mono tracking-widest uppercase">{type} Records</h3>
                     {list.length === 0 ? (
                       <p className="text-xs text-gray-400 font-mono italic">No {type} records found for this host.</p>
                     ) : (
@@ -1405,7 +1405,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   <MapPin className="h-6 w-6 text-indigo-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 font-sans">{data.ip}</h3>
+                  <h2 className="text-lg font-bold text-gray-900 font-sans">{data.ip}</h2>
                   <p className="text-xs text-gray-500">{data.org || data.asn || "Internet Service Provider"}</p>
                 </div>
               </div>
@@ -1436,7 +1436,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-3">
-              <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Network & ASN Details</h4>
+              <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Network & ASN Details</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
                 <div className="flex items-center justify-between py-1 border-b border-gray-100">
                   <span className="text-gray-500">Autonomous System (ASN):</span>
@@ -1469,7 +1469,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   <Lock className="h-6 w-6 text-indigo-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 font-sans">{ssl.domain}</h3>
+                  <h2 className="text-lg font-bold text-gray-900 font-sans">{ssl.domain}</h2>
                   <p className="text-xs text-gray-500">SSL / TLS handshake validity audit</p>
                 </div>
               </div>
@@ -1494,7 +1494,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-4">
-              <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Certificate Parameters</h4>
+              <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Certificate Parameters</h3>
               
               <div className="space-y-1.5 text-xs font-mono">
                 <div className="flex items-center justify-between py-1 border-b border-gray-100">
@@ -1530,7 +1530,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         return (
           <div className="bg-white backdrop-blur-sm rounded-3xl border border-gray-200 p-6 sm:p-8 space-y-6 shadow-xl shadow-blue-500/5">
             <div className="border-b border-gray-200 pb-4">
-              <h3 className="text-lg font-bold text-gray-900 font-sans">WHOIS Registry Lookup: {data.domain || "Query Host"}</h3>
+              <h2 className="text-lg font-bold text-gray-900 font-sans">WHOIS Registry Lookup: {data.domain || "Query Host"}</h2>
               <p className="text-xs text-gray-500">Public ICANN registrar data and DNS delegation</p>
             </div>
 
@@ -1550,7 +1550,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </div>
 
             <div className="space-y-2">
-              <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Raw Registry Response</h4>
+              <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest font-mono">Raw Registry Response</h3>
               <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 overflow-y-auto max-h-96 font-mono text-xs text-gray-600 leading-relaxed whitespace-pre-wrap select-all">
                 {rawText}
               </div>
@@ -1564,7 +1564,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="bg-white backdrop-blur-sm rounded-3xl border border-gray-200 p-6 sm:p-8 space-y-6 shadow-xl shadow-blue-500/5">
             <div className="border-b border-gray-200 pb-4 flex justify-between items-center flex-wrap gap-4">
               <div>
-                <h3 className="text-lg font-bold text-gray-900 font-sans">Common Ports Diagnostics: {toolResult.domain}</h3>
+                <h2 className="text-lg font-bold text-gray-900 font-sans">Common Ports Diagnostics: {toolResult.domain}</h2>
                 <p className="text-xs text-gray-500">Verifying external firewall status for host: {toolResult.ipAddress}</p>
               </div>
               <span className="text-xs font-mono bg-indigo-950 text-indigo-400 px-2.5 py-1 rounded-xl border border-indigo-900/50">
@@ -1648,7 +1648,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900 leading-none">
             {activeInfo.name} <span className="bg-linear-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">Utility</span>
           </h1>
-          <p className="text-sm text-gray-400 max-w-xl mx-auto font-medium">
+          <p className="text-sm text-gray-600 max-w-xl mx-auto font-medium">
             {activeInfo.description} Full diagnostic checks powered by absolute external APIs with instant, try-catch protected latency evaluations.
           </p>
         </div>
@@ -1714,7 +1714,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               window.history.pushState({}, "", "/");
               onNavigate("/");
             }} 
-            className="mt-4 inline-flex items-center space-x-1.5 text-xs font-bold text-gray-400 hover:text-blue-600 cursor-pointer"
+            className="mt-4 inline-flex items-center space-x-1.5 text-xs font-bold text-gray-500 hover:text-blue-600 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Return to Decision Central Engine</span>
@@ -1729,7 +1729,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               <div className="absolute inset-2 rounded-full bg-indigo-500/10 blur-sm" />
             </div>
             <div className="space-y-1.5">
-              <h3 className="font-bold text-lg text-gray-900">Contacting Distributed Networks</h3>
+              <h2 className="font-bold text-lg text-gray-900">Contacting Distributed Networks</h2>
               <p className="text-xs text-indigo-400 font-semibold font-mono animate-bounce">
                 Retrieving absolute telemetry metrics via direct external secure proxy...
               </p>
@@ -1741,7 +1741,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="max-w-xl mx-auto p-5 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-start space-x-3.5 mb-10">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-bold text-sm text-red-600">Diagnostic Check Error</h4>
+              <h3 className="font-bold text-sm text-red-600">Diagnostic Check Error</h3>
               <p className="text-xs text-red-500 mt-0.5 leading-relaxed">{toolError}</p>
             </div>
           </div>
@@ -1809,9 +1809,9 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                 {selectedPost.content.split("\n\n").map((para, i) => {
                   if (para.trim().startsWith("###")) {
                     return (
-                      <h3 key={i} className="text-xl font-bold text-gray-900 pt-4 bg-linear-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
+                      <h2 key={i} className="text-xl font-bold text-gray-900 pt-4 bg-linear-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
                         {para.replace("###", "").trim()}
-                      </h3>
+                      </h2>
                     );
                   }
                   if (para.trim().startsWith("1.")) {
@@ -1831,7 +1831,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
               <div className="bg-gray-50/90 rounded-2xl p-6 border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div>
-                  <h4 className="font-bold text-sm text-gray-900">Evaluate a related decision?</h4>
+                  <h3 className="font-bold text-sm text-gray-900">Evaluate a related decision?</h3>
                   <p className="text-xs text-gray-600 mt-0.5">Test any idea instantly with our state-of-the-art decision engine.</p>
                 </div>
                 <button 
@@ -1854,7 +1854,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-gray-800 via-gray-600 to-gray-500 bg-clip-text text-transparent">
                 DownOrUp.net <span className="bg-linear-to-r from-blue-600 via-indigo-500 to-amber-500 bg-clip-text text-transparent font-black">Decision Insights</span>
               </h1>
-              <p className="text-sm text-gray-400 max-w-xl mx-auto">
+              <p className="text-sm text-gray-600 max-w-xl mx-auto">
                 Authoritative, objective guides analyzing the actual costs, risk metrics, and structural potential of the most searched side projects and careers in 2026.
               </p>
             </div>
@@ -1897,9 +1897,9 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 style={{fontWeight:"800",fontSize:"18px",background:"linear-gradient(135deg,#1e40af,#4f46e5)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",lineHeight:"1.4"}}>
+                    <h2 style={{fontWeight:"800",fontSize:"18px",background:"linear-gradient(135deg,#1e40af,#4f46e5)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",lineHeight:"1.4"}}>
                       {post.title}
-                    </h3>
+                    </h2>
 
                     <p className="text-xs text-gray-700 leading-relaxed">
                       {post.excerpt}
@@ -1960,7 +1960,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             );
           })()}
         </h1>
-        <p className={`text-sm sm:text-base text-gray-400 max-w-xl mx-auto font-medium${isMobile ? "" : " animate-fade-in-up animation-delay-300"}`}>
+        <p className={`text-sm sm:text-base text-gray-600 max-w-xl mx-auto font-medium${isMobile ? "" : " animate-fade-in-up animation-delay-300"}`}>
           Get instant, hyper-realistic, objective AI evaluations before launching side projects, buying gear, or making crucial career and lifestyle choices in 2026.
         </p>
       </div>
@@ -2133,7 +2133,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-emerald-500/20 shadow-lg shadow-emerald-500/8 hover:shadow-emerald-500/15 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
               <div className="flex items-center space-x-2 text-emerald-450">
                 <ArrowRight className="w-5 h-5" />
-                <h3 className="font-sans font-extrabold text-lg text-gray-900">Actionable Next Step</h3>
+                <h2 className="font-sans font-extrabold text-lg text-gray-900">Actionable Next Step</h2>
               </div>
               <p className="text-sm text-gray-800 leading-relaxed bg-emerald-950/10 p-4 rounded-xl border border-emerald-900/30 font-medium">
                 {report.actionable_next_step}
@@ -2256,10 +2256,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
           {/* DETAILED STRATEGIC OUTLOOK REASONING */}
           <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-indigo-500/15 shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 transition-all duration-300 space-y-4">
-            <h3 className="font-sans font-extrabold text-lg text-gray-900 flex items-center gap-2">
+            <h2 className="font-sans font-extrabold text-lg text-gray-900 flex items-center gap-2">
               <Award className="w-5 h-5 text-indigo-400" />
               <span className="bg-linear-to-r from-blue-400 to-amber-300 bg-clip-text text-transparent">Detailed Strategic Outlook</span>
-            </h3>
+            </h2>
             <p className="text-xs sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line font-sans">
               {report.reasoning}
             </p>
@@ -2307,10 +2307,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
           {/* DYNAMIC FAQ ACCORDION GENERATOR */}
           <div className="bg-white backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-lg hover:shadow-cyan-500/8 hover:-translate-y-0.5 transition-all duration-300 space-y-5">
-            <h3 className="font-sans font-extrabold text-lg text-gray-900 flex items-center gap-2">
+            <h2 className="font-sans font-extrabold text-lg text-gray-900 flex items-center gap-2">
               <HelpIcon className="w-5 h-5 text-cyan-400" />
               <span className="bg-linear-to-r from-blue-400 to-cyan-200 bg-clip-text text-transparent">Frequently Asked Questions (FAQ)</span>
-            </h3>
+            </h2>
             <div className="space-y-2">
               {report.faqs.map((faq, idx) => {
                 const open = activeFaqIdx === idx;
@@ -2357,8 +2357,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       {contentLoaded && <div className="border-t border-slate-200/40 pt-10 mt-10 space-y-10">
         
         <div className="text-center space-y-2">
-          <h3 className="font-extrabold text-xl text-gray-900">Evaluate Key Growth Sectors</h3>
-          <p className="text-xs text-gray-400 max-w-md mx-auto">Explore predefined structured analytical reports for highly-searched careers and modern side hustles.</p>
+          <h2 className="font-extrabold text-xl text-gray-900">Evaluate Key Growth Sectors</h2>
+          <p className="text-xs text-gray-600 max-w-md mx-auto">Explore predefined structured analytical reports for highly-searched careers and modern side hustles.</p>
         </div>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -2367,10 +2367,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-colors duration-150 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-blue-500 uppercase">Careers</span>
             <ul className="space-y-2 text-xs">
-              <li><button onClick={() => handleChipClick("Become Software Engineer")} className="hover:text-blue-600 text-gray-400 text-left cursor-pointer">Become Software Engineer</button></li>
-              <li><button onClick={() => handleChipClick("Become Data Analyst")} className="hover:text-blue-600 text-gray-400 text-left cursor-pointer">Become Data Analyst</button></li>
-              <li><button onClick={() => handleChipClick("Learn Cybersecurity")} className="hover:text-blue-600 text-gray-400 text-left cursor-pointer">Learn Cybersecurity</button></li>
-              <li><button onClick={() => handleChipClick("Become UX Designer")} className="hover:text-blue-600 text-gray-400 text-left cursor-pointer">Become UX Designer</button></li>
+              <li><button onClick={() => handleChipClick("Become Software Engineer")} className="hover:text-blue-600 text-gray-600 text-left cursor-pointer">Become Software Engineer</button></li>
+              <li><button onClick={() => handleChipClick("Become Data Analyst")} className="hover:text-blue-600 text-gray-600 text-left cursor-pointer">Become Data Analyst</button></li>
+              <li><button onClick={() => handleChipClick("Learn Cybersecurity")} className="hover:text-blue-600 text-gray-600 text-left cursor-pointer">Learn Cybersecurity</button></li>
+              <li><button onClick={() => handleChipClick("Become UX Designer")} className="hover:text-blue-600 text-gray-600 text-left cursor-pointer">Become UX Designer</button></li>
             </ul>
           </div>
 
@@ -2378,10 +2378,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-colors duration-150 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-emerald-500 uppercase">Side Hustles</span>
             <ul className="space-y-2 text-xs">
-              <li><button onClick={() => handleChipClick("Start Amazon KDP")} className="hover:text-emerald-600 text-gray-400 text-left cursor-pointer">Start Amazon KDP</button></li>
-              <li><button onClick={() => handleChipClick("Start Print-on-Demand")} className="hover:text-emerald-600 text-gray-400 text-left cursor-pointer">Start Print-on-Demand</button></li>
-              <li><button onClick={() => handleChipClick("Start Dropshipping")} className="hover:text-emerald-600 text-gray-400 text-left cursor-pointer">Start Dropshipping</button></li>
-              <li><button onClick={() => handleChipClick("Become Freelancer")} className="hover:text-emerald-600 text-gray-400 text-left cursor-pointer">Become Freelancer</button></li>
+              <li><button onClick={() => handleChipClick("Start Amazon KDP")} className="hover:text-emerald-600 text-gray-600 text-left cursor-pointer">Start Amazon KDP</button></li>
+              <li><button onClick={() => handleChipClick("Start Print-on-Demand")} className="hover:text-emerald-600 text-gray-600 text-left cursor-pointer">Start Print-on-Demand</button></li>
+              <li><button onClick={() => handleChipClick("Start Dropshipping")} className="hover:text-emerald-600 text-gray-600 text-left cursor-pointer">Start Dropshipping</button></li>
+              <li><button onClick={() => handleChipClick("Become Freelancer")} className="hover:text-emerald-600 text-gray-600 text-left cursor-pointer">Become Freelancer</button></li>
             </ul>
           </div>
 
@@ -2389,10 +2389,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-colors duration-150 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-indigo-500 uppercase">Business Ideas</span>
             <ul className="space-y-2 text-xs">
-              <li><button onClick={() => handleChipClick("Start AI Agency")} className="hover:text-indigo-600 text-gray-400 text-left cursor-pointer">Start AI Agency</button></li>
-              <li><button onClick={() => handleChipClick("Build SaaS Product")} className="hover:text-indigo-600 text-gray-400 text-left cursor-pointer">Build SaaS Product</button></li>
-              <li><button onClick={() => handleChipClick("Start Blogging")} className="hover:text-indigo-600 text-gray-400 text-left cursor-pointer">Start Blogging</button></li>
-              <li><button onClick={() => handleChipClick("Create Newsletter")} className="hover:text-indigo-600 text-gray-400 text-left cursor-pointer">Create Newsletter</button></li>
+              <li><button onClick={() => handleChipClick("Start AI Agency")} className="hover:text-indigo-600 text-gray-600 text-left cursor-pointer">Start AI Agency</button></li>
+              <li><button onClick={() => handleChipClick("Build SaaS Product")} className="hover:text-indigo-600 text-gray-600 text-left cursor-pointer">Build SaaS Product</button></li>
+              <li><button onClick={() => handleChipClick("Start Blogging")} className="hover:text-indigo-600 text-gray-600 text-left cursor-pointer">Start Blogging</button></li>
+              <li><button onClick={() => handleChipClick("Create Newsletter")} className="hover:text-indigo-600 text-gray-600 text-left cursor-pointer">Create Newsletter</button></li>
             </ul>
           </div>
 
@@ -2400,10 +2400,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           <div className="bg-white p-5 rounded-2xl border border-gray-100 space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-colors duration-150 hover:border-gray-200">
             <span className="text-[10px] font-mono tracking-widest font-bold text-cyan-500 uppercase">Education & Tech</span>
             <ul className="space-y-2 text-xs">
-              <li><button onClick={() => handleChipClick("Get an MBA")} className="hover:text-cyan-600 text-gray-400 text-left cursor-pointer">Get an MBA</button></li>
-              <li><button onClick={() => handleChipClick("Learn Coding")} className="hover:text-cyan-600 text-gray-400 text-left cursor-pointer">Learn Coding</button></li>
-              <li><button onClick={() => handleChipClick("Buy ChatGPT Plus")} className="hover:text-cyan-600 text-gray-400 text-left cursor-pointer">Buy ChatGPT Plus</button></li>
-              <li><button onClick={() => handleChipClick("Buy MacBook Pro")} className="hover:text-cyan-600 text-gray-400 text-left cursor-pointer">Buy MacBook Pro</button></li>
+              <li><button onClick={() => handleChipClick("Get an MBA")} className="hover:text-cyan-600 text-gray-600 text-left cursor-pointer">Get an MBA</button></li>
+              <li><button onClick={() => handleChipClick("Learn Coding")} className="hover:text-cyan-600 text-gray-600 text-left cursor-pointer">Learn Coding</button></li>
+              <li><button onClick={() => handleChipClick("Buy ChatGPT Plus")} className="hover:text-cyan-600 text-gray-600 text-left cursor-pointer">Buy ChatGPT Plus</button></li>
+              <li><button onClick={() => handleChipClick("Buy MacBook Pro")} className="hover:text-cyan-600 text-gray-600 text-left cursor-pointer">Buy MacBook Pro</button></li>
             </ul>
           </div>
 

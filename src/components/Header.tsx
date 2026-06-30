@@ -80,6 +80,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
             {isReady && isMobile && (
               <button
                 onClick={() => setIsOpen((v) => !v)}
+                aria-label={isOpen ? "Close menu" : "Open menu"}
                 style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",border:"none",background:"transparent",cursor:"pointer",borderRadius:"8px"}}
               >
                 {isOpen ? <X style={{height:"24px",width:"24px",color:"#374151"}} /> : <Menu style={{height:"24px",width:"24px",color:"#374151"}} />}

@@ -17,8 +17,6 @@
       gtag('js', new Date());
       gtag('config', 'G-D7V8G5E071');
     </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3011242494324821" crossorigin="anonymous"></script>
-
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>DownOrUp.net – Should You Do It? AI Decision Platform</title>
     <meta name="description" content="Get instant AI-powered evaluations before making career, side hustle, business, or purchase decisions. Free website status checker, DNS lookup and network diagnostics included." />
@@ -46,6 +44,25 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- Google AdSense — deferred until browser idle to avoid blocking initial render -->
+    <script>
+      (function() {
+        function loadAdSense() {
+          var s = document.createElement('script');
+          s.async = true;
+          s.crossOrigin = 'anonymous';
+          s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3011242494324821';
+          document.head.appendChild(s);
+        }
+        if (document.readyState === 'complete') {
+          ('requestIdleCallback' in window) ? requestIdleCallback(loadAdSense) : setTimeout(loadAdSense, 200);
+        } else {
+          window.addEventListener('load', function() {
+            ('requestIdleCallback' in window) ? requestIdleCallback(loadAdSense) : setTimeout(loadAdSense, 200);
+          });
+        }
+      })();
+    </script>
   </body>
 </html>
 
