@@ -777,11 +777,15 @@ async function startServer() {
       setHeaders: (res, filePath) => {
         if (filePath.endsWith(".html")) {
           res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
+          res.setHeader("X-Content-Type-Options", "nosniff");
+          res.setHeader("X-Frame-Options", "SAMEORIGIN");
         }
       },
     }));
     app.get("*", (req, res) => {
       res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
+      res.setHeader("X-Content-Type-Options", "nosniff");
+      res.setHeader("X-Frame-Options", "SAMEORIGIN");
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
