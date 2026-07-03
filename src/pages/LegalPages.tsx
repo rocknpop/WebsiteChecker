@@ -194,7 +194,7 @@ export function ContactUsPage() {
                 required
                 value={name}
                 onChange={e => setName(e.target.value)}
-                placeholder="Rishi N"
+                placeholder="Jane Doe"
                 className="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all outline-hidden text-white"
               />
             </div>
