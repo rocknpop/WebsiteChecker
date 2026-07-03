@@ -86,12 +86,13 @@ export default defineConfig(() => {
       include: ["react", "react-dom"],
     },
     build: {
-      minify: "esbuild",
+      minify: 'esbuild' as const,
+      cssMinify: true,
       rollupOptions: {
         output: {
           manualChunks: {
-            'react-vendor': ['react', 'react-dom'],
-            'icons': ['lucide-react'],
+            vendor: ['react', 'react-dom'],
+            icons: ['lucide-react'],
           },
         },
       },
