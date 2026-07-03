@@ -373,24 +373,19 @@ SaaS works best for people with domain expertise in a specific industry, basic t
     readTime: "5 min read",
     excerpt: "Find out who owns any domain, when it was registered, when it expires and which registrar manages it. Free WHOIS lookup tool with instant results.",
     content: `
-WHOIS is a public database that stores registration information for every domain name on the internet. When someone registers a domain, their information (or their registrar's information) gets stored in WHOIS records.
+WHOIS is a public database that stores registration information for every domain name on the internet. When someone registers a domain, their information gets stored in WHOIS records.
 
 ### What Can You Find With a WHOIS Lookup?
-A WHOIS domain lookup reveals the domain owner name or organization, registration date, expiry date, registrar name, nameservers, and sometimes contact email and address (if not privacy-protected).
+A WHOIS domain lookup reveals the domain owner name, registration date, expiry date, registrar name, nameservers, and contact information if not privacy protected.
 
 ### How to Do a Free WHOIS Domain Owner Search
 Use DownOrUp.net/whois-lookup to instantly find domain ownership records for any website. Simply enter the domain name and get complete WHOIS data in seconds - no signup required.
 
 ### Why Look Up Domain Owner Information?
-There are many legitimate reasons to check domain ownership. You may want to purchase a domain that is already registered and need to contact the owner. You may be investigating a suspicious website. You may need to verify when a competitor's domain expires.
+You may want to purchase a domain that is already registered. You may be investigating a suspicious website. You may need to verify when a competitor domain expires.
 
 ### Domain Privacy Protection
-Many domain owners use WHOIS privacy protection (also called domain privacy or ID shield) which replaces their personal information with their registrar's details. This is why many WHOIS lookups show registrar contact details instead of the actual owner.
-
-### How to Find Who Owns a Domain
-1. Go to DownOrUp.net/whois-lookup
-2. Enter the domain name (e.g., google.com)
-3. View registrar, registration date, expiry date and nameserver information instantly
+Many domain owners use WHOIS privacy protection which replaces personal information with registrar details. This is why many WHOIS lookups show registrar contact details instead of the actual owner.
 
 ### Check When a Domain Expires
 The WHOIS expiry date tells you when a domain registration expires. Expired domains become available for purchase. Use our free WHOIS checker to monitor domains you want to acquire.
