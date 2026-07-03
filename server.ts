@@ -1,5 +1,7 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
+import { pathToFileURL } from "url";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import { createServer as createViteServer } from "vite";
@@ -772,8 +774,17 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), "dist");
+    const distPath = path.join(process.cwd(), "dist", "client");
+    const template = fs.readFileSync(path.join(distPath, "index.html"), "utf-8");
+    const ssrEntryPath = path.join(process.cwd(), "dist", "server", "entry-server.js");
+    const { render } = await import(pathToFileURL(ssrEntryPath).href) as {
+      render: (url: string) => { html: string; seo: { title: string; description: string } };
+    };
+
+    // index: false so index.html is never auto-served here — every HTML request must go
+    // through the SSR route below instead, which renders the actual page content.
     app.use(express.static(distPath, {
+      index: false,
       setHeaders: (res, filePath) => {
         if (filePath.endsWith(".html")) {
           res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
@@ -782,11 +793,27 @@ async function startServer() {
         }
       },
     }));
+
     app.get("*", (req, res) => {
       res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
       res.setHeader("X-Content-Type-Options", "nosniff");
       res.setHeader("X-Frame-Options", "SAMEORIGIN");
-      res.sendFile(path.join(distPath, "index.html"));
+      res.setHeader("Content-Type", "text/html");
+
+      try {
+        const { html, seo } = render(req.path);
+        const page = template
+          .replace("<!--ssr-outlet-->", html)
+          .replace(/<title>.*?<\/title>/, `<title>${seo.title}</title>`)
+          .replace(
+            /<meta name="description" content=".*?" \/>/,
+            `<meta name="description" content="${seo.description}" />`
+          );
+        res.send(page);
+      } catch (err) {
+        console.error("[SSR] render failed for", req.path, err);
+        res.send(template);
+      }
     });
   }
 

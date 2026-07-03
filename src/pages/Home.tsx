@@ -363,6 +363,38 @@ Validate before you build. Get 5 people to pay you before writing a single line 
 ### Who Should Build SaaS?
 SaaS works best for people with domain expertise in a specific industry, basic technical skills or a technical co-founder, and patience for an 18-24 month journey to meaningful revenue.
     `
+  },
+  {
+    id: "whois-domain-lookup-guide",
+    title: "Free WHOIS Lookup: How to Find Domain Owner, Registration & Expiry",
+    slug: "whois-domain-lookup-guide",
+    category: "Tools",
+    publishedAt: "July 01, 2026",
+    readTime: "5 min read",
+    excerpt: "Find out who owns any domain, when it was registered, when it expires and which registrar manages it. Free WHOIS lookup tool with instant results.",
+    content: `
+WHOIS is a public database that stores registration information for every domain name on the internet. When someone registers a domain, their information (or their registrar's information) gets stored in WHOIS records.
+
+### What Can You Find With a WHOIS Lookup?
+A WHOIS domain lookup reveals the domain owner name or organization, registration date, expiry date, registrar name, nameservers, and sometimes contact email and address (if not privacy-protected).
+
+### How to Do a Free WHOIS Domain Owner Search
+Use DownOrUp.net/whois-lookup to instantly find domain ownership records for any website. Simply enter the domain name and get complete WHOIS data in seconds - no signup required.
+
+### Why Look Up Domain Owner Information?
+There are many legitimate reasons to check domain ownership. You may want to purchase a domain that is already registered and need to contact the owner. You may be investigating a suspicious website. You may need to verify when a competitor's domain expires.
+
+### Domain Privacy Protection
+Many domain owners use WHOIS privacy protection (also called domain privacy or ID shield) which replaces their personal information with their registrar's details. This is why many WHOIS lookups show registrar contact details instead of the actual owner.
+
+### How to Find Who Owns a Domain
+1. Go to DownOrUp.net/whois-lookup
+2. Enter the domain name (e.g., google.com)
+3. View registrar, registration date, expiry date and nameserver information instantly
+
+### Check When a Domain Expires
+The WHOIS expiry date tells you when a domain registration expires. Expired domains become available for purchase. Use our free WHOIS checker to monitor domains you want to acquire.
+  `
   }
 ];
 
@@ -982,8 +1014,13 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         whois: "WHOIS Domain Ownership Lookup Checker",
         port: "Common Ports Checker & Security Scan"
       };
-      setSeoTitle(`${toolNames[toolId]} - DownOrUp.net`);
-      setSeoDesc(`Use our free high-speed network diagnostic tool to evaluate your ${toolId} parameters instantly.`);
+      if (toolId === "whois") {
+        setSeoTitle("Free WHOIS Lookup - Find Domain Owner, Registration & Expiry - DownOrUp.net");
+        setSeoDesc("Free WHOIS domain lookup tool. Find domain owner, registration date, expiry date and registrar instantly. Search domain ownership records for any website.");
+      } else {
+        setSeoTitle(`${toolNames[toolId]} - DownOrUp.net`);
+        setSeoDesc(`Use our free high-speed network diagnostic tool to evaluate your ${toolId} parameters instantly.`);
+      }
       return;
     }
 
@@ -1685,6 +1722,16 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             );
           })}
         </div>
+
+        {activeTool === "whois" && (
+          <div className="max-w-2xl mx-auto mb-6 text-center">
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Free WHOIS domain lookup tool. Find domain owner, registration date, expiry date and registrar
+              information instantly. Search domain ownership records for any website to see who registered it,
+              when it was created, and when it expires.
+            </p>
+          </div>
+        )}
 
         <div className="max-w-2xl mx-auto mb-10">
           <form onSubmit={handleToolSubmit} className="relative group p-1.5 rounded-2xl bg-white border border-gray-300 shadow-md flex items-center transition-colors duration-150 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 hover:shadow-md hover:border-gray-300">

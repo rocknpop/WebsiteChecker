@@ -15,7 +15,8 @@ import {
 } from "./pages/LegalPages";
 
 // Route to SEO Metadata Mapper (Full EEAT & Programmatic SEO scale support)
-function getSeoMetadata(path: string): { title: string; description: string } {
+// Exported so the SSR entry point can generate matching <title>/<meta> server-side.
+export function getSeoMetadata(path: string): { title: string; description: string } {
   // 1. Core General Platform SEO Matches
   if (path === "/" || path === "/index.html") {
     return {
@@ -28,6 +29,13 @@ function getSeoMetadata(path: string): { title: string; description: string } {
     return {
       title: "Expert Strategic Advice & Business Insights Blog - DownOrUp.net",
       description: "Read authoritative, data-driven analyses on the best side hustles, software tools, Python applications, and AI agencies thriving in 2026."
+    };
+  }
+
+  if (path === "/status" || path.startsWith("/status/")) {
+    return {
+      title: "Website Status Checker & Reachability Tool - DownOrUp.net",
+      description: "Use our free high-speed network diagnostic tool to evaluate your status parameters instantly."
     };
   }
 
@@ -78,8 +86,16 @@ function getSeoMetadata(path: string): { title: string; description: string } {
   };
 }
 
-export default function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+interface AppProps {
+  // Path to render for. Required during SSR (no window there); optional on the client,
+  // where it falls back to the real browser location for standalone CSR usage.
+  initialPath?: string;
+}
+
+export default function App({ initialPath }: AppProps = {}) {
+  const [currentPath, setCurrentPath] = useState(
+    initialPath ?? (typeof window !== "undefined" ? window.location.pathname : "/")
+  );
 
   // Invoke useSEO hook for dynamic metadata updates on route state changes
   const seoMeta = getSeoMetadata(currentPath);
