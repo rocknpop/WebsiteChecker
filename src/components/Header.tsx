@@ -42,7 +42,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const isReady = width > 0;
 
   const navLinks = [
-    { name: "Diagnostics Suite", path: "/status" },
+    { name: "Diagnostics Suite", path: "/ip-lookup" },
     { name: "Decision Engine", path: "/" },
     { name: "Blog / Insights", path: "/blog" },
     { name: "About", path: "/about" },
@@ -76,7 +76,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
       `}</style>
-      <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:isMobile?"none":"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)",overflowX:"hidden",maxWidth:"100vw"}}>
+      <header style={{position:"fixed",top:0,left:0,right:0,zIndex:99999,background:"rgba(255,255,255,0.98)",backdropFilter:isMobile?"none":"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)",maxWidth:"100vw"}}>
         <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
           {/* Logo - left */}
@@ -100,7 +100,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                   return (
                     <div
                       key={link.path}
-                      style={{position:"relative"}}
+                      style={{position:"relative",zIndex:99999}}
                       onMouseEnter={() => items && handleDropdownEnter(link.name)}
                       onMouseLeave={() => items && handleDropdownLeave()}
                     >
@@ -130,7 +130,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                             border: "1px solid #f0f0f0",
                             padding: "8px",
                             minWidth: "260px",
-                            zIndex: 9999,
+                            zIndex: 99999,
                             animation: "fadeInDown 0.15s ease"
                           }}
                         >

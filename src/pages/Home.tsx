@@ -976,9 +976,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       pathClean === "/port-checker" || 
       pathClean.startsWith("/port-checker/")
     ) {
-      let toolId = "status";
+      let toolId = "ip";
       let routePrefix = "";
-      if (pathClean.startsWith("/status")) { toolId = "status"; routePrefix = "/status"; }
+      if (pathClean === "/status") { toolId = "ip"; routePrefix = "/status"; }
+      else if (pathClean.startsWith("/status/")) { toolId = "status"; routePrefix = "/status"; }
       else if (pathClean.startsWith("/dns-lookup")) { toolId = "dns"; routePrefix = "/dns-lookup"; }
       else if (pathClean.startsWith("/ip-lookup")) { toolId = "ip"; routePrefix = "/ip-lookup"; }
       else if (pathClean.startsWith("/ssl-checker")) { toolId = "ssl"; routePrefix = "/ssl-checker"; }
