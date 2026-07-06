@@ -31,6 +31,22 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
     dropdownTimer.current = setTimeout(() => setOpenDropdown(null), 150);
   };
 
+  const isActive = (path: string) => {
+    if (path === "/ip-lookup") {
+      return currentPath === "/" ||
+        currentPath.startsWith("/ip-lookup") ||
+        currentPath.startsWith("/status") ||
+        currentPath.startsWith("/dns-lookup") ||
+        currentPath.startsWith("/ssl-checker") ||
+        currentPath.startsWith("/whois-lookup") ||
+        currentPath.startsWith("/port-checker");
+    }
+    if (path === "/decision") return currentPath === "/decision";
+    if (path === "/blog") return currentPath.startsWith("/blog");
+    if (path === "/about") return currentPath === "/about";
+    return currentPath === path;
+  };
+
   useEffect(() => {
     setWidth(window.innerWidth);
     const handler = () => setWidth(window.innerWidth);
@@ -43,7 +59,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
   const navLinks = [
     { name: "Diagnostics Suite", path: "/ip-lookup" },
-    { name: "Decision Engine", path: "/" },
+    { name: "Decision Engine", path: "/decision" },
     { name: "Blog / Insights", path: "/blog" },
     { name: "About", path: "/about" },
   ];
@@ -58,7 +74,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
       { name: "Port Checker", path: "/port-checker", description: "Scan common network ports" },
     ],
     "Decision Engine": [
-      { name: "Should You Do It?", path: "/", description: "AI verdict on any decision" },
+      { name: "Should You Do It?", path: "/decision", description: "AI verdict on any decision" },
     ],
   };
 
@@ -80,7 +96,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
         <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
           {/* Logo - left */}
-          <div style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",flexShrink:0}} onClick={() => handleLinkClick("/")}>
+          <div style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",flexShrink:0}} onClick={() => handleLinkClick("/decision")}>
             <div style={{height:"32px",width:"32px",flexShrink:0,background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"10px",display:"flex",alignItems:"center",justifyContent:"center"}}>
               <TrendingUp style={{height:"18px",width:"18px",color:"white"}} />
             </div>
@@ -95,7 +111,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
               <nav style={{display:"flex",alignItems:"center",gap:"4px"}}>
                 {navLinks.map((link) => {
                   const items = dropdownItems[link.name];
-                  const isActive = currentPath === link.path;
+                  const active = isActive(link.path);
                   const isOpenNow = items && openDropdown === link.name;
                   return (
                     <div
@@ -106,11 +122,11 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                     >
                       <button
                         onClick={() => handleLinkClick(link.path)}
-                        style={{padding:"8px 16px",borderRadius:"999px",border:"none",background:isActive?"#eff6ff":"transparent",color:isActive?"#2563eb":"#4b5563",fontWeight:isActive?"600":"500",fontSize:"14px",cursor:"pointer",display:"flex",alignItems:"center",gap:"4px",position:"relative"}}
+                        style={{padding:"8px 16px",borderRadius:"999px",border:"none",background:active?"#eff6ff":"transparent",color:active?"#2563eb":"#4b5563",fontWeight:active?"600":"500",fontSize:"14px",cursor:"pointer",display:"flex",alignItems:"center",gap:"4px",position:"relative"}}
                       >
                         <span>{link.name}</span>
                         {items && <ChevronDown style={{height:"14px",width:"14px",transition:"transform 0.15s",transform:isOpenNow?"rotate(180deg)":"rotate(0deg)"}} />}
-                        {isActive && (
+                        {active && (
                           <span style={{position:"absolute",bottom:"-2px",left:"50%",transform:"translateX(-50%)",width:"20px",height:"2px",borderRadius:"999px",background:"#2563eb"}} />
                         )}
                       </button>
@@ -200,7 +216,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           <div style={{display:"flex",alignItems:"center",gap:"8px",flexShrink:0}}>
             {isReady && !isMobile && (
               <button
-                onClick={() => handleLinkClick("/")}
+                onClick={() => handleLinkClick("/decision")}
                 style={{display:"flex",alignItems:"center",gap:"6px",padding:"8px 20px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"999px",fontWeight:"700",fontSize:"14px",cursor:"pointer"}}
               >
                 <Sparkles style={{height:"14px",width:"14px"}} />
@@ -241,7 +257,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                   <div key={link.path}>
                     <button
                       onClick={() => handleLinkClick(link.path)}
-                      style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",borderRadius:"12px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#374151",fontWeight:"500",fontSize:"14px",cursor:"pointer",textAlign:"left"}}
+                      style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",borderRadius:"12px",border:"none",background:isActive(link.path)?"#eff6ff":"transparent",color:isActive(link.path)?"#2563eb":"#374151",fontWeight:"500",fontSize:"14px",cursor:"pointer",textAlign:"left"}}
                     >
                       <span>{link.name}</span>
                       <ChevronRight style={{height:"16px",width:"16px",color:"#d1d5db"}} />
@@ -252,7 +268,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                           <button
                             key={item.path}
                             onClick={() => handleLinkClick(item.path)}
-                            style={{width:"100%",display:"flex",alignItems:"center",padding:"10px 16px",borderRadius:"10px",border:"none",background:currentPath===item.path?"#eff6ff":"transparent",color:currentPath===item.path?"#2563eb":"#6b7280",fontWeight:"500",fontSize:"13px",cursor:"pointer",textAlign:"left"}}
+                            style={{width:"100%",display:"flex",alignItems:"center",padding:"10px 16px",borderRadius:"10px",border:"none",background:isActive(item.path)?"#eff6ff":"transparent",color:isActive(item.path)?"#2563eb":"#6b7280",fontWeight:"500",fontSize:"13px",cursor:"pointer",textAlign:"left"}}
                           >
                             {item.name}
                           </button>
@@ -263,7 +279,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
                 );
               })}
               <button
-                onClick={() => handleLinkClick("/")}
+                onClick={() => handleLinkClick("/decision")}
                 style={{marginTop:"12px",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:"8px",padding:"12px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"12px",fontWeight:"700",fontSize:"14px",cursor:"pointer"}}
               >
                 <Sparkles style={{height:"16px",width:"16px"}} />

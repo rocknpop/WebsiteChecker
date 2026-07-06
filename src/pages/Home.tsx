@@ -960,6 +960,13 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     fetchRecentDecisions();
     fetchBlogPosts();
 
+    if (currentPath === "/") {
+      setActiveTool("ip");
+      runDiagnosticCheck("ip", "me");
+      window.history.pushState({}, "", "/ip-lookup");
+      return;
+    }
+
     // Check if currentPath is a diagnostic utility
     const pathClean = currentPath.toLowerCase().trim();
     if (
@@ -1760,11 +1767,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             </button>
           </form>
           
-          <button 
+          <button
             onClick={() => {
-              window.history.pushState({}, "", "/");
-              onNavigate("/");
-            }} 
+              window.history.pushState({}, "", "/decision");
+              onNavigate("/decision");
+            }}
             className="mt-4 inline-flex items-center space-x-1.5 text-xs font-bold text-gray-500 hover:text-blue-600 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
@@ -1885,12 +1892,12 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   <h3 className="font-bold text-sm text-gray-900">Evaluate a related decision?</h3>
                   <p className="text-xs text-gray-600 mt-0.5">Test any idea instantly with our state-of-the-art decision engine.</p>
                 </div>
-                <button 
+                <button
                   onClick={() => {
                     setSelectedPost(null);
-                    window.history.pushState({}, "", "/");
-                    onNavigate("/");
-                  }} 
+                    window.history.pushState({}, "", "/decision");
+                    onNavigate("/decision");
+                  }}
                   className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
                 >
                   Central Engine
@@ -2392,8 +2399,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               onClick={() => {
                 setReport(null);
                 setInputValue("");
-                window.history.pushState({}, "", "/");
-                onNavigate("/");
+                window.history.pushState({}, "", "/decision");
+                onNavigate("/decision");
               }}
               className="px-6 py-3 border border-slate-200 hover:border-slate-350 text-gray-600 hover:text-slate-900 text-xs font-semibold rounded-xl transition-all cursor-pointer"
             >
