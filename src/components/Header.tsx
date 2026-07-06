@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Sparkles, Menu, X, TrendingUp, ChevronRight } from "lucide-react";
+import { Sparkles, Menu, X, TrendingUp, ChevronRight, ChevronDown } from "lucide-react";
 
 interface HeaderProps {
   currentPath: string;
@@ -9,6 +9,7 @@ interface HeaderProps {
 export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [width, setWidth] = useState(0);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     setWidth(window.innerWidth);
@@ -21,11 +22,25 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const isReady = width > 0;
 
   const navLinks = [
-    { name: "Decision Engine", path: "/" },
     { name: "Diagnostics Suite", path: "/status" },
+    { name: "Decision Engine", path: "/" },
     { name: "Blog / Insights", path: "/blog" },
     { name: "About", path: "/about" },
   ];
+
+  const dropdownItems: Record<string, {name: string, path: string, description: string}[]> = {
+    "Diagnostics Suite": [
+      { name: "What is my IP?", path: "/ip-lookup", description: "Detect your public IP & location" },
+      { name: "Website Status", path: "/status", description: "Check if any site is up or down" },
+      { name: "DNS Lookup", path: "/dns-lookup", description: "Query A, MX, CNAME, TXT records" },
+      { name: "SSL Checker", path: "/ssl-checker", description: "Validate SSL certificates" },
+      { name: "WHOIS Lookup", path: "/whois-lookup", description: "Find domain owner & registration" },
+      { name: "Port Checker", path: "/port-checker", description: "Scan common network ports" },
+    ],
+    "Decision Engine": [
+      { name: "Should You Do It?", path: "/", description: "AI verdict on any decision" },
+    ],
+  };
 
   const handleLinkClick = (path: string) => {
     onNavigate(path);
@@ -52,15 +67,42 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
           <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>
             {isReady && !isMobile && (
               <nav style={{display:"flex",alignItems:"center",gap:"4px"}}>
-                {navLinks.map((link) => (
-                  <button
-                    key={link.path}
-                    onClick={() => handleLinkClick(link.path)}
-                    style={{padding:"8px 16px",borderRadius:"999px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#4b5563",fontWeight:currentPath===link.path?"600":"500",fontSize:"14px",cursor:"pointer"}}
-                  >
-                    {link.name}
-                  </button>
-                ))}
+                {navLinks.map((link) => {
+                  const items = dropdownItems[link.name];
+                  return (
+                    <div
+                      key={link.path}
+                      className="relative"
+                      onMouseEnter={() => items && setOpenDropdown(link.name)}
+                      onMouseLeave={() => items && setOpenDropdown(null)}
+                    >
+                      <button
+                        onClick={() => handleLinkClick(link.path)}
+                        style={{padding:"8px 16px",borderRadius:"999px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#4b5563",fontWeight:currentPath===link.path?"600":"500",fontSize:"14px",cursor:"pointer",display:"flex",alignItems:"center",gap:"4px"}}
+                      >
+                        <span>{link.name}</span>
+                        {items && <ChevronDown style={{height:"14px",width:"14px"}} />}
+                      </button>
+
+                      {items && openDropdown === link.name && (
+                        <div className="absolute top-full left-0 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 min-w-64 z-50">
+                          {items.map((item) => (
+                            <div
+                              key={item.path}
+                              onClick={() => handleLinkClick(item.path)}
+                              className="flex items-start gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 cursor-pointer"
+                            >
+                              <div>
+                                <div className="text-sm font-semibold text-gray-800">{item.name}</div>
+                                <div className="text-xs text-gray-500 mt-0.5">{item.description}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </nav>
             )}
           </div>
@@ -104,16 +146,33 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
               </span>
             </div>
             <div style={{flex:1,overflowY:"auto",padding:"16px",display:"flex",flexDirection:"column",gap:"4px"}}>
-              {navLinks.map((link) => (
-                <button
-                  key={link.path}
-                  onClick={() => handleLinkClick(link.path)}
-                  style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",borderRadius:"12px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#374151",fontWeight:"500",fontSize:"14px",cursor:"pointer",textAlign:"left"}}
-                >
-                  <span>{link.name}</span>
-                  <ChevronRight style={{height:"16px",width:"16px",color:"#d1d5db"}} />
-                </button>
-              ))}
+              {navLinks.map((link) => {
+                const items = dropdownItems[link.name];
+                return (
+                  <div key={link.path}>
+                    <button
+                      onClick={() => handleLinkClick(link.path)}
+                      style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",borderRadius:"12px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#374151",fontWeight:"500",fontSize:"14px",cursor:"pointer",textAlign:"left"}}
+                    >
+                      <span>{link.name}</span>
+                      <ChevronRight style={{height:"16px",width:"16px",color:"#d1d5db"}} />
+                    </button>
+                    {items && (
+                      <div className="pl-4" style={{display:"flex",flexDirection:"column",gap:"2px",marginTop:"2px"}}>
+                        {items.map((item) => (
+                          <button
+                            key={item.path}
+                            onClick={() => handleLinkClick(item.path)}
+                            style={{width:"100%",display:"flex",alignItems:"center",padding:"10px 16px",borderRadius:"10px",border:"none",background:currentPath===item.path?"#eff6ff":"transparent",color:currentPath===item.path?"#2563eb":"#6b7280",fontWeight:"500",fontSize:"13px",cursor:"pointer",textAlign:"left"}}
+                          >
+                            {item.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
               <button
                 onClick={() => handleLinkClick("/")}
                 style={{marginTop:"12px",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:"8px",padding:"12px",background:"linear-gradient(135deg,#2563eb,#4f46e5)",color:"white",border:"none",borderRadius:"12px",fontWeight:"700",fontSize:"14px",cursor:"pointer"}}
