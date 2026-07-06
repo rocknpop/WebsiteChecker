@@ -651,7 +651,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     }
 
     let host = inputClean.replace(/https?:\/\//i, "").split("/")[0].split(":")[0];
-    if (!host && tool !== "ip") {
+
+    // For IP tool, "me" or empty means detect current IP - don't validate
+    if (tool === "ip" && (host === "me" || host === "" || !host)) {
+      host = "me"; // Signal to detect current IP
+    } else if (!host && tool !== "ip") {
       setToolError("Please provide a valid domain name or IP address.");
       setToolLoading(false);
       return;
@@ -809,34 +813,62 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         }
 
         case "ip": {
-          let ipAddress = host;
-          if (!ipAddress || ipAddress.toLowerCase() === "me") {
-            const ipResp = await fetchWithTimeout("https://api.ipify.org?format=json", {}, 6000);
-            if (!ipResp.ok) throw new Error("Could not detect your current public IP.");
-            const ipJson = await ipResp.json();
-            ipAddress = ipJson.ip;
+          const ipAddress = (host === "me" || !host) ? null : host;
+          const isSelfLookup = ipAddress === null;
+          let ipData: any = null;
+
+          // Try multiple IP APIs in order. Self-detect endpoints when no target IP was given;
+          // per-IP lookup endpoints when the user typed one (ipify only ever reports the
+          // caller's own IP, so it can't serve arbitrary-IP lookups and is excluded there).
+          const apis = isSelfLookup
+            ? [
+                "https://ipapi.co/json/",
+                "https://ip-api.com/json/",
+                "https://ipinfo.io/json",
+                "https://api.ipify.org?format=json"
+              ]
+            : [
+                `https://ipapi.co/${ipAddress}/json/`,
+                `https://ip-api.com/json/${ipAddress}`,
+                `https://ipinfo.io/${ipAddress}/json`
+              ];
+
+          for (const apiUrl of apis) {
+            try {
+              const resp = await fetchWithTimeout(apiUrl, {}, 6000);
+              if (resp.ok) {
+                const data = await resp.json();
+                const [locLat, locLon] = typeof data.loc === "string" ? data.loc.split(",") : [undefined, undefined];
+                // Normalize different API response formats
+                ipData = {
+                  ip: data.ip || data.query || (isSelfLookup ? undefined : ipAddress),
+                  city: data.city,
+                  region: data.region || data.regionName,
+                  country_code: data.country_code || data.countryCode || data.country,
+                  country_name: data.country_name || data.country,
+                  latitude: data.latitude ?? data.lat ?? (locLat ? parseFloat(locLat) : undefined),
+                  longitude: data.longitude ?? data.lon ?? (locLon ? parseFloat(locLon) : undefined),
+                  timezone: data.timezone,
+                  asn: data.asn || data.as,
+                  org: data.org || data.isp,
+                  currency_name: data.currency_name || "",
+                  currency: data.currency || ""
+                };
+                if (ipData.ip) break; // Success - stop trying
+              }
+            } catch (err) {
+              console.warn(`IP API ${apiUrl} failed:`, err);
+              continue; // Try next API
+            }
           }
-          
-          const geoUrl = `https://ipapi.co/${ipAddress}/json/`;
-          const resp = await fetchWithTimeout(geoUrl, {}, 6000);
-          if (!resp.ok) {
-            throw new Error("Could not retrieve IP geolocation details.");
+
+          if (ipData && ipData.ip) {
+            setToolResult(ipData);
+          } else {
+            setToolError(isSelfLookup
+              ? "Could not detect your IP address. Please check your connection and try again."
+              : "Could not retrieve IP geolocation details for that address.");
           }
-          const geoData = await resp.json();
-          setToolResult({
-            ip: ipAddress,
-            city: geoData.city,
-            region: geoData.region,
-            country_code: geoData.country_code,
-            country_name: geoData.country_name,
-            latitude: geoData.latitude,
-            longitude: geoData.longitude,
-            timezone: geoData.timezone,
-            asn: geoData.asn,
-            org: geoData.org,
-            currency_name: geoData.currency_name,
-            currency: geoData.currency
-          });
           break;
         }
 
