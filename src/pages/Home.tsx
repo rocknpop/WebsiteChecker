@@ -490,6 +490,23 @@ const generateFallbackReport = (query: string): DecisionReport => {
   };
 };
 
+// Derives which diagnostics-suite tool (if any) a path resolves to, synchronously and without
+// relying on effects — the homepage ("/") now defaults to the IP tool. Shared by the initial
+// activeTool state (so SSR/first paint render the right shell for every route, not just after
+// the path-sync effect below runs) and that same effect once the component has mounted.
+function getToolIdForPath(path: string): string | null {
+  const pathClean = path.toLowerCase().trim();
+  if (pathClean === "/") return "ip";
+  if (pathClean === "/status") return "ip";
+  if (pathClean.startsWith("/status/")) return "status";
+  if (pathClean === "/dns-lookup" || pathClean.startsWith("/dns-lookup/")) return "dns";
+  if (pathClean === "/ip-lookup" || pathClean.startsWith("/ip-lookup/")) return "ip";
+  if (pathClean === "/ssl-checker" || pathClean.startsWith("/ssl-checker/")) return "ssl";
+  if (pathClean === "/whois-lookup" || pathClean.startsWith("/whois-lookup/")) return "whois";
+  if (pathClean === "/port-checker" || pathClean.startsWith("/port-checker/")) return "port";
+  return null;
+}
+
 export default function Home({ currentPath, onNavigate }: HomeProps) {
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
@@ -534,7 +551,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
   // Diagnostics tools state
-  const [activeTool, setActiveTool] = useState<string | null>(null);
+  const [activeTool, setActiveTool] = useState<string | null>(() => getToolIdForPath(currentPath));
   const [toolInput, setToolInput] = useState("");
   const [toolLoading, setToolLoading] = useState(false);
   const [toolError, setToolError] = useState<string | null>(null);
@@ -960,17 +977,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     fetchRecentDecisions();
     fetchBlogPosts();
 
-    if (currentPath === "/") {
-      setActiveTool("ip");
-      runDiagnosticCheck("ip", "me");
-      window.history.pushState({}, "", "/ip-lookup");
-      return;
-    }
-
-    // Check if currentPath is a diagnostic utility
+    // Check if currentPath is a diagnostic utility (the homepage now defaults to the IP tool)
     const pathClean = currentPath.toLowerCase().trim();
     if (
-      pathClean === "/status" || 
+      pathClean === "/" ||
+      pathClean === "/status" ||
       pathClean.startsWith("/status/") ||
       pathClean === "/dns-lookup" || 
       pathClean.startsWith("/dns-lookup/") ||
@@ -985,7 +996,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
     ) {
       let toolId = "ip";
       let routePrefix = "";
-      if (pathClean === "/status") { toolId = "ip"; routePrefix = "/status"; }
+      if (pathClean === "/") { toolId = "ip"; routePrefix = ""; }
+      else if (pathClean === "/status") { toolId = "ip"; routePrefix = "/status"; }
       else if (pathClean.startsWith("/status/")) { toolId = "status"; routePrefix = "/status"; }
       else if (pathClean.startsWith("/dns-lookup")) { toolId = "dns"; routePrefix = "/dns-lookup"; }
       else if (pathClean.startsWith("/ip-lookup")) { toolId = "ip"; routePrefix = "/ip-lookup"; }
@@ -996,6 +1008,10 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       setActiveTool(toolId);
       setReport(null);
       setSelectedPost(null);
+
+      if (pathClean === "/") {
+        window.history.replaceState({}, "", "/ip-lookup");
+      }
 
       const suffix = currentPath.substring(routePrefix.length);
       const cleanSuffix = suffix.replace(/^\/+/, "").trim();
