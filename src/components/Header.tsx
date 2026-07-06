@@ -1,5 +1,15 @@
-import { useState, useEffect } from "react";
-import { Sparkles, Menu, X, TrendingUp, ChevronRight, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Sparkles, Menu, X, TrendingUp, ChevronRight, ChevronDown, MapPin, Globe, Search, Lock, FileText, Zap } from "lucide-react";
+
+const ITEM_ICONS: Record<string, typeof MapPin> = {
+  "What is my IP?": MapPin,
+  "Website Status": Globe,
+  "DNS Lookup": Search,
+  "SSL Checker": Lock,
+  "WHOIS Lookup": FileText,
+  "Port Checker": Zap,
+  "Should You Do It?": Sparkles,
+};
 
 interface HeaderProps {
   currentPath: string;
@@ -10,6 +20,16 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [width, setWidth] = useState(0);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleDropdownEnter = (name: string) => {
+    if (dropdownTimer.current) clearTimeout(dropdownTimer.current);
+    setOpenDropdown(name);
+  };
+
+  const handleDropdownLeave = () => {
+    dropdownTimer.current = setTimeout(() => setOpenDropdown(null), 150);
+  };
 
   useEffect(() => {
     setWidth(window.innerWidth);
@@ -50,6 +70,12 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
 
   return (
     <>
+      <style>{`
+        @keyframes fadeInDown {
+          from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+      `}</style>
       <header style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"rgba(255,255,255,0.98)",backdropFilter:isMobile?"none":"blur(12px)",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)",overflowX:"hidden",maxWidth:"100vw"}}>
         <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
@@ -69,35 +95,98 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
               <nav style={{display:"flex",alignItems:"center",gap:"4px"}}>
                 {navLinks.map((link) => {
                   const items = dropdownItems[link.name];
+                  const isActive = currentPath === link.path;
+                  const isOpenNow = items && openDropdown === link.name;
                   return (
                     <div
                       key={link.path}
-                      className="relative"
-                      onMouseEnter={() => items && setOpenDropdown(link.name)}
-                      onMouseLeave={() => items && setOpenDropdown(null)}
+                      style={{position:"relative"}}
+                      onMouseEnter={() => items && handleDropdownEnter(link.name)}
+                      onMouseLeave={() => items && handleDropdownLeave()}
                     >
                       <button
                         onClick={() => handleLinkClick(link.path)}
-                        style={{padding:"8px 16px",borderRadius:"999px",border:"none",background:currentPath===link.path?"#eff6ff":"transparent",color:currentPath===link.path?"#2563eb":"#4b5563",fontWeight:currentPath===link.path?"600":"500",fontSize:"14px",cursor:"pointer",display:"flex",alignItems:"center",gap:"4px"}}
+                        style={{padding:"8px 16px",borderRadius:"999px",border:"none",background:isActive?"#eff6ff":"transparent",color:isActive?"#2563eb":"#4b5563",fontWeight:isActive?"600":"500",fontSize:"14px",cursor:"pointer",display:"flex",alignItems:"center",gap:"4px",position:"relative"}}
                       >
                         <span>{link.name}</span>
-                        {items && <ChevronDown style={{height:"14px",width:"14px"}} />}
+                        {items && <ChevronDown style={{height:"14px",width:"14px",transition:"transform 0.15s",transform:isOpenNow?"rotate(180deg)":"rotate(0deg)"}} />}
+                        {isActive && (
+                          <span style={{position:"absolute",bottom:"-2px",left:"50%",transform:"translateX(-50%)",width:"20px",height:"2px",borderRadius:"999px",background:"#2563eb"}} />
+                        )}
                       </button>
 
-                      {items && openDropdown === link.name && (
-                        <div className="absolute top-full left-0 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 min-w-64 z-50">
-                          {items.map((item) => (
-                            <div
-                              key={item.path}
-                              onClick={() => handleLinkClick(item.path)}
-                              className="flex items-start gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 cursor-pointer"
-                            >
-                              <div>
-                                <div className="text-sm font-semibold text-gray-800">{item.name}</div>
-                                <div className="text-xs text-gray-500 mt-0.5">{item.description}</div>
-                              </div>
-                            </div>
-                          ))}
+                      {isOpenNow && (
+                        <div
+                          onMouseEnter={() => handleDropdownEnter(link.name)}
+                          onMouseLeave={handleDropdownLeave}
+                          style={{
+                            position: "absolute",
+                            top: "calc(100% + 8px)",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            background: "white",
+                            borderRadius: "16px",
+                            boxShadow: "0 20px 60px rgba(0,0,0,0.12), 0 4px 20px rgba(0,0,0,0.08)",
+                            border: "1px solid #f0f0f0",
+                            padding: "8px",
+                            minWidth: "260px",
+                            zIndex: 9999,
+                            animation: "fadeInDown 0.15s ease"
+                          }}
+                        >
+                          <div style={{
+                            position: "absolute",
+                            top: "-6px",
+                            left: "50%",
+                            width: "12px",
+                            height: "12px",
+                            background: "white",
+                            border: "1px solid #f0f0f0",
+                            borderBottom: "none",
+                            borderRight: "none",
+                            transform: "translateX(-50%) rotate(45deg)"
+                          }} />
+                          {items.map((item) => {
+                            const Icon = ITEM_ICONS[item.name];
+                            return (
+                              <button
+                                key={item.path}
+                                onClick={() => handleLinkClick(item.path)}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  padding: "10px 14px",
+                                  borderRadius: "12px",
+                                  cursor: "pointer",
+                                  transition: "background 0.15s",
+                                  border: "none",
+                                  background: "transparent",
+                                  width: "100%",
+                                  textAlign: "left"
+                                }}
+                                onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f7ff")}
+                                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                              >
+                                <div style={{
+                                  width: "32px",
+                                  height: "32px",
+                                  borderRadius: "8px",
+                                  background: "#eff6ff",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  flexShrink: 0
+                                }}>
+                                  {Icon && <Icon style={{height:"16px",width:"16px",color:"#2563eb"}} />}
+                                </div>
+                                <div>
+                                  <div style={{fontSize:"14px",fontWeight:600,color:"#1f2937"}}>{item.name}</div>
+                                  <div style={{fontSize:"12px",color:"#6b7280",marginTop:"2px"}}>{item.description}</div>
+                                </div>
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                     </div>

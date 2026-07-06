@@ -999,6 +999,11 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         setToolInput("");
         setToolResult(null);
         setToolError(null);
+        if (toolId === "ip") {
+          setTimeout(() => {
+            runDiagnosticCheck("ip", "me");
+          }, 100);
+        }
       }
 
       const toolNames: Record<string, string> = {
@@ -1650,9 +1655,9 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
 
   const renderDiagnosticsSuite = () => {
     const toolsList = [
+      { id: "ip", name: "What is my IP?", icon: <MapPin className="w-4 h-4" />, description: "Locate IP addresses and discover ASN details." },
       { id: "status", name: "Website Status", icon: <Globe className="w-4 h-4" />, description: "Check if a website is online and responsive." },
       { id: "dns", name: "DNS Lookup", icon: <Search className="w-4 h-4" />, description: "Query A, MX, CNAME, TXT, NS records." },
-      { id: "ip", name: "IP & Geolocation", icon: <MapPin className="w-4 h-4" />, description: "Locate IP addresses and discover ASN details." },
       { id: "ssl", name: "SSL Checker", icon: <Lock className="w-4 h-4" />, description: "Inspect SSL certificate validity and issuer details." },
       { id: "whois", name: "WHOIS Lookup", icon: <FileText className="w-4 h-4" />, description: "Retrieve domain registration dates and ownership." },
       { id: "port", name: "Port Checker", icon: <Zap className="w-4 h-4" />, description: "Verify open/closed common diagnostic ports." }
@@ -1704,6 +1709,9 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
                   else if (t.id === "port") route = "port-checker";
                   window.history.pushState({}, "", `/${route}`);
                   onNavigate(`/${route}`);
+                  if (t.id === "ip") {
+                    setTimeout(() => runDiagnosticCheck("ip", "me"), 100);
+                  }
                 }}
                 className={`flex items-center justify-center space-x-2 p-3.5 rounded-2xl border text-xs font-bold transition-colors duration-150 cursor-pointer ${
                   active
