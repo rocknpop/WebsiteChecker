@@ -96,7 +96,7 @@ export default function Header({ currentPath, onNavigate }: HeaderProps) {
         <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 16px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
 
           {/* Logo - left */}
-          <div style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",flexShrink:0}} onClick={() => handleLinkClick("/decision")}>
+          <div style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",flexShrink:0}} onClick={() => handleLinkClick("/ip-lookup")}>
             <div style={{height:"32px",width:"32px",flexShrink:0,background:"linear-gradient(135deg,#2563eb,#4f46e5)",borderRadius:"10px",display:"flex",alignItems:"center",justifyContent:"center"}}>
               <TrendingUp style={{height:"18px",width:"18px",color:"white"}} />
             </div>

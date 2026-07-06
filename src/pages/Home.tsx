@@ -1785,13 +1785,13 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
           
           <button
             onClick={() => {
-              window.history.pushState({}, "", "/decision");
-              onNavigate("/decision");
+              window.history.pushState({}, "", "/ip-lookup");
+              onNavigate("/ip-lookup");
             }}
             className="mt-4 inline-flex items-center space-x-1.5 text-xs font-bold text-gray-500 hover:text-blue-600 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Return to Decision Central Engine</span>
+            <span>Back to Diagnostics Home</span>
           </button>
         </div>
 

@@ -102,7 +102,7 @@ interface AppProps {
 
 export default function App({ initialPath }: AppProps = {}) {
   const [currentPath, setCurrentPath] = useState(
-    initialPath ?? (typeof window !== "undefined" ? window.location.pathname : "/")
+    initialPath ?? (typeof window !== "undefined" ? window.location.pathname : "/ip-lookup")
   );
 
   // Invoke useSEO hook for dynamic metadata updates on route state changes
