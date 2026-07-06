@@ -497,8 +497,7 @@ const generateFallbackReport = (query: string): DecisionReport => {
 function getToolIdForPath(path: string): string | null {
   const pathClean = path.toLowerCase().trim();
   if (pathClean === "/") return "ip";
-  if (pathClean === "/status") return "ip";
-  if (pathClean.startsWith("/status/")) return "status";
+  if (pathClean === "/status" || pathClean.startsWith("/status/")) return "status";
   if (pathClean === "/dns-lookup" || pathClean.startsWith("/dns-lookup/")) return "dns";
   if (pathClean === "/ip-lookup" || pathClean.startsWith("/ip-lookup/")) return "ip";
   if (pathClean === "/ssl-checker" || pathClean.startsWith("/ssl-checker/")) return "ssl";
@@ -997,8 +996,7 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
       let toolId = "ip";
       let routePrefix = "";
       if (pathClean === "/") { toolId = "ip"; routePrefix = ""; }
-      else if (pathClean === "/status") { toolId = "ip"; routePrefix = "/status"; }
-      else if (pathClean.startsWith("/status/")) { toolId = "status"; routePrefix = "/status"; }
+      else if (pathClean === "/status" || pathClean.startsWith("/status/")) { toolId = "status"; routePrefix = "/status"; }
       else if (pathClean.startsWith("/dns-lookup")) { toolId = "dns"; routePrefix = "/dns-lookup"; }
       else if (pathClean.startsWith("/ip-lookup")) { toolId = "ip"; routePrefix = "/ip-lookup"; }
       else if (pathClean.startsWith("/ssl-checker")) { toolId = "ssl"; routePrefix = "/ssl-checker"; }
@@ -1721,18 +1719,20 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
               <button
                 key={t.id}
                 onClick={() => {
+                  setToolError(null);
                   setActiveTool(t.id);
                   setToolResult(null);
-                  setToolError(null);
-                  let route = "";
-                  if (t.id === "status") route = "status";
-                  else if (t.id === "dns") route = "dns-lookup";
-                  else if (t.id === "ip") route = "ip-lookup";
-                  else if (t.id === "ssl") route = "ssl-checker";
-                  else if (t.id === "whois") route = "whois-lookup";
-                  else if (t.id === "port") route = "port-checker";
+                  setToolInput("");
+                  const route = t.id === "status" ? "status" :
+                                t.id === "dns" ? "dns-lookup" :
+                                t.id === "ip" ? "ip-lookup" :
+                                t.id === "ssl" ? "ssl-checker" :
+                                t.id === "whois" ? "whois-lookup" :
+                                t.id === "port" ? "port-checker" : "status";
                   window.history.pushState({}, "", `/${route}`);
                   onNavigate(`/${route}`);
+
+                  // ONLY auto-run for IP tool - all others wait for user input
                   if (t.id === "ip") {
                     setTimeout(() => runDiagnosticCheck("ip", "me"), 100);
                   }

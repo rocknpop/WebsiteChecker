@@ -19,7 +19,7 @@ import {
 export function getSeoMetadata(path: string): { title: string; description: string } {
   // 1. Core General Platform SEO Matches
   // The homepage now defaults to the IP lookup tool (see getToolIdForPath in Home.tsx).
-  if (path === "/" || path === "/index.html" || path === "/status" || path === "/ip-lookup" || path.startsWith("/ip-lookup/")) {
+  if (path === "/" || path === "/index.html" || path === "/ip-lookup" || path.startsWith("/ip-lookup/")) {
     return {
       title: "What Is My IP? Free IP Address & Geolocation Lookup - DownOrUp.net",
       description: "Instantly detect your public IP address, ISP and location with our free IP lookup tool. Also includes DNS lookup, SSL checker, WHOIS lookup, and port checker."
@@ -40,7 +40,7 @@ export function getSeoMetadata(path: string): { title: string; description: stri
     };
   }
 
-  if (path.startsWith("/status/")) {
+  if (path === "/status" || path.startsWith("/status/")) {
     return {
       title: "Website Status Checker & Reachability Tool - DownOrUp.net",
       description: "Use our free high-speed network diagnostic tool to evaluate your status parameters instantly."
