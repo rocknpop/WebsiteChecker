@@ -1,5 +1,9 @@
 ﻿import React, { useState } from "react";
-import { ShieldCheck, HelpCircle, FileText, Send, CheckCircle2, Scale, Lock, BookOpen } from "lucide-react";
+import {
+  ShieldCheck, HelpCircle, FileText, Send, CheckCircle2, Scale, Lock, BookOpen,
+  Zap, Gift, ArrowUpDown, Briefcase, AlertTriangle, Globe, Search, Server,
+  ShieldQuestion, KeyRound, Radar, UserX, Wifi, ArrowRight, Rocket
+} from "lucide-react";
 
 interface LegalLayoutProps {
   title: string;
@@ -114,28 +118,191 @@ export function DisclaimerPage() {
 }
 
 // 5. ABOUT US
-export function AboutUsPage() {
+interface AboutUsPageProps {
+  onNavigate?: (path: string) => void;
+}
+
+export function AboutUsPage({ onNavigate }: AboutUsPageProps = {}) {
+  const goTo = (path: string) => {
+    if (onNavigate) onNavigate(path);
+  };
+
   return (
-    <LegalLayout title="About DownOrUp.net">
-      <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-blue-50 rounded-3xl border border-blue-200 mb-6">
-        <div className="p-4.5 bg-blue-600 rounded-2xl text-white flex items-center justify-center font-bold text-2xl w-14 h-14 shrink-0 shadow-lg shadow-blue-200">
-          ↑
+    <>
+      <LegalLayout title="About DownOrUp.net">
+        <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-blue-50 rounded-3xl border border-blue-200 mb-6">
+          <div className="p-4.5 bg-blue-600 rounded-2xl text-white flex items-center justify-center font-bold text-2xl w-14 h-14 shrink-0 shadow-lg shadow-blue-200">
+            ↑
+          </div>
+          <div>
+            <h4 className="font-bold text-gray-900 text-base">"Should You Do It?"</h4>
+            <p className="text-xs text-gray-700 mt-0.5">
+              We built DownOrUp.net to remove decision paralysis. By aggregating modern market indicators with state-of-the-art AI parsing, we help founders analyze trade-offs in seconds.
+            </p>
+          </div>
         </div>
-        <div>
-          <h4 className="font-bold text-gray-900 text-base">"Should You Do It?"</h4>
-          <p className="text-xs text-gray-700 mt-0.5">
-            We built DownOrUp.net to remove decision paralysis. By aggregating modern market indicators with state-of-the-art AI parsing, we help founders analyze trade-offs in seconds.
-          </p>
+
+        <p>
+          Every day, millions of people get stuck in deep decision loops: <em>"Should I learn Python?"</em>, <em>"Should I start an Amazon KDP side hustle?"</em>, <em>"Should I buy a gaming PC?"</em>. People browse dozens of threads, conflicting blogs, and promotional videos, wasting valuable hours.
+        </p>
+        <p>
+          <strong>DownOrUp.net</strong> consolidates this entire discovery cycle. Our AI-driven platform instantly evaluates complexity, costs, risk vectors, pros, and cons, presenting a clean visual verdict. We remove the clutter so you can act with clarity.
+        </p>
+      </LegalLayout>
+
+      <div className="max-w-4xl mx-auto px-4 pb-16 space-y-10">
+
+        {/* STATS ROW */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm text-center space-y-2">
+            <div className="w-11 h-11 mx-auto rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+              <Zap className="w-5 h-5" />
+            </div>
+            <p className="text-2xl font-sans font-black text-gray-900">6+ Free Tools</p>
+            <p className="text-xs text-gray-500">IP, DNS, SSL, WHOIS, Ports & more</p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm text-center space-y-2">
+            <div className="w-11 h-11 mx-auto rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+              <Gift className="w-5 h-5" />
+            </div>
+            <p className="text-2xl font-sans font-black text-gray-900">100% Free Forever</p>
+            <p className="text-xs text-gray-500">No paywalls, no trials, no credit card</p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm text-center space-y-2">
+            <div className="w-11 h-11 mx-auto rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600">
+              <Lock className="w-5 h-5" />
+            </div>
+            <p className="text-2xl font-sans font-black text-gray-900">0 Data Stored</p>
+            <p className="text-xs text-gray-500">Zero-retention query processing</p>
+          </div>
+        </div>
+
+        {/* TWO COLUMNS: AI DECISION ENGINE / NETWORK DIAGNOSTICS */}
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+                <Rocket className="w-4.5 h-4.5" />
+              </div>
+              <h3 className="font-sans font-extrabold text-lg text-gray-900">AI Decision Engine</h3>
+            </div>
+            <ul className="space-y-3 text-sm text-gray-700">
+              <li className="flex items-start gap-2.5">
+                <ArrowUpDown className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
+                <span>Clear <strong>UP / DOWN</strong> verdicts for any decision, instantly generated</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Briefcase className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
+                <span>In-depth <strong>career analysis</strong> covering effort, cost, and time to results</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <AlertTriangle className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
+                <span>Structured <strong>risk assessment</strong> with pros, cons, and reward potential</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                <Radar className="w-4.5 h-4.5" />
+              </div>
+              <h3 className="font-sans font-extrabold text-lg text-gray-900">Network Diagnostics</h3>
+            </div>
+            <ul className="space-y-3 text-sm text-gray-700">
+              <li className="flex items-start gap-2.5">
+                <Globe className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0" />
+                <span><strong>IP lookup</strong> — public IP, ISP, and geolocation</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Wifi className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0" />
+                <span><strong>Website checker</strong> — uptime and reachability status</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Search className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0" />
+                <span><strong>DNS lookup</strong> — all primary DNS record types</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0" />
+                <span><strong>SSL validator</strong> — certificate and protocol checks</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <FileText className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0" />
+                <span><strong>WHOIS lookup</strong> — registrar and domain ownership data</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Server className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0" />
+                <span><strong>Port scanner</strong> — common open port diagnostics</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* THREE STEPS */}
+        <div className="bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+          <h3 className="font-sans font-extrabold text-lg text-gray-900 text-center mb-6">How It Works</h3>
+          <div className="grid sm:grid-cols-3 gap-6">
+            <div className="text-center space-y-2">
+              <div className="w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-bold font-mono">1</div>
+              <h4 className="font-bold text-gray-900 text-sm">Enter Question</h4>
+              <p className="text-xs text-gray-500">Type any decision, idea, or domain you want checked</p>
+            </div>
+            <div className="text-center space-y-2">
+              <div className="w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-bold font-mono">2</div>
+              <h4 className="font-bold text-gray-900 text-sm">AI Analyzes Instantly</h4>
+              <p className="text-xs text-gray-500">Our engine evaluates risk, cost, and outcome in seconds</p>
+            </div>
+            <div className="text-center space-y-2">
+              <div className="w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-bold font-mono">3</div>
+              <h4 className="font-bold text-gray-900 text-sm">Get Results</h4>
+              <p className="text-xs text-gray-500">Receive a clear verdict with a full supporting breakdown</p>
+            </div>
+          </div>
+        </div>
+
+        {/* FOUR VALUE CARDS */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm text-center space-y-2">
+            <Gift className="w-5 h-5 text-blue-600 mx-auto" />
+            <h4 className="font-bold text-gray-900 text-sm">Free Forever</h4>
+            <p className="text-[11px] text-gray-500">No hidden fees, ever</p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm text-center space-y-2">
+            <ShieldQuestion className="w-5 h-5 text-blue-600 mx-auto" />
+            <h4 className="font-bold text-gray-900 text-sm">Privacy First</h4>
+            <p className="text-[11px] text-gray-500">Zero-retention by design</p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm text-center space-y-2">
+            <UserX className="w-5 h-5 text-blue-600 mx-auto" />
+            <h4 className="font-bold text-gray-900 text-sm">No Signup</h4>
+            <p className="text-[11px] text-gray-500">No accounts or passwords</p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm text-center space-y-2">
+            <KeyRound className="w-5 h-5 text-blue-600 mx-auto" />
+            <h4 className="font-bold text-gray-900 text-sm">Trusted APIs</h4>
+            <p className="text-[11px] text-gray-500">Reliable, industry-grade data</p>
+          </div>
+        </div>
+
+        {/* CTA BUTTONS */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+          <button
+            onClick={() => goTo("/ip-lookup")}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-200 text-gray-900 font-semibold rounded-xl hover:border-gray-300 hover:-translate-y-0.5 duration-150 transition-all shadow-sm cursor-pointer"
+          >
+            <Globe className="w-4 h-4" />
+            Check My IP
+          </button>
+          <button
+            onClick={() => goTo("/decision")}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-indigo-500/10 hover:-translate-y-0.5 duration-150 transition-all cursor-pointer"
+          >
+            Try Decision Engine
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
-
-      <p>
-        Every day, millions of people get stuck in deep decision loops: <em>"Should I learn Python?"</em>, <em>"Should I start an Amazon KDP side hustle?"</em>, <em>"Should I buy a gaming PC?"</em>. People browse dozens of threads, conflicting blogs, and promotional videos, wasting valuable hours.
-      </p>
-      <p>
-        <strong>DownOrUp.net</strong> consolidates this entire discovery cycle. Our AI-driven platform instantly evaluates complexity, costs, risk vectors, pros, and cons, presenting a clean visual verdict. We remove the clutter so you can act with clarity.
-      </p>
-    </LegalLayout>
+    </>
   );
 }
 

@@ -133,7 +133,7 @@ export default function App({ initialPath }: AppProps = {}) {
     if (currentPath === "/terms-and-conditions") return <TermsPage />;
     if (currentPath === "/disclaimer") return <DisclaimerPage />;
     if (currentPath === "/cookie-policy") return <CookiePolicyPage />;
-    if (currentPath === "/about") return <AboutUsPage />;
+    if (currentPath === "/about") return <AboutUsPage onNavigate={navigate} />;
     if (currentPath === "/contact") return <ContactUsPage />;
 
     // Handle all other pathways inside the highly centralized Home core
