@@ -1,3 +1,18 @@
 {
-  "buildPath": "comp"
+  "buildPath": "comp",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gray-on-color",
+        "value": "*",
+        "files": [
+          "src/components/AiAssistant.tsx"
+        ],
+        "createdAt": "2026-08-23T08:25:29.344Z",
+        "reason": "false positive: text-gray-600 pairs with the base bg-white; bg-blue-50 only appears together with hover:text-blue-600 (both are the same hover: modifier, activate simultaneously); detector can't correlate simultaneous Tailwind hover modifiers"
+      }
+    ]
+  }
 }

@@ -25,13 +25,22 @@ const TOOL_LABELS: Record<string, string> = {
   port: "Port Checker",
 };
 
+const SUGGESTED_QUERIES = [
+  "Is google.com down?",
+  "Check the SSL on github.com",
+  "DNS lookup for cloudflare.com",
+  "WHOIS lookup for example.com",
+  "Should I start a YouTube channel?",
+  "Should I learn Python?",
+];
+
 export default function AiAssistant({ onSuggestDiagnostic, onSuggestDecision }: AiAssistantProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<AssistantMessage[]>([
     {
       id: "welcome",
       sender: "assistant",
-      text: 'Hi! I can route you to the right tool. Ask me things like:\n\n• "Is example.com down?"\n• "Check the SSL on my site"\n• "Should I start a YouTube channel?"\n\nI\'ll open the right diagnostic or verdict for you.',
+      text: "Hi! I can route you to the right tool. Ask me about a site's status, or a decision you're weighing, or tap a suggestion below to get started instantly.",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
@@ -52,11 +61,9 @@ export default function AiAssistant({ onSuggestDiagnostic, onSuggestDecision }: 
     return () => window.removeEventListener("keydown", handleKey);
   }, [isOpen]);
 
-  const handleSend = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim() || loading) return;
+  const runQuery = async (userText: string) => {
+    if (!userText.trim() || loading) return;
 
-    const userText = inputValue;
     setInputValue("");
 
     const userMsg: AssistantMessage = { id: `usr-${Date.now()}`, sender: "user", text: userText };
@@ -102,6 +109,17 @@ export default function AiAssistant({ onSuggestDiagnostic, onSuggestDecision }: 
       setLoading(false);
     }
   };
+
+  const handleSend = (e: FormEvent) => {
+    e.preventDefault();
+    runQuery(inputValue);
+  };
+
+  const handleSuggestionClick = (query: string) => {
+    runQuery(query);
+  };
+
+  const showSuggestions = messages.length === 1 && messages[0].id === "welcome";
 
   const renderAction = (msg: AssistantMessage) => {
     if (msg.sender !== "assistant" || msg.id === "welcome" || msg.id.startsWith("err-")) return null;
@@ -211,6 +229,22 @@ export default function AiAssistant({ onSuggestDiagnostic, onSuggestDecision }: 
                 </div>
               </div>
             ))}
+
+            {showSuggestions && (
+              <div className="flex flex-wrap gap-1.5">
+                {SUGGESTED_QUERIES.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={() => handleSuggestionClick(q)}
+                    disabled={loading}
+                    className="px-2.5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-[11px] font-medium hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {loading && (
               <div className="flex items-center gap-2 text-gray-500 p-2 text-xs">
