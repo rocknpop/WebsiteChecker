@@ -119,8 +119,6 @@ export default function AiAssistant({ onSuggestDiagnostic, onSuggestDecision }: 
     runQuery(query);
   };
 
-  const showSuggestions = messages.length === 1 && messages[0].id === "welcome";
-
   const renderAction = (msg: AssistantMessage) => {
     if (msg.sender !== "assistant" || msg.id === "welcome" || msg.id.startsWith("err-")) return null;
 
@@ -230,22 +228,6 @@ export default function AiAssistant({ onSuggestDiagnostic, onSuggestDecision }: 
               </div>
             ))}
 
-            {showSuggestions && (
-              <div className="flex flex-wrap gap-1.5">
-                {SUGGESTED_QUERIES.map((q) => (
-                  <button
-                    key={q}
-                    type="button"
-                    onClick={() => handleSuggestionClick(q)}
-                    disabled={loading}
-                    className="px-2.5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-[11px] font-medium hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            )}
-
             {loading && (
               <div className="flex items-center gap-2 text-gray-500 p-2 text-xs">
                 <Loader2 className="h-4.5 w-4.5 animate-spin" style={{ color: "#2563eb" }} />
@@ -254,6 +236,25 @@ export default function AiAssistant({ onSuggestDiagnostic, onSuggestDecision }: 
             )}
 
             <div ref={messagesEndRef} />
+          </div>
+
+          {/* Persistent quick-suggestions strip — always available, never scrolls
+              away with the conversation, so a suggestion is never "lost" once you've
+              asked something */}
+          <div className="shrink-0 border-t border-gray-200 bg-white px-3 pt-2.5 pb-1 overflow-x-auto">
+            <div className="flex gap-1.5 w-max">
+              {SUGGESTED_QUERIES.map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => handleSuggestionClick(q)}
+                  disabled={loading}
+                  className="shrink-0 px-2.5 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-gray-600 text-[11px] font-medium whitespace-nowrap hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
           </div>
 
           <form onSubmit={handleSend} className="p-3 border-t border-gray-200 bg-white flex gap-2 shrink-0">
