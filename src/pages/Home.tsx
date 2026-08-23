@@ -1069,8 +1069,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         port: "Common Ports Checker & Security Scan"
       };
       if (toolId === "whois") {
-        setSeoTitle("Free WHOIS Lookup - Find Domain Owner, Registration & Expiry - DownOrUp.net");
-        setSeoDesc("Free WHOIS domain lookup tool. Find domain owner, registration date, expiry date and registrar instantly. Search domain ownership records for any website.");
+        setSeoTitle("Free WHOIS Lookup - Find Domain Owner Instantly - DownOrUp.net");
+        setSeoDesc("Find who owns any domain instantly. Free WHOIS lookup tool showing domain owner, registration date, expiry date, registrar and nameservers. No signup needed.");
       } else {
         setSeoTitle(`${toolNames[toolId]} - DownOrUp.net`);
         setSeoDesc(`Use our free high-speed network diagnostic tool to evaluate your ${toolId} parameters instantly.`);
@@ -1785,9 +1785,8 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
         {activeTool === "whois" && (
           <div className="max-w-2xl mx-auto mb-6 text-center">
             <p className="text-sm text-gray-600 leading-relaxed">
-              Free WHOIS domain lookup tool. Find domain owner, registration date, expiry date and registrar
-              information instantly. Search domain ownership records for any website to see who registered it,
-              when it was created, and when it expires.
+              Free WHOIS domain lookup tool. Enter any domain name to instantly find the domain owner, registration
+              date, expiry date, registrar information and nameservers.
             </p>
           </div>
         )}
