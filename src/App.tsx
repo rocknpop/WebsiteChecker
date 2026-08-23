@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import AiAssistant from "./components/AiAssistant";
 import { useSEO } from "./hooks/useSEO";
 
 // Page imports
@@ -127,6 +128,29 @@ export default function App({ initialPath }: AppProps = {}) {
     setCurrentPath(path);
   };
 
+  const DIAGNOSTIC_ROUTES: Record<string, string> = {
+    status: "status",
+    dns: "dns-lookup",
+    ip: "ip-lookup",
+    ssl: "ssl-checker",
+    whois: "whois-lookup",
+    port: "port-checker",
+  };
+
+  const handleSuggestDiagnostic = (tool: string, target: string) => {
+    const route = DIAGNOSTIC_ROUTES[tool] || "ip-lookup";
+    navigate(`/${route}/${encodeURIComponent(target)}`);
+  };
+
+  // Home.tsx auto-triggers analysis for any path starting with "should-" (see its
+  // routing effect); build a matching slug so the assistant reuses that flow
+  // instead of duplicating the decision engine's request logic here.
+  const handleSuggestDecision = (decisionQuery: string) => {
+    const cleaned = decisionQuery.replace(/^should\s+/i, "").replace(/\?+$/, "").trim();
+    const slug = "should-" + cleaned.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    navigate(`/${slug}`);
+  };
+
   // Route Router mapping
   const renderContent = () => {
     if (currentPath === "/privacy-policy") return <PrivacyPolicyPage />;
@@ -145,6 +169,7 @@ export default function App({ initialPath }: AppProps = {}) {
       <Header currentPath={currentPath} onNavigate={navigate} />
       <main className="flex-grow">{renderContent()}</main>
       <Footer onNavigate={navigate} />
+      <AiAssistant onSuggestDiagnostic={handleSuggestDiagnostic} onSuggestDecision={handleSuggestDecision} />
     </div>
   );
 }

@@ -595,6 +595,71 @@ Operation Instructions:
   }
 });
 
+// 1b. FLOATING ASSISTANT: lightweight intent triage + short conversational answer.
+// Distinct from /api/analyze-decision (the full multi-field report engine): this
+// endpoint returns one short answer plus a structured suggestion so the client can
+// route into the matching existing tool (a diagnostic check or the decision engine)
+// rather than duplicating either engine's logic here.
+app.post("/api/ai-assistant", async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt || typeof prompt !== "string" || prompt.trim().length === 0) {
+    return res.status(400).json({ error: "A prompt string is required." });
+  }
+  const normalizedPrompt = prompt.trim();
+
+  if (!process.env.GEMINI_API_KEY) {
+    return res.status(503).json({
+      error: "AI assistant is currently unavailable. No valid Gemini API key was detected in the environment settings.",
+    });
+  }
+
+  try {
+    const responseSchema = {
+      type: Type.OBJECT,
+      properties: {
+        answer: { type: Type.STRING, description: "A concise, conversational, 1-2 sentence reply to the user." },
+        intent: { type: Type.STRING, description: "Must be exactly one of: 'diagnostic', 'decision', 'info'." },
+        tool: { type: Type.STRING, description: "When intent is 'diagnostic', the matching tool id: 'status', 'dns', 'ip', 'ssl', 'whois', or 'port'. Omit or leave empty otherwise." },
+        target: { type: Type.STRING, description: "When intent is 'diagnostic', the bare domain or IP the user asked about (no protocol, no path). Omit or leave empty otherwise." },
+        decisionQuery: { type: Type.STRING, description: "When intent is 'decision', the user's question normalized into a clean 'Should I ... ?' phrasing. Omit or leave empty otherwise." },
+      },
+      required: ["answer", "intent"],
+    };
+
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: normalizedPrompt,
+      config: {
+        systemInstruction: `You are the floating assistant for DownOrUp.net, a site with exactly two capabilities:
+1. A free website diagnostics suite: website status/uptime checks ('status'), DNS record lookup ('dns'), IP address & geolocation lookup ('ip'), SSL certificate checks ('ssl'), WHOIS domain lookup ('whois'), and common port scanning ('port').
+2. An AI decision engine that gives a binary UP/DOWN verdict on "should I do X" questions (careers, side hustles, purchases, business ideas).
+
+Classify every user message into exactly one intent:
+- 'diagnostic': the user is asking about a website/domain/IP's technical status. Extract the bare host as 'target' and the matching 'tool'.
+- 'decision': the user is asking whether they should do something. Normalize it into 'decisionQuery' as a clean "Should I ...?" question.
+- 'info': anything else (greetings, questions about the site itself, unclear requests).
+
+Always write a short, friendly, direct 'answer' (1-2 sentences) regardless of intent. Never fabricate a diagnostic result or a decision verdict yourself — you only classify and route; the matching tool or engine produces the real result.`,
+        responseMimeType: "application/json",
+        responseSchema,
+      },
+    });
+
+    const text = result.text;
+    if (!text) {
+      throw new Error("Received empty response text from Gemini API.");
+    }
+
+    const parsed = JSON.parse(text);
+    return res.json(parsed);
+  } catch (err: any) {
+    console.error(`[Assistant Engine] Exception during triage of "${normalizedPrompt}":`, err);
+    return res.status(500).json({
+      error: "Could not process that request. Please try rephrasing, or check back in a moment.",
+    });
+  }
+});
+
 // 2. USER ENGAGEMENT LOGS: RECENT DECISIONS
 app.get("/api/recent-decisions", (req, res) => {
   return res.json(recentQueries.slice(0, 12));
@@ -822,4 +887,13 @@ async function startServer() {
   });
 }
 
-startServer();
+// Vercel imports this module for its `api/[...path].ts` serverless function (see that
+// file) purely to reuse `app` and its already-registered /api/* routes; it must never
+// also call app.listen() or start the dev/SSR static-serving branch above. Every /api/*
+// route is registered at module load regardless of this guard, since they're all
+// declared above this point, not inside startServer().
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
