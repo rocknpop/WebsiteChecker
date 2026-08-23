@@ -903,12 +903,28 @@ export default function Home({ currentPath, onNavigate }: HomeProps) {
             throw new Error("Could not retrieve domain registrar WHOIS records.");
           }
           const whoisData = await resp.json();
+
+          // who-dat.as93.net returns an RDAP-shaped response — registrar is an object
+          // ({ name, ianaId, ... }), not a string, and created/expires live under
+          // dates.*. Coerce every field to a plain string before it ever reaches JSX:
+          // a raw object rendered as a child crashes the whole page, not just this card.
+          const asString = (value: any): string | undefined => {
+            if (typeof value === "string" && value.trim()) return value;
+            if (value && typeof value === "object" && typeof value.name === "string") return value.name;
+            return undefined;
+          };
+
+          const registrar = asString(whoisData.registrar) ?? asString(whoisData.Registrar) ?? "Unknown / Shielded";
+          const created = asString(whoisData?.dates?.created) ?? asString(whoisData.created) ?? asString(whoisData.Created) ?? asString(whoisData.created_date) ?? "N/A";
+          const expires = asString(whoisData?.dates?.expires) ?? asString(whoisData.expires) ?? asString(whoisData.Expires) ?? asString(whoisData.expiration_date) ?? "N/A";
+          const rawData = asString(whoisData.raw) ?? JSON.stringify(whoisData, null, 2);
+
           setToolResult({
             domain: host,
-            registrar: whoisData.registrar || whoisData.Registrar || "NameCheap, Inc.",
-            created: whoisData.created || whoisData.Created || whoisData.created_date || "2018-04-12",
-            expires: whoisData.expires || whoisData.Expires || whoisData.expiration_date || "2027-04-12",
-            raw_data: whoisData.raw || JSON.stringify(whoisData, null, 2)
+            registrar,
+            created,
+            expires,
+            raw_data: rawData
           });
           break;
         }

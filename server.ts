@@ -9,7 +9,7 @@ import { createServer as createViteServer } from "vite";
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 // Initialize Gemini Client
 const apiKey = process.env.GEMINI_API_KEY;
