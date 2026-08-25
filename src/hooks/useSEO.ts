@@ -61,8 +61,8 @@ export function useSEO({
     updateMetaTag("property", "og:type", type);
     updateMetaTag("property", "og:url", `${origin}${path}`);
     
-    // Choose an OG image (default to logo/cover if not specified)
-    const ogImage = image || `${origin}/logo-seo.png`;
+    // Choose an OG image (default to og-image.png which exists in public/)
+    const ogImage = image || `${origin}/og-image.png`;
     updateMetaTag("property", "og:image", ogImage);
 
     // 5. Update Twitter Card Meta Tags
@@ -82,7 +82,7 @@ export function useSEO({
         "@id": `${origin}/#organization`,
         "name": "DownOrUp",
         "url": origin,
-        "logo": `${origin}/logo-seo.png`,
+        "logo": `${origin}/og-image.png`,
         "sameAs": []
       },
       {

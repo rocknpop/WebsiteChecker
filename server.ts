@@ -9,7 +9,62 @@ import { createServer as createViteServer } from "vite";
 dotenv.config();
 
 const app = express();
+// Trust proxy is required for correct req.ip / req.secure behind Vercel
+app.set("trust proxy", 1);
 const PORT = Number(process.env.PORT) || 3000;
+
+// ---------------------------------------------------------------------------
+// Security: Gemini API key placeholder guard
+// ---------------------------------------------------------------------------
+const GEMINI_PLACEHOLDERS = new Set(["", "MY_GEMINI_API_KEY", "MY_API_KEY", "placeholder", "test"]);
+function isGeminiKeyMissing(): boolean {
+  const k = process.env.GEMINI_API_KEY;
+  return !k || GEMINI_PLACEHOLDERS.has(k.trim()) || k.trim().length < 10;
+}
+
+// ---------------------------------------------------------------------------
+// Security: CORS allowlist + per-IP rate limiter for Gemini-backed endpoints
+// ---------------------------------------------------------------------------
+const ALLOWED_ORIGINS = new Set([
+  "https://www.downorup.net",
+  "https://downorup.net",
+  "http://localhost:3000",
+  "http://localhost:5173",
+]);
+
+function isAllowedOrigin(origin: string | undefined): boolean {
+  if (!origin) return true; // same-origin / curl / SSR — allow
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+  // Allow any Vercel preview deployment for this project
+  if (/^https:\/\/.*\.vercel\.app$/.test(origin)) return true;
+  return false;
+}
+
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 10;
+const rateLimitStore = new Map<string, number[]>();
+
+function isRateLimited(ip: string, key: string): boolean {
+  const now = Date.now();
+  const storeKey = `${ip}:${key}`;
+  const hits = (rateLimitStore.get(storeKey) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  if (hits.length >= RATE_LIMIT_MAX) {
+    // prune stale entries but do not add new hit
+    rateLimitStore.set(storeKey, hits);
+    return true;
+  }
+  hits.push(now);
+  rateLimitStore.set(storeKey, hits);
+  // opportunistic cleanup to bound memory
+  if (rateLimitStore.size > 5000) {
+    for (const [k, v] of rateLimitStore) {
+      const filtered = v.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+      if (filtered.length === 0) rateLimitStore.delete(k);
+      else rateLimitStore.set(k, filtered);
+    }
+  }
+  return false;
+}
 
 // Initialize Gemini Client
 const apiKey = process.env.GEMINI_API_KEY;
@@ -22,9 +77,16 @@ const ai = new GoogleGenAI({
   },
 });
 
-// Enable CORS for premium accessibility
+// CORS: allowlist-based (fixes wildcard cost-exhaustion; same-origin & curl still work)
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  const origin = req.headers.origin as string | undefined;
+  if (origin) {
+    if (isAllowedOrigin(origin)) {
+      res.header("Access-Control-Allow-Origin", origin);
+      res.header("Vary", "Origin");
+    }
+    // else: do not set ACAO — browser will block cross-origin use
+  }
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   if (req.method === "OPTIONS") {
@@ -377,6 +439,12 @@ function getCacheMatch(query: string): DecisionReport | null {
 
 // 1. CORE API ENDPOINT: ANALYZE DECISION
 app.post("/api/analyze-decision", async (req, res) => {
+  const ip = req.ip || (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || "unknown";
+  if (isRateLimited(ip, "analyze-decision")) {
+    res.setHeader("Retry-After", "60");
+    return res.status(429).json({ error: "Too many requests. Please wait a minute and try again." });
+  }
+
   const { query } = req.body;
   if (!query || typeof query !== "string" || query.trim().length === 0) {
     return res.status(400).json({ error: "Please enter a valid decision question to analyze." });
@@ -398,7 +466,7 @@ app.post("/api/analyze-decision", async (req, res) => {
   }
 
   // Ensure Gemini API Key is configured before live query
-  if (!process.env.GEMINI_API_KEY) {
+  if (isGeminiKeyMissing()) {
     console.warn("[AI Engine] GEMINI_API_KEY is not defined. Falling back to dynamic mock generation.");
     // Fallback Mock generation to prevent any crash
     const chosenVerdict = Math.random() > 0.5 ? "UP" : "DOWN";
@@ -601,13 +669,19 @@ Operation Instructions:
 // route into the matching existing tool (a diagnostic check or the decision engine)
 // rather than duplicating either engine's logic here.
 app.post("/api/ai-assistant", async (req, res) => {
+  const ip2 = req.ip || (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || "unknown";
+  if (isRateLimited(ip2, "ai-assistant")) {
+    res.setHeader("Retry-After", "60");
+    return res.status(429).json({ error: "Too many requests. Please wait a minute and try again." });
+  }
+
   const { prompt } = req.body;
   if (!prompt || typeof prompt !== "string" || prompt.trim().length === 0) {
     return res.status(400).json({ error: "A prompt string is required." });
   }
   const normalizedPrompt = prompt.trim();
 
-  if (!process.env.GEMINI_API_KEY) {
+  if (isGeminiKeyMissing()) {
     return res.status(503).json({
       error: "AI assistant is currently unavailable. No valid Gemini API key was detected in the environment settings.",
     });
@@ -777,11 +851,10 @@ app.get("/api/blog-posts/:slug", (req, res) => {
   return res.json(post);
 });
 
-// 4. PROGRAMMATIC SITEMAP GENERATION
+// 4. PROGRAMMATIC SITEMAP GENERATION — canonical https://www.downorup.net
+// (host header is ignored to prevent injection; with trust proxy, req.secure is correct)
 app.get("/sitemap.xml", (req, res) => {
-  const host = req.headers.host || "downorup.net";
-  const protocol = req.secure ? "https" : "http";
-  const baseUrl = `${protocol}://${host}`;
+  const baseUrl = "https://www.downorup.net";
 
   // Core pages
   const corePaths = [
@@ -867,12 +940,15 @@ async function startServer() {
 
       try {
         const { html, seo } = render(req.path);
+        // Escape user-controlled SEO strings for safe injection into HTML (prevent breaking title/meta)
+        const escTitle = seo.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        const escDesc = seo.description.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         const page = template
           .replace("<!--ssr-outlet-->", html)
-          .replace(/<title>.*?<\/title>/, `<title>${seo.title}</title>`)
+          .replace(/<title[^>]*>[\s\S]*?<\/title>/, `<title>${escTitle}</title>`)
           .replace(
             /<meta name="description" content=".*?" \/>/,
-            `<meta name="description" content="${seo.description}" />`
+            `<meta name="description" content="${escDesc}" />`
           );
         res.send(page);
       } catch (err) {
