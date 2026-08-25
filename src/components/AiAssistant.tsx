@@ -199,7 +199,7 @@ export default function AiAssistant({ onSuggestDiagnostic, onSuggestDecision }: 
               <Sparkles className="h-5 w-5 text-yellow-300" style={{ fill: "rgba(255,255,255,0.2)" }} />
               <div>
                 <h3 className="font-display font-bold text-sm tracking-tight">DownOrUp AI Assistant</h3>
-                <span className="text-[10px] text-white/80 font-mono tracking-wide">Powered by gemini-2.5-flash</span>
+                <span className="text-[10px] text-white/80 font-mono tracking-wide">Powered by gemini-3.6-flash</span>
               </div>
             </div>
             <button

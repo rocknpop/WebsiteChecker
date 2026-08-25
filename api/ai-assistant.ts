@@ -55,7 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     };
 
     const result = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.6-flash',
       contents: normalizedPrompt,
       config: {
         systemInstruction: `You are the floating assistant for DownOrUp.net, a site with exactly two capabilities:

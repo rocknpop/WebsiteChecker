@@ -613,7 +613,7 @@ Choose a definitive binary verdict: either "UP" or "DOWN". You MUST choose eithe
 Make sure to answer the 5 specified FAQs fully.`;
 
     const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       contents: prompt,
       config: {
         systemInstruction: `You are the witty, data-driven core engine for "DownOrUp.net", the ultimate AI-powered decision platform.
@@ -702,7 +702,7 @@ app.post("/api/ai-assistant", async (req, res) => {
     };
 
     const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       contents: normalizedPrompt,
       config: {
         systemInstruction: `You are the floating assistant for DownOrUp.net, a site with exactly two capabilities:
