@@ -753,6 +753,14 @@ app.get("/api/blog-posts/:slug", (req, res) => {
   return res.json(post);
 });
 
+// Explicit JSON 404 for unmatched /api/* paths. Without this, Express falls back to
+// its default HTML 404 ("Cannot GET ..."), which Vercel's @vercel/node adapter treats
+// as a function failure — surfacing as 500 FUNCTION_INVOCATION_FAILED in production.
+// Registered after every /api/* route above so it only catches paths nothing matched.
+app.use("/api", (req, res) => {
+  return res.status(404).json({ error: "Not found." });
+});
+
 // 4. PROGRAMMATIC SITEMAP GENERATION — canonical https://www.downorup.net
 // (host header is ignored to prevent injection; with trust proxy, req.secure is correct)
 app.get("/sitemap.xml", (req, res) => {
