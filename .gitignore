@@ -8,3 +8,5 @@ coverage/
 !.env.example
 .impeccable/
 assets/
+.claude/
+# privacy: local AI/tool caches that contain absolute Windows paths

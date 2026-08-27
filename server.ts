@@ -818,7 +818,7 @@ async function startServer() {
     const template = fs.readFileSync(path.join(distPath, "index.html"), "utf-8");
     const ssrEntryPath = path.join(process.cwd(), "dist", "server", "entry-server.js");
     const { render } = await import(pathToFileURL(ssrEntryPath).href) as {
-      render: (url: string) => { html: string; seo: { title: string; description: string } };
+      render: (url: string) => { html: string; seo: { title: string; description: string; canonicalPath: string } };
     };
 
     // index: false so index.html is never auto-served here — every HTML request must go
@@ -843,14 +843,43 @@ async function startServer() {
       try {
         const { html, seo } = render(req.path);
         // Escape user-controlled SEO strings for safe injection into HTML (prevent breaking title/meta)
-        const escTitle = seo.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-        const escDesc = seo.description.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        const escTitle = esc(seo.title);
+        const escDesc = esc(seo.description);
+        // Per-route canonical + OG/Twitter URLs in the raw HTML — without this, crawlers that
+        // don't run JS see the homepage canonical/og:url from index.html on every page.
+        // Canonical host is hardcoded (same as /sitemap.xml) to prevent host-header injection.
+        const canonicalUrl = esc("https://www.downorup.net" + (seo.canonicalPath === "/" ? "" : seo.canonicalPath));
         const page = template
           .replace("<!--ssr-outlet-->", html)
           .replace(/<title[^>]*>[\s\S]*?<\/title>/, `<title>${escTitle}</title>`)
           .replace(
             /<meta name="description" content=".*?" \/>/,
             `<meta name="description" content="${escDesc}" />`
+          )
+          .replace(
+            /<link rel="canonical" href=".*?" \/>/,
+            `<link rel="canonical" href="${canonicalUrl}" />`
+          )
+          .replace(
+            /<meta property="og:title" content=".*?" \/>/,
+            `<meta property="og:title" content="${escTitle}" />`
+          )
+          .replace(
+            /<meta property="og:description" content=".*?" \/>/,
+            `<meta property="og:description" content="${escDesc}" />`
+          )
+          .replace(
+            /<meta property="og:url" content=".*?" \/>/,
+            `<meta property="og:url" content="${canonicalUrl}" />`
+          )
+          .replace(
+            /<meta name="twitter:title" content=".*?" \/>/,
+            `<meta name="twitter:title" content="${escTitle}" />`
+          )
+          .replace(
+            /<meta name="twitter:description" content=".*?" \/>/,
+            `<meta name="twitter:description" content="${escDesc}" />`
           );
         res.send(page);
       } catch (err) {

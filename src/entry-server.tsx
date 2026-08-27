@@ -8,6 +8,6 @@ export function render(url: string) {
       <App initialPath={url} />
     </StrictMode>
   );
-  const seo = getSeoMetadata(url);
+  const seo = { ...getSeoMetadata(url), canonicalPath: url };
   return { html, seo };
 }
