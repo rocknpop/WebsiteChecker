@@ -763,8 +763,8 @@ app.get("/sitemap.xml", (req, res) => {
     "",
     "/about",
     "/contact",
-    "/privacy",
-    "/terms",
+    "/privacy-policy",
+    "/terms-and-conditions",
     "/disclaimer",
     "/cookie-policy",
     "/blog"
